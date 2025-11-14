@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.railway.up.shareevents_production.twa",
+      "sha256_cert_fingerprints": [
+        "1B:4E:3B:A6:CC:4C:89:A3:4E:82:AB:0B:84:CA:4C:5A:C3:D0:12:A8:F3:F1:D5:E1:D8:DE:C6:B5:00:59:4E:00"
+      ]
+    }
+  }
+]

@@ -1,0 +1,47 @@
+{
+  "background_color": "#7986a1",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Share Events",
+  "orientation": "portrait",
+  "scope": "/",
+  "short_name": "ShareEvents",
+  "start_url": "/",
+  "theme_color": "#3d7ef6",
+  "id": "app.shareevents",
+  "description": "Partagez, découvrez et organisez vos événements facilement avec Share Events.",
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/mobile.png",
+      "sizes": "540x720",
+      "type": "image/bmp"
+    },
+    {
+      "src": "/screenshots/desktop.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "/upload",
+      "accept": {
+        "image/*": [".png", ".jpg", ".jpeg"]
+      }
+    }
+  ],
+  "lang": "fr-FR"
+}
