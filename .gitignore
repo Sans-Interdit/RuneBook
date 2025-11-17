@@ -15,3 +15,6 @@ frontend/dist
 frontend/dev-dist
 
 migrations
+merise.lo1
+merise.loo
+poetry.lock

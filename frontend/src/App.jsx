@@ -1,6 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import HomePage from './pages/homePage';
+import Home from './pages/home';
+import Catalog from './pages/catalogue'
+import Chatbot from './pages/chatbot'
+import Connexion from './pages/connexion'
+import Inscription from './pages/inscription'
+
 import { AppProvider } from "./context/appContext";
 
 import { Navbar } from "./component/navbar";
@@ -13,7 +18,11 @@ export default function App() {
           <Navbar />
           <main className="flex flex-col flex-1">
             <Routes>
-              <Route path="/" element={<HomePage />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/catalog" element={<Catalog />} />
+              <Route path="/chatbot" element={<Chatbot />} />
+              <Route path="/connexion" element={<Connexion />} />
+              <Route path="/inscription" element={<Inscription />} />
             </Routes>
           </main>
         </Router>

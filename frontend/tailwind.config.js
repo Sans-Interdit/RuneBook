@@ -1,6 +1,5 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  mode: 'jit',
   content: [
     "./index.html",
     "./src/**/*.{js,jsx,ts,tsx}",
@@ -8,8 +7,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        titre: ["Belanosima", ""],
-        text: ["Nunito", ""]
+        titre: ["Belanosima", "sans-serif"],
+        text: ["Nunito", "sans-serif"],
       },
       colors: {
         primary: {
@@ -17,7 +16,8 @@ module.exports = {
           100: "#00EEFF"
         },
         secondary: {
-          50: "#ED7E00"
+          50: "#ED7E00",
+          // 100: "#FFC86E"
         },
         background: {
           50: "#030326",
