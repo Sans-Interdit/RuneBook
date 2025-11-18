@@ -4,13 +4,12 @@ import { test } from "../api/test";
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  const [message, setMessage] = useState("");
+  const [guides, setGuides] = useState([]);
 
   // Exemple d'appel API
   useEffect(() => {
-    console.log("me", message)
     test()
-      .then((data) => setMessage(data.message))
+      .then((data) => setGuides(data.data))
       .catch((err) => console.error(err));
   }, []);
 
@@ -22,7 +21,7 @@ export const AppProvider = ({ children }) => {
   const logout = () => setUser(null);
 
   return (
-    <AppContext.Provider value={{ message, user, login, logout }}>
+    <AppContext.Provider value={{ guides, user, login, logout }}>
       {children}
     </AppContext.Provider>
   );

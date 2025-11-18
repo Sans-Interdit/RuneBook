@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from data.models import Event, session, User, PwToken, engine
+from data.models import session, engine, Account, Possess, Guide, Tag, Source
 from requests import get
 import jwt
 import bcrypt
@@ -178,13 +178,9 @@ def changeInfosUser():
         session.rollback()
         return jsonify({"error": "User not found"}), 404
     
-
-@bp.route("/hello", methods=["GET"])
-def hello():
-    """
-    Authenticates a user using their email and password.
-    Returns a JWT token if the credentials are valid.
-    """
-
-    return jsonify({"message" : "Ca va?"}), 200
-        
+@bp.route("/get-guides", methods=["GET"])
+def getGuides():
+    with Session(engine) as local_session:
+        guides = local_session.query(Guide).order_by(Guide.id_guide).all()
+        guides_data = [guide.to_dict() for guide in guides]
+        return jsonify(guides_data), 200

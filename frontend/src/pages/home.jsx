@@ -1,7 +1,11 @@
-import React from "react";
-import { BookCheck, BookOpen, MessageSquare, Search, TrendingUp, Trophy, Users } from "lucide-react";
+import React, { useState } from "react";
+import { BookCheck, BookOpen, ChevronLeft, ChevronRight, MessageSquare, Search, TrendingUp, Trophy, Users } from "lucide-react";
+import { useAppContext } from "../context/appContext";
 
 export default function Home() {
+  const [currentGuideIndex, setCurrentGuideIndex] = useState(0);
+  const { guides } = useAppContext();
+  console.log(guides)
   const features = [
     {
       icon: <BookOpen className="w-12 h-12" />,
@@ -97,6 +101,94 @@ export default function Home() {
               <p className="text-lg font-semibold text-center text-primary-100">Comprendre</p>
               <p className="text-sm text-center text-secondary-50">La scène esport</p>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Guides Carousel  fdffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff*/}
+      <div className="px-6 py-16 mx-auto max-w-7xl">
+        <h2 className="mb-4 text-4xl font-bold text-center text-primary-100 font-titre">
+          Nos Guides
+        </h2>
+        <p className="mb-12 text-xl text-center text-white font-text">
+          Découvre nos guides adaptés à ton niveau
+        </p>
+        
+        <div className="relative">
+          <div className="w-5/6 mx-auto overflow-hidden">
+            <div 
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${currentGuideIndex * 100}%)` }}
+            >
+              {guides.map((guide, index) => (
+                <div key={guide.id_guide} className="flex-shrink-0 w-full px-4">
+                  <div className="p-8 transition-all duration-300 border-2 rounded-2xl bg-gradient-to-br from-primary-50 to-background-100 border-primary-100/30 hover:border-secondary-50 hover:shadow-xl hover:shadow-secondary-50/20">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-2xl font-bold text-primary-100 font-titre">
+                        {guide.title}
+                      </h3>
+                      <span className={`px-4 py-2 text-sm font-semibold rounded-full text-primary-50 ${guide.level == "New Player" ? "bg-green-400" : guide.level == "Average Player" ? "bg-secondary-50" : "bg-red-400"}`}>
+                        {guide.level}
+                      </span>
+                    </div>
+                    
+                    <p className="mb-6 text-white line-clamp-4 font-text">
+                      {guide.content.substring(0, 250)}...
+                    </p>
+                    
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {guide.tags.map((tag, tagIndex) => (
+                        <span 
+                          key={tagIndex}
+                          className="px-3 py-1 text-sm border rounded-full text-primary-100 border-primary-100/50"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-secondary-50">
+                        Source: {guide.source}
+                      </span>
+                      <button className="px-6 py-2 font-semibold transition-all duration-300 rounded-lg bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-105">
+                        Lire le guide
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Navigation Buttons */}
+          <button
+            onClick={() => setCurrentGuideIndex(currentGuideIndex === 0 ? guides.length - 1 : currentGuideIndex-1)}
+            className="absolute left-0 p-3 transition-all duration-300 transform -translate-y-1/2 rounded-full top-1/2 bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          
+          <button
+            onClick={() => setCurrentGuideIndex(currentGuideIndex === guides.length - 1 ? 0 : currentGuideIndex+1)}
+            className="absolute right-0 p-3 transition-all duration-300 transform -translate-y-1/2 rounded-full top-1/2 bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+          
+          {/* Indicators */}
+          <div className="flex justify-center gap-2 mt-8">
+            {guides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentGuideIndex(index)}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  index === currentGuideIndex 
+                    ? 'w-8 bg-primary-100' 
+                    : 'w-2 bg-primary-100/30 hover:bg-primary-100/50'
+                }`}
+              />
+            ))}
           </div>
         </div>
       </div>

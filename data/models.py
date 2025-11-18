@@ -1,128 +1,134 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, ForeignKey, Boolean, func
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 import os
 from dotenv import load_dotenv
-import secrets
-import hashlib
-import datetime
 
 if os.environ.get("PRODUCTION") != "true":
-    # En local, charge le fichier .env.development
     load_dotenv(".env.development")
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 Base = declarative_base()
 
-class User(Base):
-    __tablename__ = "user"
+# ============================================================
+#                      ACCOUNT
+# ============================================================
 
-    id = Column(Integer, primary_key=True)
+class Account(Base):
+    __tablename__ = "account"
+
+    id_account = Column(Integer, primary_key=True)
     email = Column(String(255), unique=True, nullable=False)
     password = Column(String(128), nullable=False)
-    username = Column(String(50), nullable=False, unique=True)
-    phone = Column(String(20), nullable=True)
-    created_at = Column(DateTime, nullable=False)
-    events_created = Column(Integer, default=0)
-    is_admin = Column(Boolean, default=False)
-    longitude = Column(Float, nullable=True)
-    latitude = Column(Float, nullable=True)
-    fcm_token = Column(String(255), nullable=True)
-    
-    events = relationship("Event", back_populates="user", cascade="all, delete-orphan")
-    pw_tokens = relationship("PwToken", back_populates="user", cascade="all, delete-orphan")
 
-    def getPublicData(self):
-        return {
-            "id": self.id,
-            "email": self.email,
-            "username": self.username,
-            "phone": self.phone,
-            "created_at": self.created_at.strftime("%d/%m/%Y"),
-            "events_created": self.events_created,
-            "is_admin": self.is_admin,
-            "longitude": self.longitude,
-            "latitude": self.latitude,
-        }
-    
-class Event(Base):
-    __tablename__ = "event"
+    # Relations
+    conversations = relationship("Conversation", back_populates="account")
 
-    id = Column(Integer, primary_key=True)
-    title = Column(String(255), nullable=False)
-    event_type = Column(String(50), nullable=False)
-    description = Column(String(500), nullable=True)
-    start_time = Column(DateTime, nullable=False)
-    end_time = Column(DateTime, nullable=False)
-    paying = Column(Boolean, default=True, nullable=False)
-    price = Column(Float, nullable=True)
-    photo = Column(String(255), nullable=True)
 
-    address = Column(String(255), nullable=True)
-    postal_code = Column(String(10), nullable=False, index=True)
-    commune = Column(String(100), nullable=False, index=True)
+# ============================================================
+#                    CONVERSATION
+# ============================================================
 
-    latitude = Column(Float, nullable=True)
-    longitude = Column(Float, nullable=True)
+class Conversation(Base):
+    __tablename__ = "conversation"
 
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    id_conversation = Column(Integer, primary_key=True)
+    name = Column(String(20))
+    updated_at = Column(DateTime)
+    id_account = Column(Integer, ForeignKey("account.id_account"), nullable=False)
 
-    is_approved = Column(Boolean, default=False, nullable=False)
-    is_highlight = Column(Boolean, default=False, nullable=False)
+    # Relations
+    account = relationship("Account", back_populates="conversations")
+    messages = relationship("Message", back_populates="conversation")
 
-    user = relationship("User", back_populates="events")
+
+# ============================================================
+#                        MESSAGE
+# ============================================================
+
+class Message(Base):
+    __tablename__ = "message"
+
+    id_message = Column(Integer, primary_key=True)
+    content = Column(String(300), nullable=False)
+    id_conversation = Column(Integer, ForeignKey("conversation.id_conversation"), nullable=False)
+
+    # Relations
+    conversation = relationship("Conversation", back_populates="messages")
+
+
+# ============================================================
+#                        SOURCE
+# ============================================================
+
+class Source(Base):
+    __tablename__ = "source"
+
+    id_source = Column(Integer, primary_key=True)
+    name = Column(String(50), nullable=False)
+
+    # Relations
+    guides = relationship("Guide", back_populates="source")
+
+
+# ============================================================
+#                        GUIDE
+# ============================================================
+
+class Guide(Base):
+    __tablename__ = "guide"
+
+    id_guide = Column(Integer, primary_key=True)
+    title = Column(String(50), nullable=False)
+    content = Column(String(6000))
+    level = Column(String(20))
+    id_source = Column(Integer, ForeignKey("source.id_source"), nullable=False)
+
+    # Relations
+    source = relationship("Source", back_populates="guides")
+    tags = relationship("Tag", secondary="possess", back_populates="guides")
 
     def to_dict(self):
         return {
-            "id": self.id,
+            "id_guide": self.id_guide,
             "title": self.title,
-            "event_type": self.event_type,
-            "description": self.description,
-            "start_time": self.start_time.isoformat() if self.start_time else None,
-            "end_time": self.end_time.isoformat() if self.end_time else None,
-            "paying": self.paying,
-            "price": self.price,
-            "photo": self.photo,
-            "address": self.address,
-            "postal_code": self.postal_code,
-            "commune": self.commune,
-            "latitude": self.latitude,
-            "longitude": self.longitude,
-            "user_id": self.user_id,
-            "is_approved": self.is_approved,
-            "is_highlight": self.is_highlight,
+            "content": self.content,
+            "level": self.level,
+            "source": self.source.name if self.source else None,
+            "tags": [tag.name for tag in self.tags]
         }
 
-class PwToken(Base):
-    __tablename__ = "pw_token"
 
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    token = Column(String(128), nullable=False)
-    expires_at = Column(DateTime, nullable=False)
+# ============================================================
+#                         TAG
+# ============================================================
 
-    user = relationship("User", back_populates="pw_tokens")
+class Tag(Base):
+    __tablename__ = "tag"
 
-    @staticmethod
-    def generate_for_user(user_id, db_session):
-        """Crée un nouveau jeton sécurisé et le stocke haché."""
-        raw_token = secrets.token_urlsafe(32)
-        hashed_token = hashlib.sha256(raw_token.encode()).hexdigest()
-        expires_at = datetime.datetime.now() + datetime.timedelta(minutes=30)
+    id_tag = Column(Integer, primary_key=True)
+    name = Column(String(50), nullable=False)
 
-        pw_token = PwToken(
-            user_id=user_id,
-            token=hashed_token,
-            expires_at=expires_at,
-        )
-
-        db_session.add(pw_token)
-        db_session.commit()
-        return raw_token
+    # Relations
+    guides = relationship("Guide", secondary="possess", back_populates="tags")
 
 
-engine = create_engine(DATABASE_URL, echo=True)
+# ============================================================
+#                   POSSESS (association table)
+# ============================================================
 
+class Possess(Base):
+    __tablename__ = "possess"
+
+    id_guide = Column(Integer, ForeignKey("guide.id_guide"), primary_key=True)
+    id_tag = Column(Integer, ForeignKey("tag.id_tag"), primary_key=True)
+
+
+# ============================================================
+#           ENGINE + CREATION DES TABLES + SESSION
+# ============================================================
+
+engine = create_engine(DATABASE_URL)
 Base.metadata.create_all(engine)
 
 Session = sessionmaker(bind=engine)
