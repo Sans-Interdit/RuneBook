@@ -26,10 +26,10 @@
   * **/components** pour les composants d’interface réutilisables
   * **/api** pour toutes les requêtes vers le backend
 
-![Architecture Backend](docs/images/backend.png)
+![Architecture Backend](docs/images/architecture.png)
 
 
 * **TailwindCSS** pour le style et la mise en page
 * **Vite** pour lancer et builder l’application
 
-![Aperçu Frontend](docs/images/frontend.png)
+![Aperçu Frontend](docs/images/vite.png)
