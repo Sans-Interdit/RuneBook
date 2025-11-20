@@ -1,27 +1,32 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { test } from "../api/test";
+import { login, register } from "../api/user";
+import { getGuides } from "../api/guides"
 
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   const [guides, setGuides] = useState([]);
+  const [token, setToken] = useState(null);
 
   // Exemple d'appel API
   useEffect(() => {
-    test()
+    getGuides()
       .then((data) => setGuides(data.data))
       .catch((err) => console.error(err));
   }, []);
 
-  // Tu peux aussi stocker d'autres données globales ici
-  const [user, setUser] = useState(null);
+  const registerContext = (email, password) => {
+    localStorage.setItem("AuthToken" , register(email, password));
+  };
 
-  // Les "actions" deviennent juste des fonctions normales
-  const login = (name) => setUser({ name });
-  const logout = () => setUser(null);
+  const loginContext = (email, password) => {
+    localStorage.setItem("AuthToken" , login(email, password));
+  };
+
+  const logoutContext = () => localStorage.removeItem("AuthToken");
 
   return (
-    <AppContext.Provider value={{ guides, user, login, logout }}>
+    <AppContext.Provider value={{ guides, token, loginContext, logoutContext, registerContext }}>
       {children}
     </AppContext.Provider>
   );

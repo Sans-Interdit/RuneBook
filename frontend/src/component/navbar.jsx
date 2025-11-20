@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Home, BookOpen, MessageSquare, UserPlus, LogIn, Menu, X } from "lucide-react";
+import { Home, BookOpen, MessageSquare, UserPlus, LogIn, Menu, X, LogOut } from "lucide-react";
 import logo from "/assets/logo.png"; // chemin relatif depuis navbar.jsx
 import { useLocation } from "react-router-dom";
 
@@ -7,16 +7,42 @@ export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
-  const navLinks = [
+  const [navLinks, setNavLinks] = useState([
     { to: "/", label: "Accueil", icon: <Home className="w-5 h-5" /> },
     { to: "/catalog", label: "Catalogue", icon: <BookOpen className="w-5 h-5" /> },
-    { to: "/chatbot", label: "Chatbot", icon: <MessageSquare className="w-5 h-5" /> },
-  ];
+  ]);
 
-  const authLinks = [
-    { to: "/inscription", label: "Inscription", icon: <UserPlus className="w-5 h-5" /> },
-    { to: "/login", label: "Connexion", icon: <LogIn className="w-5 h-5" /> },
-  ];
+  const [authLinks, setAuthLinks] = useState([])
+
+
+  React.useEffect(() => {
+    if (localStorage.getItem("AuthToken")) {
+      setNavLinks((links) => {
+        // Si Chatbot est déjà dans le tableau, ne rien faire
+        if (links.some(link => link.to === "/chatbot")) return links;
+        return [
+          ...links,
+          { to: "/chatbot", label: "Chatbot", icon: <MessageSquare className="w-5 h-5" /> },
+        ];
+      });
+      setAuthLinks((links) => {
+        if (links.some(link => link.to === "/chatbot")) return links;
+        return [
+          { to: "/logout", label: "Déconnection", icon: <LogOut className="w-5 h-5" /> }
+        ];
+      })
+    }
+    else {
+      setAuthLinks((links) => {
+        if (links.some(link => link.to === "/chatbot")) return links;
+        return [
+          { to: "/inscription", label: "Inscription", icon: <UserPlus className="w-5 h-5" /> },
+          { to: "/login", label: "Connexion", icon: <LogIn className="w-5 h-5" /> },
+        ];
+      })
+    }
+  }, []);
+  
 
   return (
     <nav className="sticky top-0 z-50 shadow-lg bg-background-50 shadow-primary-100/20">

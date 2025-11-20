@@ -6,6 +6,7 @@ import Chatbot from './pages/chatbot'
 import Connexion from './pages/login'
 import Inscription from './pages/inscription'
 import Privacy from './pages/privacy';
+import Logout from './pages/logout';
 
 import { AppProvider } from "./context/appContext";
 
@@ -27,6 +28,7 @@ export default function App() {
               <Route path="/inscription" element={<Inscription />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
+              <Route path="/logout" element={<Logout />} />
             </Routes>
           </main>
         </Router>

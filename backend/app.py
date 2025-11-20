@@ -6,7 +6,7 @@ from backend.extensions import cors
 import json
 
 isProd = os.environ.get("PRODUCTION", "false").lower() == "true"
-
+print("isProd:", isProd)
 if isProd:
     load_dotenv(".env.development")
 else:
@@ -38,4 +38,4 @@ def create_app():
 if __name__ == "__main__":
     app = create_app()
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=not isProd)
+    app.run(host="0.0.0.0", port=port, debug=True)

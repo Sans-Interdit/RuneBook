@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Mail, Lock, CheckCircle, AlertCircle, Eye, EyeOff, UserPlus } from "lucide-react";
+import { useAppContext } from "../context/appContext";
 
 export default function Inscription() {
+  const { registerContext } = useAppContext();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -74,19 +76,7 @@ export default function Inscription() {
     setIsSubmitting(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Here you would normally send data to your backend:
-      // const response = await fetch('/api/register', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     email: formData.email,
-      //     password: formData.password,
-      //     created_at: new Date().toISOString()
-      //   })
-      // });
+      registerContext(formData.email, formData.password)
       
       setSubmitSuccess(true);
       

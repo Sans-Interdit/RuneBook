@@ -1,6 +1,6 @@
 import { api } from "./client";
 
-export async function test() {
+export async function getGuides() {
   const res = await api.get("/get-guides");
   return res;
 }

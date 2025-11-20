@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Mail, Lock, CheckCircle, AlertCircle, Eye, EyeOff, LogIn } from "lucide-react";
+import { useAppContext } from "../context/appContext";
 
 export default function Login() {
+  const { loginContext } = useAppContext();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -56,26 +58,8 @@ export default function Login() {
     setIsSubmitting(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Here you would normally send data to your backend:
-      // const response = await fetch('/api/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     email: formData.email,
-      //     password: formData.password
-      //   })
-      // });
-      
-      // If login fails, set error
-      // if (!response.ok) {
-      //   setErrors({ submit: "Email ou mot de passe incorrect" });
-      //   setIsSubmitting(false);
-      //   return;
-      // }
-      
+      loginContext(formData.email, formData.password);
+
       setSubmitSuccess(true);
       
       // Redirect after success
@@ -238,7 +222,7 @@ export default function Login() {
             type="button"
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="w-full py-4 text-2xl font-bold transition-all duration-300 rounded-lg bg-secondary-50 text-primary-50 hover:scale-105 hover:shadow-xl hover:shadow-secondary-50/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 font-titre"
+            className="w-full py-4 text-2xl font-bold text-black transition-all duration-300 rounded-lg bg-secondary-50 hover:scale-105 hover:shadow-xl hover:shadow-secondary-50/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 font-titre"
           >
             {isSubmitting ? (
               <div className="flex items-center justify-center gap-2">

@@ -45,7 +45,7 @@ def login():
     password = request.json.get("password")
 
     # Verify password against stored hash
-    account = session.query(User).filter_by(email=email).first()
+    account = session.query(Account).filter_by(email=email).first()
 
     if not account or not bcrypt.checkpw(password.encode("utf-8"), account.password.encode("utf-8")):
         return jsonify({"error": "Invalid credentials"}), 401
@@ -58,7 +58,7 @@ def get_token(account):
     """
     # Create JWT payload with expiration time
     payload = {
-        "id": account.id,
+        "id": account.id_account,
         "email": account.email,
         "exp": datetime.datetime.now() + datetime.timedelta(hours=1),
     }
@@ -73,38 +73,31 @@ def register():
     Registers a new user with an email and a hashed password.
     Returns a JWT token upon successful registration.
     """
+    print("f,jsopfjopjdop")
     email = request.json.get("email")
     password = request.json.get("password")
-    username = request.json.get("username")
-    phone = request.json.get("phone")
 
     date_now = datetime.datetime.now()
 
-    if not email or not password or not username:
+    if not email or not password:
+        print("fsdfdsfdf")
         return jsonify({"message": "Missing required fields"}), 400
 
     try:
-        existing_user = session.query(User).filter_by(email=email).first()
+        existing_user = session.query(Account).filter_by(email=email).first()
         if existing_user:
             return jsonify({"message": "Cet email est déjà utilisé"}), 409
-
-        existing_username = session.query(User).filter_by(username=username).first()
-        if existing_username:
-            return jsonify({"message": "Ce nom d'utilisateur est déjà utilisé"}), 409
-
+        
         # Hash password for secure storage
         hashed_password = bcrypt.hashpw(
             password.encode("utf-8"), bcrypt.gensalt()
         ).decode("utf-8")
 
         # Create new account
-        new_account = User(
+        new_account = Account(
             email=email,
             password=hashed_password,
-            username=username,
-            phone=phone,
             created_at=date_now,
-            events_created=0,
         )
         session.add(new_account)
         session.commit()
