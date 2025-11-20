@@ -15,11 +15,11 @@ export const Navbar = () => {
 
   const authLinks = [
     { to: "/inscription", label: "Inscription", icon: <UserPlus className="w-5 h-5" /> },
-    { to: "/connexion", label: "Connexion", icon: <LogIn className="w-5 h-5" /> },
+    { to: "/login", label: "Connexion", icon: <LogIn className="w-5 h-5" /> },
   ];
 
   return (
-    <nav className="sticky top-0 z-50 shadow-lg bg-gradient-to-r from-primary-50 via-primary-50 to-background-50 shadow-primary-100/20">
+    <nav className="sticky top-0 z-50 shadow-lg bg-background-50 shadow-primary-100/20">
       <div className="flex items-center justify-between h-24 px-6 mx-auto max-w-7xl">
         {/* Logo */}
         <a 

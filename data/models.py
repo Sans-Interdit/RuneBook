@@ -19,7 +19,8 @@ class Account(Base):
 
     id_account = Column(Integer, primary_key=True)
     email = Column(String(255), unique=True, nullable=False)
-    password = Column(String(128), nullable=False)
+    password = Column(String(128), nullable=False)    
+    created_at = Column(DateTime, nullable=False)
 
     # Relations
     conversations = relationship("Conversation", back_populates="account")
