@@ -10,6 +10,7 @@ export const Navbar = () => {
   const [navLinks, setNavLinks] = useState([
     { to: "/", label: "Accueil", icon: <Home className="w-5 h-5" /> },
     { to: "/catalog", label: "Catalogue", icon: <BookOpen className="w-5 h-5" /> },
+    { to: "/chatbot", label: "Chatbot", icon: <MessageSquare className="w-5 h-5" /> },
   ]);
 
   const [authLinks, setAuthLinks] = useState([])
@@ -17,14 +18,6 @@ export const Navbar = () => {
 
   React.useEffect(() => {
     if (localStorage.getItem("AuthToken")) {
-      setNavLinks((links) => {
-        // Si Chatbot est déjà dans le tableau, ne rien faire
-        if (links.some(link => link.to === "/chatbot")) return links;
-        return [
-          ...links,
-          { to: "/chatbot", label: "Chatbot", icon: <MessageSquare className="w-5 h-5" /> },
-        ];
-      });
       setAuthLinks((links) => {
         if (links.some(link => link.to === "/chatbot")) return links;
         return [

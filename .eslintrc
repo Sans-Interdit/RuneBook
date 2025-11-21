@@ -28,10 +28,6 @@
     "no-unused-vars": ["warn"],
     "no-console": ["warn"],
 
-    // React
-    "react/prop-types": ["off"], // si tu utilises TypeScript ou pas de prop-types
-    "react/react-in-jsx-scope": "off", // inutile avec React 17+
-
     // Hooks
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn"

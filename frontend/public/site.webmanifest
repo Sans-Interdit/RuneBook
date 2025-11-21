@@ -2,14 +2,14 @@
   "background_color": "#7986a1",
   "dir": "ltr",
   "display": "standalone",
-  "name": "Share Events",
+  "name": "Sharevents",
   "orientation": "portrait",
   "scope": "/",
-  "short_name": "ShareEvents",
+  "short_name": "Sharevents",
   "start_url": "/",
   "theme_color": "#3d7ef6",
   "id": "app.shareevents",
-  "description": "Partagez, découvrez et organisez vos événements facilement avec Share Events.",
+  "description": "Partagez, découvrez et organisez vos événements facilement avec Sharevents.",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",

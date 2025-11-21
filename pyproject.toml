@@ -6,7 +6,7 @@ authors = [
     { name = "Yanis Bouchilloux", email = "bouchilloux.yanis@gmail.com" }
 ]
 license = { text = "MIT" }
-readme = "../README.md"
+readme = "README.md"
 requires-python = ">=3.10,<4.0"
 
 # Dépendances principales

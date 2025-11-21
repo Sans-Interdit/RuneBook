@@ -225,7 +225,7 @@ export default function Home() {
                       <span className="text-sm text-secondary-50">
                         Source: {guide.source}
                       </span>
-                      <button className="px-6 py-2 font-semibold transition-all duration-300 border-2 rounded-lg border-secondary-50 text-secondary-50 hover:text-primary-50 hover:bg-secondary-50 hover:scale-105">
+                      <button className="px-6 py-2 font-semibold transition-all duration-300 rounded-lg bg-secondary-50 text-primary-50 hover:bg-secondary-50 hover:scale-105">
                         Lire le guide
                       </button>
                     </div>
