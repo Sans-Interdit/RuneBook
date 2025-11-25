@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { Home, BookOpen, MessageSquare, UserPlus, LogIn, Menu, X, LogOut } from "lucide-react";
 import logo from "/assets/logo.png"; // chemin relatif depuis navbar.jsx
 import { useLocation } from "react-router-dom";
+import { useAppContext } from "../context/appContext";
 
 export const Navbar = () => {
+  const { getIdContext } = useAppContext();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
@@ -15,25 +17,28 @@ export const Navbar = () => {
 
   const [authLinks, setAuthLinks] = useState([])
 
-
   React.useEffect(() => {
-    if (localStorage.getItem("AuthToken")) {
-      setAuthLinks((links) => {
-        if (links.some(link => link.to === "/chatbot")) return links;
-        return [
-          { to: "/logout", label: "Déconnection", icon: <LogOut className="w-5 h-5" /> }
-        ];
-      })
+    const verifyConnexion = async () => {
+      const token = await getIdContext();
+      if (token) {
+        setAuthLinks((links) => {
+          if (links.some(link => link.to === "/chatbot")) return links;
+          return [
+            { to: "/logout", label: "Déconnection", icon: <LogOut className="w-5 h-5" /> }
+          ];
+        })
+      }
+      else {
+        setAuthLinks((links) => {
+          if (links.some(link => link.to === "/chatbot")) return links;
+          return [
+            { to: "/inscription", label: "Inscription", icon: <UserPlus className="w-5 h-5" /> },
+            { to: "/login", label: "Connexion", icon: <LogIn className="w-5 h-5" /> },
+          ];
+        })
+      }
     }
-    else {
-      setAuthLinks((links) => {
-        if (links.some(link => link.to === "/chatbot")) return links;
-        return [
-          { to: "/inscription", label: "Inscription", icon: <UserPlus className="w-5 h-5" /> },
-          { to: "/login", label: "Connexion", icon: <LogIn className="w-5 h-5" /> },
-        ];
-      })
-    }
+    verifyConnexion();
   }, []);
   
 

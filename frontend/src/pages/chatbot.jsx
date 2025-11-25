@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Send, MessageSquare, Plus, Trash2, Clock, Sparkles, User, Bot } from "lucide-react";
-
+import { addConv, delConv } from "../api/conversation";
 export default function Chatbot() {
   const [conversations, setConversations] = useState([
     {
@@ -70,9 +70,12 @@ export default function Chatbot() {
   };
 
   const handleNewConversation = () => {
+    const title = "Nouvelle conversation " + (conversations.length + 1);
+    const id_conv = addConv(title);
+
     const newConv = {
-      id: Date.now(),
-      title: "Nouvelle conversation",
+      id: id_conv,
+      title: title,
       timestamp: new Date(),
       messages: []
     };

@@ -1,7 +1,6 @@
 import { api } from "./client";
 
 export async function login(email, password) {
-  console.log(password)
   const res = await api.post("/login", {
     email: email,
     password: password
@@ -14,5 +13,15 @@ export async function register(email, password) {
     email: email,
     password: password
   });
+  return res;
+}
+
+export async function logout() {
+  const res = await api.get("/logout");
+  return res;
+}
+
+export async function getId() {
+  const res = await api.get("/me");
   return res;
 }

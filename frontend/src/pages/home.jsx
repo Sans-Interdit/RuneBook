@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { BookCheck, BookOpen, ChevronLeft, ChevronRight, MessageSquare, Search, TrendingUp, Trophy, Users } from "lucide-react";
 import { useAppContext } from "../context/appContext";
-import heatmap from "/assets/heatmap.png";
+import paysage from "/assets/paysage.png";
 
 export default function Home() {
   const [currentGuideIndex, setCurrentGuideIndex] = useState(0);
@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-primary-50">
       {/* Hero Section */}
-      <div className="flex flex-col items-center justify-center px-6 py-20 text-center">
+      <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
         <h1 className="mb-6 text-6xl font-bold text-transparent bg-clip-text bg-secondary-50 font-titre">
           RuneBook
         </h1>
@@ -23,9 +23,9 @@ export default function Home() {
           pas seulement devenir plus fort. Apprends la logique derrière chaque élément du jeu!
         </p>
         <img 
-          src={heatmap} 
+          src={paysage} 
           alt="heatmap" 
-          className="mb-12 w-96">
+          className="w-5/12 mb-12 rounded-full">
         </img>
         <div className="flex gap-6">
           <a 
@@ -46,7 +46,7 @@ export default function Home() {
       {/* Journey Section */}
       <div className="px-6 py-16 mx-auto max-w-7xl">
         <h2 className="mb-4 text-4xl font-bold text-center text-secondary-50 font-titre">
-          Les différents objectif
+          Les différents objectifs
         </h2>
         <p className="mb-16 text-xl text-center text-white font-text">
           Pour tout type de joueur voulant comprendre cet univers

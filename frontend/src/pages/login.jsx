@@ -58,14 +58,13 @@ export default function Login() {
     setIsSubmitting(true);
     
     try {
-      loginContext(formData.email, formData.password);
-
       setSubmitSuccess(true);
-      
+
+      await loginContext(formData.email, formData.password);
+
       // Redirect after success
-      setTimeout(() => {
-        window.location.href = '/chatbot';
-      }, 2000);
+      window.location.href = '/chatbot';
+
       
     } catch (error) {
       setErrors({ submit: "Une erreur est survenue. Veuillez réessayer." });

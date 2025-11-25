@@ -1,49 +1,6 @@
 import React, { useState } from "react";
 import { BookOpen, Search, Filter, Tag, ExternalLink } from "lucide-react";
 import { useAppContext } from "../context/appContext";
-// Mock data based on the provided structure
-const mockGuides = [
-  {
-    id_guide: 1,
-    title: "Objectifs du jeu",
-    content: "La Faille de l'invocateur est le mode de jeu principal de League of Legends, et le seul, si l'on exclut Teamfight Tactics, à disposer d'une scène compétitive professionnelle\n\nDans ce mode de jeu, deux équipes de cinq joueurs s'affrontent sur une carte symétrique...",
-    level: "New Player",
-    source: "wikipédia",
-    tags: ["bases", "explication"]
-  },
-  {
-    id_guide: 2,
-    title: "Rôles des joueurs",
-    content: "Dans l'immense majorité des parties, sur les cinq champions présents dans chaque équipe, un joueur commence le match en se rendant sur la voie du haut...",
-    level: "New Player",
-    source: "wikipédia",
-    tags: ["bases", "explication"]
-  },
-  {
-    id_guide: 3,
-    title: "Autres modes de jeu",
-    content: "En plus de la Faille de l'invocateur, plusieurs modes de jeu alternatifs existent. Deux d'entre eux sont présents de manière permanente : le premier, l'ARAM...",
-    level: "New Player",
-    source: "wikipédia",
-    tags: ["bases", "aram", "explication"]
-  },
-  {
-    id_guide: 4,
-    title: "Possible improvements",
-    content: "As you approach level 30 you should at least know about last hitting even if you're not good at it yet. Gold is probably the most important thing in the game...",
-    level: "Average Player",
-    source: "leagueoflegendsguideforall",
-    tags: ["macro", "conseil"]
-  },
-  {
-    id_guide: 5,
-    title: "Ce qu'est un bon crossmap",
-    content: "La question du macro est assez vaste et il serait impossible de vous donner une réponse définitive sans contexte ni replays. Cependant, je peux vous donner quelques directives générales...",
-    level: "Confirmed Player",
-    source: "reddit",
-    tags: ["macro", "conseil", "explication"]
-  }
-];
 
 export default function Catalog() {
   const { guides } = useAppContext();

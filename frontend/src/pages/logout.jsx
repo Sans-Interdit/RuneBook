@@ -8,9 +8,7 @@ export default function Logout() {
     logoutContext();
 
     // Redirect after success
-    setTimeout(() => {
-      window.location.href = '/';
-    }, 2000);
+    window.location.href = '/';
   }, [])
 
 

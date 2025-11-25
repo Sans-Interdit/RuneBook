@@ -1,41 +1,54 @@
-from flask import Flask, send_from_directory
-from backend.api import bp as api_bp
 import os
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
-from backend.extensions import cors
-import json
+from backend.api import router as api_router  # équivalent de ton blueprint
 
+# Déterminer l'environnement
 isProd = os.environ.get("PRODUCTION", "false").lower() == "true"
-print("isProd:", isProd)
+
 if isProd:
-    load_dotenv(".env.development")
-else:
     load_dotenv(".env.production")
-    
-def create_app():
+else:
+    load_dotenv(".env.development")
+
+print("Production mode:", isProd)
+
+# Création de l'app FastAPI
+def create_app() -> FastAPI:
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-    app = Flask(
-        __name__,
-        static_folder=os.path.join(BASE_DIR + "/backend", "static", "prod" if isProd else "dev", "dist"),
-        static_url_path=""
+    app = FastAPI()
+
+    # Configurer les fichiers statiques (comme Flask static_folder)
+    # static_path = os.path.join(BASE_DIR, "backend", "static", "prod" if isProd else "dist", "dev")
+    # print(static_path)
+    # app.mount("/", StaticFiles(directory=static_path, html=True), name="static")
+
+    # CORS
+    if isProd:
+        origins = ["https://...................."]
+    else:
+        origins = [
+            "http://127.0.0.1:5001",
+        ]
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
 
-    if isProd:
-        cors.init_app(app, origins=["https://...................."])
-    else:
-        cors.init_app(app, origins=[
-            "https://localhost:5173",
-            "https://127.0.0.1:5173",
-        ],
-        supports_credentials=True)
-
-    # Register blueprints
-    app.register_blueprint(api_bp)
+    # Enregistrement des routes API
+    app.include_router(api_router, prefix="/api")
 
     return app
 
+app = create_app()
+
 if __name__ == "__main__":
-    app = create_app()
+    import uvicorn
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    uvicorn.run("backend:app", host="0.0.0.0", port=port, reload=True)

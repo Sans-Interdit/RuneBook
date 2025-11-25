@@ -1,126 +1,153 @@
-from flask import Blueprint, jsonify, request
-from data.models import session, engine, Account, Possess, Guide, Tag, Source
-from requests import get
-import jwt
-import bcrypt
-from functools import wraps
-import os
+from fastapi import APIRouter, HTTPException, Depends, Request, Response
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-import requests
+from data.models import engine, Account, Guide, Conversation, session as db_session
+import bcrypt
 import datetime
+import os
+from huggingface_hub import InferenceClient
+import jwt
 
-bp = Blueprint('api', __name__, url_prefix='/api')
+# Charger clé Hugging Face
+chatbot_key = os.getenv("KEY")
+client = InferenceClient(provider="hf-inference", api_key=chatbot_key)
 
-def token_required(f):
-    """
-    Decorator that requires JWT authentication.
-    Validates the token and checks for expiration.
-    """
+# Router FastAPI
+router = APIRouter()
 
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        # Retrieve JWT from request headers
-        token = request.headers.get("Authorization")
-        if not token:
-            return jsonify({"error": "Token is missing"}), 401
+# -------------------------
+# Gestion JWT
+# -------------------------
+SECRET_KEY = os.getenv("FLASK_SECRET_KEY")  # ou autre clé
 
-        try:
-            # Decode token using secret key
-            data = jwt.decode(token, os.getenv("HASH_KEY"), algorithms=["HS256"])
-            request.user_id = data["id"]  # Attach user ID to request
-        except jwt.ExpiredSignatureError:
-            return jsonify({"error": "Token has expired"}), 401
-        except jwt.InvalidTokenError:
-            return jsonify({"error": "Invalid token"}), 401
-
-        return f(*args, **kwargs)
-
-    return decorated
-
-@bp.route("/login", methods=["POST"])
-def login():
-    """
-    Authenticates a user using their email and password.
-    Returns a JWT token if the credentials are valid.
-    """
-    email = request.json.get("email")
-    password = request.json.get("password")
-
-    # Fetch user account from DB
-    account = session.query(Account).filter_by(email=email).first()
-
-    # Compare provided password with hashed password
-    if not account or not bcrypt.checkpw(password.encode("utf-8"), account.password.encode("utf-8")):
-        return jsonify({"error": "Invalid credentials"}), 401
-        
-    return get_token(account)
-
-def get_token(account):
-    """
-    Generates a JWT token for an authenticated user account.
-    """
-    # JWT payload containing essential user data
+def create_token(response: Response, account_id: int):
     payload = {
-        "id": account.id_account,
-        "email": account.email,
-        "exp": datetime.datetime.now() + datetime.timedelta(hours=1),  # Token expires in 1 hour
+        "id": account_id,
+        "exp": datetime.datetime.now() + datetime.timedelta(hours=24)
     }
+    token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
-    token = jwt.encode(payload, os.getenv("HASH_KEY"), algorithm="HS256")
-    return jsonify({"token": token}), 200
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,
+        secure=False,
+        samesite="Lax",
+        path="/",
+        max_age=3600 * 24,
+    )
+
+    return token
+
+def get_current_user(request: Request):
+    # Essaye de récupérer le cookie
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(status_code=401, detail="Token manquant")
+
+    try:
+        payload = jwt.decode(
+            token.replace("Bearer ", ""),
+            SECRET_KEY,
+            algorithms=["HS256"]
+        )
+        return payload["id"]
+    
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expiré")
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Token invalide")
 
 
-@bp.route("/register", methods=["POST"])
-def register():
-    """
-    Registers a new user with an email and a hashed password.
-    Returns a JWT token upon successful registration.
-    """
+# -------------------------
+# User endpoints
+# -------------------------
+@router.post("/login")
+async def login(response: Response, data: dict):
+    email = data.get("email")
+    password = data.get("password")
 
-    email = request.json.get("email")
-    password = request.json.get("password")
+    account = db_session.query(Account).filter_by(email=email).first()
+    if not account or not bcrypt.checkpw(password.encode("utf-8"), account.password.encode("utf-8")):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
+    create_token(response, account.id_account)
+
+    return {"message": "Login successful"}
+
+@router.post("/register")
+async def register(response: Response, data: dict):
+    email = data.get("email")
+    password = data.get("password")
     date_now = datetime.datetime.now()
 
     if not email or not password:
-        return jsonify({"message": "Missing required fields"}), 400
+        raise HTTPException(status_code=400, detail="Missing required fields")
 
-    try:
-        # Check if email already exists
-        existing_user = session.query(Account).filter_by(email=email).first()
-        if existing_user:
-            return jsonify({"message": "Cet email est déjà utilisé"}), 409
-        
-        # Hash password before storing
-        hashed_password = bcrypt.hashpw(
-            password.encode("utf-8"), bcrypt.gensalt()
-        ).decode("utf-8")
+    existing_user = db_session.query(Account).filter_by(email=email).first()
+    if existing_user:
+        raise HTTPException(status_code=409, detail="Cet email est déjà utilisé")
 
-        # Create and save new account
-        new_account = Account(
-            email=email,
-            password=hashed_password,
-            created_at=date_now,
-        )
-        session.add(new_account)
-        session.commit()
+    hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    new_account = Account(email=email, password=hashed_password, created_at=date_now)
+    db_session.add(new_account)
+    db_session.commit()
 
-    except Exception as e:
-        session.rollback()  # Rollback database changes on error
-        print(e)
-        return jsonify({"message": "An error occurred", "error": str(e)}), 500
-    
-    return get_token(new_account)
+    create_token(response, new_account.id_account)
 
-    
-@bp.route("/get-guides", methods=["GET"])
-def getGuides():
-    """
-    Retrieves all guides from the database.
-    """
-    # Use a dedicated session to prevent conflicts
+    return {"message": "Registration successful"}
+
+@router.get("/logout")
+async def logout(response: Response):
+    response.delete_cookie(key="access_token", path="/")
+    return {"message": "Logout successful"}
+
+@router.get("/me")
+async def me(user_id: int = Depends(get_current_user)):
+    return {"id_user": user_id}
+
+# -------------------------
+# Guides
+# -------------------------
+@router.get("/get-guides")
+async def get_guides():
     with Session(engine) as local_session:
         guides = local_session.query(Guide).order_by(Guide.id_guide).all()
-        # Convert each guide object to dict for JSON response
-        guides_data = [guide.to_dict() for guide in guides]
-        return jsonify(guides_data), 200
+        return [g.to_dict() for g in guides]
+
+# -------------------------
+# Chat
+# -------------------------
+@router.post("/chat")
+async def chat(data: dict):
+    prompt = data.get("prompt")
+    model = "qwen/qwen3-4b:free"
+
+    response = client.chat.model_chat(
+        model=model,
+        inputs=prompt,
+        parameters={}
+    )
+    return {"response": response.generated_text}
+
+# -------------------------
+# Conversations
+# -------------------------
+@router.delete("/del-conv")
+async def delete_conv(id: int, user_id: int = Depends(get_current_user)):
+    conv = db_session.query(Conversation).filter_by(id_conversation=id).first()
+    if not conv:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    db_session.delete(conv)
+    db_session.commit()
+    return {"message": "Conversation deleted"}
+
+@router.post("/add-conv")
+async def add_conv(data: dict, user_id: int = Depends(get_current_user)):
+    title = data.get("title")
+    date_now = datetime.datetime.now()
+
+    new_conv = Conversation(name=title, updated_at=date_now, id_account=user_id)
+    db_session.add(new_conv)
+    db_session.commit()
+    return {"message": "Conversation added", "id": new_conv.id_conversation}

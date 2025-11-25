@@ -11,9 +11,9 @@ export default defineConfig(({ mode }) => {
   return {
     envDir: path.resolve(__dirname, '..'),
     server: {
-      https: true,
-      host: 'localhost',
-      port: 5173, // Port pour le dev
+      https: false,
+      host: '127.0.0.1',
+      port: 5001, // Port pour le dev
     },
     plugins: [
       react(),
