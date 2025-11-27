@@ -8,8 +8,8 @@
 
   * `poetry lock`
   * `poetry install`
-  * `poetry run python backend/app.py`
-* **Flask** pour créer l’API
+  * `poetry run uvicorn backend.app:app --reload --host 127.0.0.1 --port 5000`
+* **FastAPI** pour créer l’API
 * **SQLAlchemy** comme ORM
 * **PostgreSQL** pour la base de données
 

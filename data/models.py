@@ -34,13 +34,21 @@ class Conversation(Base):
     __tablename__ = "conversation"
 
     id_conversation = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(30))
-    updated_at = Column(DateTime)
+    name = Column(String(30), nullable=False)
+    updated_at = Column(DateTime, nullable=False)
     id_account = Column(Integer, ForeignKey("account.id_account"), nullable=False)
 
     # Relations
     account = relationship("Account", back_populates="conversations")
     messages = relationship("Message", back_populates="conversation")
+
+    def to_dict(self):
+        return {
+            "id": self.id_conversation,
+            "title": self.name,
+            "timestamp": self.updated_at.isoformat(),
+            "messages": [message.content for message in self.messages]
+        }
 
 
 # ============================================================

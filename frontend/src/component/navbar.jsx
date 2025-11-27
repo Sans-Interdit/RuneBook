@@ -12,7 +12,6 @@ export const Navbar = () => {
   const [navLinks, setNavLinks] = useState([
     { to: "/", label: "Accueil", icon: <Home className="w-5 h-5" /> },
     { to: "/catalog", label: "Catalogue", icon: <BookOpen className="w-5 h-5" /> },
-    { to: "/chatbot", label: "Chatbot", icon: <MessageSquare className="w-5 h-5" /> },
   ]);
 
   const [authLinks, setAuthLinks] = useState([])
@@ -21,8 +20,14 @@ export const Navbar = () => {
     const verifyConnexion = async () => {
       const token = await getIdContext();
       if (token) {
+        setNavLinks((links) => {
+          // if (links.some(link => link.to === "/chatbot")) return links;
+          return [
+            ...navLinks,
+            { to: "/chatbot", label: "Chatbot", icon: <MessageSquare className="w-5 h-5" /> },
+          ];
+        })
         setAuthLinks((links) => {
-          if (links.some(link => link.to === "/chatbot")) return links;
           return [
             { to: "/logout", label: "Déconnection", icon: <LogOut className="w-5 h-5" /> }
           ];
@@ -30,7 +35,6 @@ export const Navbar = () => {
       }
       else {
         setAuthLinks((links) => {
-          if (links.some(link => link.to === "/chatbot")) return links;
           return [
             { to: "/inscription", label: "Inscription", icon: <UserPlus className="w-5 h-5" /> },
             { to: "/login", label: "Connexion", icon: <LogIn className="w-5 h-5" /> },

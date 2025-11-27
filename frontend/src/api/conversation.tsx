@@ -1,24 +1,31 @@
-import { title } from "process";
 import { api } from "./client";
 
-export function delConv(id : string) {
-  api.delete(`/del-conv?id=${id}`)
-  .then((res) => {
+export async function delConv(id : string) {
+  try {
+    const res = await api.delete(`/del-conv?id=${id}`);
     return res;
-  })
-  .catch((err) => {
-    console.error(err)
-  })
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
 }
 
-export function addConv(title : string) {
-  api.post(`/add-conv`, {
-    title: title
-  })
-  .then((res) => {
+export async function addConv(title: string) {
+  try {
+    const res = await api.post(`/add-conv`, { title });
     return res;
-  })
-  .catch((err) => {
-    console.error(err)
-  })
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}
+
+export async function getConv() {
+  try {
+    const res = await api.get(`/get-conv`);
+    return res;
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
 }

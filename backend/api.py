@@ -9,8 +9,8 @@ from huggingface_hub import InferenceClient
 import jwt
 
 # Charger clé Hugging Face
-chatbot_key = os.getenv("KEY")
-client = InferenceClient(provider="hf-inference", api_key=chatbot_key)
+chatbot_key = os.getenv("CHATBOT_KEY")
+client = InferenceClient(api_key=chatbot_key)
 
 # Router FastAPI
 router = APIRouter()
@@ -18,7 +18,7 @@ router = APIRouter()
 # -------------------------
 # Gestion JWT
 # -------------------------
-SECRET_KEY = os.getenv("FLASK_SECRET_KEY")  # ou autre clé
+SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
 
 def create_token(response: Response, account_id: int):
     payload = {
@@ -121,14 +121,19 @@ async def get_guides():
 @router.post("/chat")
 async def chat(data: dict):
     prompt = data.get("prompt")
-    model = "qwen/qwen3-4b:free"
 
-    response = client.chat.model_chat(
-        model=model,
-        inputs=prompt,
-        parameters={}
+    completion = client.chat.completions.create(
+        model="CohereLabs/aya-expanse-32b:cohere",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
     )
-    return {"response": response.generated_text}
+
+    print(completion.choices[0].message)
+    return {"response": completion.choices[0].message}
 
 # -------------------------
 # Conversations
@@ -151,3 +156,8 @@ async def add_conv(data: dict, user_id: int = Depends(get_current_user)):
     db_session.add(new_conv)
     db_session.commit()
     return {"message": "Conversation added", "id": new_conv.id_conversation}
+
+@router.get("/get-conv")
+async def add_conv(user_id: int = Depends(get_current_user)):
+    convs = db_session.query(Conversation).filter_by(id_account=user_id).order_by(Conversation.updated_at.desc()).all()
+    return [c.to_dict() for c in convs]

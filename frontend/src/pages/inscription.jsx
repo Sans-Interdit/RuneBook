@@ -76,14 +76,11 @@ export default function Inscription() {
     setIsSubmitting(true);
     
     try {
+      setSubmitSuccess(true);
+
       registerContext(formData.email, formData.password)
       
-      setSubmitSuccess(true);
-      
-      // Redirect after success
-      setTimeout(() => {
-        window.location.href = '/chatbot';
-      }, 2000);
+      window.location.href = '/chatbot';
       
     } catch (error) {
       setErrors({ submit: "Une erreur est survenue. Veuillez réessayer." });

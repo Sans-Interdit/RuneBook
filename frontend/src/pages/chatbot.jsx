@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Send, MessageSquare, Plus, Trash2, Clock, Sparkles, User, Bot } from "lucide-react";
-import { addConv, delConv } from "../api/conversation";
+import { addConv, delConv, getConv } from "../api/conversation";
+import { chat } from "../api/chat";
+
 export default function Chatbot() {
   const [conversations, setConversations] = useState([
     {
@@ -30,13 +32,28 @@ export default function Chatbot() {
 
   const currentConversation = conversations.find(conv => conv.id === currentConversationId);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  useEffect(() => {
+    getConversations();
+  }, [])
+
+  const getConversations = async () => {
+    const res = await getConv();
+    if (res.status == 200) {
+      const conversations = res.data.map(conv => ({
+        ...conv,
+        timestamp: new Date(conv.timestamp)
+      }));
+      setConversations(conversations);
+    }
+  }
 
   useEffect(() => {
     scrollToBottom();
   }, [currentConversation?.messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
@@ -55,6 +72,8 @@ export default function Chatbot() {
 
     // Simulate AI response
     setTimeout(() => {
+      const res = chat(inputMessage);
+      console.log(res);
       const aiResponse = {
         role: "assistant",
         content: "C'est une excellente question ! Je suis là pour t'aider à comprendre. Pourrais-tu me donner plus de détails sur ce que tu aimerais savoir exactement ?"
@@ -69,26 +88,33 @@ export default function Chatbot() {
     }, 1500);
   };
 
-  const handleNewConversation = () => {
+  const handleNewConversation = async () => {
     const title = "Nouvelle conversation " + (conversations.length + 1);
-    const id_conv = addConv(title);
+    const res = await addConv(title);
+    const id_conv = res?.data?.id
 
-    const newConv = {
-      id: id_conv,
-      title: title,
-      timestamp: new Date(),
-      messages: []
-    };
-    setConversations(prev => [newConv, ...prev]);
-    setCurrentConversationId(newConv.id);
+    if (id_conv) {
+      const newConv = {
+        id: id_conv,
+        title: title,
+        timestamp: new Date(),
+        messages: []
+      };
+
+      setConversations(prev => [newConv, ...prev]);
+      setCurrentConversationId(newConv.id);
+    }
   };
 
-  const handleDeleteConversation = (id) => {
-    if (conversations.length === 1) return;
-    
-    setConversations(prev => prev.filter(conv => conv.id !== id));
-    if (currentConversationId === id) {
-      setCurrentConversationId(conversations.find(conv => conv.id !== id)?.id || conversations[0].id);
+  const handleDeleteConversation = async (id) => {
+    if (conversations.length === 0) return;
+
+    const res = await delConv(id);
+    if (res.status === 200) {
+      setConversations(prev => prev.filter(conv => conv.id !== id));
+      if (currentConversationId === id) {
+        setCurrentConversationId(conversations.find(conv => conv.id !== id)?.id || conversations[0].id);
+      }
     }
   };
 
