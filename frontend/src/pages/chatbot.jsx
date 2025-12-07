@@ -1,31 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Send, MessageSquare, Plus, Trash2, Clock, Sparkles, User, Bot } from "lucide-react";
 import { addConv, delConv, getConv } from "../api/conversation";
+import { addMsg } from "../api/message"
 import { chat } from "../api/chat";
 
 export default function Chatbot() {
-  const [conversations, setConversations] = useState([
-    {
-      id: 1,
-      title: "Introduction à LoL",
-      timestamp: new Date(Date.now() - 3600000),
-      messages: [
-        { role: "user", content: "C'est quoi League of Legends ?" },
-        { role: "assistant", content: "League of Legends est un jeu vidéo multijoueur en ligne où deux équipes de 5 joueurs s'affrontent sur une carte appelée la Faille de l'invocateur. L'objectif principal est de détruire le Nexus adverse en progressant sur trois voies différentes." }
-      ]
-    },
-    {
-      id: 2,
-      title: "Farming et Last Hit",
-      timestamp: new Date(Date.now() - 7200000),
-      messages: [
-        { role: "user", content: "C'est quoi le farming ?" },
-        { role: "assistant", content: "Le farming, c'est tuer les sbires (petits monstres) pour gagner de l'or et de l'expérience. C'est essentiel pour devenir plus fort !" }
-      ]
-    }
-  ]);
+  const [conversations, setConversations] = useState([]);
 
-  const [currentConversationId, setCurrentConversationId] = useState(1);
+  const [currentConversationId, setCurrentConversationId] = useState(0);
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
@@ -44,6 +26,7 @@ export default function Chatbot() {
         timestamp: new Date(conv.timestamp)
       }));
       setConversations(conversations);
+      setCurrentConversationId(conversations[0].id);
     }
   }
 
@@ -66,26 +49,24 @@ export default function Chatbot() {
         ? { ...conv, messages: [...conv.messages, userMessage] }
         : conv
     ));
+    addMsg(currentConversationId, inputMessage, "user");
 
     setInputMessage("");
     setIsTyping(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      const res = chat(inputMessage);
-      console.log(res);
-      const aiResponse = {
-        role: "assistant",
-        content: "C'est une excellente question ! Je suis là pour t'aider à comprendre. Pourrais-tu me donner plus de détails sur ce que tu aimerais savoir exactement ?"
-      };
+    // AI response
+    const res = await chat(inputMessage);
+    const aiResponse = {role: "assistant", content: res}
+    setConversations(prev => prev.map(conv => 
+      conv.id === currentConversationId 
+        ? { ...conv, messages: [...conv.messages, aiResponse] }
+        : conv
+    ));
+    addMsg(currentConversationId, res, "assistant");
 
-      setConversations(prev => prev.map(conv => 
-        conv.id === currentConversationId 
-          ? { ...conv, messages: [...conv.messages, aiResponse] }
-          : conv
-      ));
-      setIsTyping(false);
-    }, 1500);
+    setIsTyping(false);
+
+    getConversations();
   };
 
   const handleNewConversation = async () => {

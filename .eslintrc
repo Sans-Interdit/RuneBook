@@ -21,7 +21,7 @@
   ],
   "plugins": ["react", "react-hooks", "prettier"],
   "rules": {
-    // Style et qualité de code
+    // Style and quality of code
     "prettier/prettier": ["error"],
     "semi": ["error", "always"],
     "quotes": ["error", "double"],

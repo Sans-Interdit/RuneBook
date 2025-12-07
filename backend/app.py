@@ -33,6 +33,7 @@ def create_app() -> FastAPI:
         origins = [
             "http://127.0.0.1:5001",
         ]
+        
     app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,

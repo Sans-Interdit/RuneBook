@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BookOpen, Search, Filter, Tag, ExternalLink } from "lucide-react";
 import { useAppContext } from "../context/appContext";
+import search from "/assets/search.png";
 
 export default function Catalog() {
   const { guides } = useAppContext();
@@ -40,7 +41,13 @@ export default function Catalog() {
           Explore notre collection de guides pour comprendre League of Legends à ton rythme
         </p>
       </div>
-
+      <div className="flex items-center justify-center w-full">
+        <img 
+          src={search} 
+          alt="heatmap" 
+          className="object-contain mb-12 rounded-full max-h-[450px]">
+        </img>
+      </div>
       <div className="px-6 pb-16 mx-auto max-w-7xl">
         {/* Search and Filters */}
         <div className="mb-8 space-y-4">

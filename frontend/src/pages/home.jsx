@@ -1,7 +1,13 @@
 import React, { useState } from "react";
-import { BookCheck, BookOpen, ChevronLeft, ChevronRight, MessageSquare, Search, TrendingUp, Trophy, Users } from "lucide-react";
+import { BookCheck, ChevronLeft, ChevronRight, MessageSquare, Search, Trophy } from "lucide-react";
 import { useAppContext } from "../context/appContext";
 import paysage from "/assets/paysage.png";
+import search from "/assets/search.png";
+import living_library from "/assets/living_library.png";
+import gif1 from "/assets/Aurelion_Sol_the_Star_Forger_Login_Screen_League_of_Legends.gif";
+import gif2 from "/assets/ezgif-3e39696d254a909f.gif";
+import gif3 from "/assets/Season_5_2015_Login_Screen_with_Music_League_of_Legends.gif";
+import gif4 from "/assets/ezgif-349f579d4f79ced3.gif";
 
 export default function Home() {
   const [currentGuideIndex, setCurrentGuideIndex] = useState(0);
@@ -11,7 +17,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-primary-50">
       {/* Hero Section */}
-      <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
+      <div className="flex flex-col items-center justify-center px-6 py-10 text-center">
         <h1 className="mb-6 text-6xl font-bold text-transparent bg-clip-text bg-secondary-50 font-titre">
           RuneBook
         </h1>
@@ -23,10 +29,15 @@ export default function Home() {
           pas seulement devenir plus fort. Apprends la logique derrière chaque élément du jeu!
         </p>
         <img 
-          src={paysage} 
+          src={paysage}
           alt="heatmap" 
-          className="w-5/12 mb-12 rounded-full">
+          className="object-contain mb-12 rounded-full h-[450px]">
         </img>
+        {/* <p className="max-w-2xl mb-8 text-2xl leading-relaxed text-white font-text">
+<br/>Explique ? hahaha pff... ouais c'est un peu chiant les gars hein<br/><br/>
+
+En gros Luden c'est un mythique passif mythique qui donne de la péné magique et donc en gros ça donne six de péné magique FLAT donc t'as deux items complets donc il a dix de péné flat donc en gros il monte à seize il a les bottes donc ça fait dix-huit donc seize plus dix-huit ça fait trente-quatre si je dis pas de conneries trente-quatre plus, il avait Shadowflame donc il a quarante-quatre et après du coup le Void-Staff faut faire quarante-quatre divisé par zéro six...
+        </p> */}
         <div className="flex gap-6">
           <a 
             href="/catalog"
@@ -43,43 +54,85 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Journey Section */}
-      <div className="px-6 py-16 mx-auto max-w-7xl">
-        <h2 className="mb-4 text-4xl font-bold text-center text-secondary-50 font-titre">
-          Les différents objectifs
-        </h2>
-        <p className="mb-16 text-xl text-center text-white font-text">
-          Pour tout type de joueur voulant comprendre cet univers
-        </p>
-        
-        <div className="flex items-center justify-center mb-16">
-          <div className="flex items-center w-full max-w-4xl">
-            <div className="flex flex-col items-center flex-1">
-              <div className="flex items-center justify-center w-16 h-16 mb-3 rounded-full bg-primary-100">
-                <Search className="w-2/4 h-2/4" />
-              </div>
-              <p className="text-lg font-semibold text-center text-white">Découvrir</p>
-              <p className="text-sm text-center text-white">Les bases du jeu</p>
+    <div className="px-6 py-16 mx-auto max-w-7xl">
+      <h2 className="mb-4 text-4xl font-bold text-center text-secondary-50 font-titre">
+        Les différents objectifs
+      </h2>
+      <p className="mb-16 text-xl text-center text-white font-text">
+        Pour tout type de joueur voulant comprendre cet univers
+      </p>
+      
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        {/* Découvrir */}
+        <div className="relative overflow-hidden transition-all duration-500 border-2 bg-gradient-to-br from-primary-100/20 to-transparent border-primary-100/30 rounded-3xl hover:scale-105 hover:border-primary-100 group">
+          <div className="p-8">
+            {/* GIF Container */}
+            <div className="relative mb-6 overflow-hidden rounded-2xl h-52 bg-gradient-to-br from-primary-100/10 to-primary-100/5">
+              <img 
+                src={gif2}
+                alt="Découvrir"
+                className="object-cover w-full h-full transition-opacity duration-300 opacity-80 group-hover:opacity-100"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             </div>
-            <div className="flex-1 h-1 bg-primary-100"></div>
-            <div className="flex flex-col items-center flex-1">
-              <div className="flex items-center justify-center w-16 h-16 mb-3 rounded-full bg-secondary-50">
-                <BookCheck className="w-2/4 h-2/4" />
-              </div>
-              <p className="text-lg font-semibold text-center text-white">Assimiler</p>
-              <p className="text-sm text-center text-white">Les mécaniques</p>
+            
+            <h3 className="mb-3 text-2xl font-bold text-white">Découvrir</h3>
+            <p className="text-lg text-white/80">Les bases du jeu</p>
+            
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-100 to-transparent"></div>
+          </div>
+        </div>
+
+        {/* Assimiler */}
+        <div className="relative overflow-hidden transition-all duration-500 border-2 bg-gradient-to-br from-secondary-50/20 to-transparent border-secondary-50/30 rounded-3xl hover:scale-105 hover:border-secondary-50 group">
+          <div className="p-8">
+            {/* GIF Container */}
+            <div className="relative mb-6 overflow-hidden rounded-2xl h-52 bg-gradient-to-br from-secondary-50/10 to-secondary-50/5">
+              <img 
+                src={gif3}
+                alt="Assimiler"
+                className="object-cover w-full h-full transition-opacity duration-300 opacity-80 group-hover:opacity-100"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             </div>
-            <div className="flex-1 h-1 bg-secondary-50"></div>
-            <div className="flex flex-col items-center flex-1">
-              <div className="flex items-center justify-center w-16 h-16 mb-3 bg-red-400 rounded-full">
-                <Trophy className="w-2/4 h-2/4" />
-              </div>
-              <p className="text-lg font-semibold text-center text-white">Comprendre</p>
-              <p className="text-sm text-center text-white">La scène esport</p>
+            
+            <h3 className="mb-3 text-2xl font-bold text-white">Assimiler</h3>
+            <p className="text-lg text-white/80">Les mécaniques</p>
+            
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-secondary-50 to-transparent"></div>
+          </div>
+        </div>
+
+        {/* Comprendre */}
+        <div className="relative overflow-hidden transition-all duration-500 border-2 bg-gradient-to-br from-red-400/20 to-transparent border-red-400/30 rounded-3xl hover:scale-105 hover:border-red-400 group">
+          <div className="p-8">
+            {/* GIF Container */}
+            <div className="relative mb-6 overflow-hidden rounded-2xl h-52 bg-gradient-to-br from-red-400/10 to-red-400/5">
+              <img 
+                src={gif4} 
+                alt="Comprendre"
+                className="object-cover w-full h-full transition-opacity duration-300 opacity-80 group-hover:opacity-100"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             </div>
+            
+            <h3 className="mb-3 text-2xl font-bold text-white">Comprendre</h3>
+            <p className="text-lg text-white/80">La scène esport</p>
+            
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-400 to-transparent"></div>
           </div>
         </div>
       </div>
+
+      {/* Progress indicator */}
+      <div className="flex items-center justify-center gap-3 mt-12">
+        <div className="w-3 h-3 rounded-full bg-primary-100 animate-pulse"></div>
+        <div className="w-12 h-1 bg-primary-100/50"></div>
+        <div className="w-3 h-3 rounded-full bg-secondary-50 animate-pulse" style={{animationDelay: '0.2s'}}></div>
+        <div className="w-12 h-1 bg-secondary-50/50"></div>
+        <div className="w-3 h-3 bg-red-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+      </div>
+    </div>
 
       <div className="px-6 py-16 mx-auto max-w-7xl">
         <h2 className="mb-4 text-4xl font-bold text-center text-secondary-50 font-titre">
@@ -88,7 +141,13 @@ export default function Home() {
         <p className="mb-12 text-xl text-center text-white font-text">
           Un assistant IA qui comprend tes besoins et ton niveau
         </p>
-
+        <div className="flex items-center justify-center w-full">
+          <img 
+            src={living_library} 
+            alt="heatmap" 
+            className="object-contain mb-12 rounded-full md:w-1/2 sm:w-full">
+          </img>
+        </div>
         <div className="grid gap-8 md:grid-cols-2">
           {/* Left side - Description */}
           <div className="flex flex-col justify-center p-8 border-2 rounded-2xl bg-background-50 border-primary-100/30">
@@ -187,7 +246,13 @@ export default function Home() {
         <p className="mb-12 text-xl text-center text-white font-text">
           Découvre nos guides adaptés à tous les niveaux
         </p>
-        
+        <div className="flex items-center justify-center w-full">
+          <img 
+            src={search} 
+            alt="heatmap" 
+            className="object-contain mb-12 rounded-full md:w-1/2 sm:w-full">
+          </img>
+        </div>
         <div className="relative">
           <div className="w-5/6 mx-auto overflow-hidden">
             <div 

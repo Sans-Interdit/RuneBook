@@ -1,5 +1,6 @@
 backend/venv
 backend/__pycache__
+backend/tests/__pycache__
 backend/photo_uploads
 backend/static/dev
 backend/sharevents-bac56-362c818a2b0b.json

@@ -1,6 +1,5 @@
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.orm import sessionmaker, relationship, declarative_base
 import os
 from dotenv import load_dotenv
 
@@ -40,14 +39,14 @@ class Conversation(Base):
 
     # Relations
     account = relationship("Account", back_populates="conversations")
-    messages = relationship("Message", back_populates="conversation")
+    messages = relationship("Message", back_populates="conversation", cascade="all, delete-orphan")
 
     def to_dict(self):
         return {
             "id": self.id_conversation,
             "title": self.name,
             "timestamp": self.updated_at.isoformat(),
-            "messages": [message.content for message in self.messages]
+            "messages": [message.to_dict() for message in self.messages]
         }
 
 
@@ -59,11 +58,18 @@ class Message(Base):
     __tablename__ = "message"
 
     id_message = Column(Integer, primary_key=True)
-    content = Column(String(300), nullable=False)
-    id_conversation = Column(Integer, ForeignKey("conversation.id_conversation"), nullable=False)
+    content = Column(String(1200), nullable=False)
+    role = Column(String(10), nullable=False)  # e.g., "user" or "assistant"
+    id_conversation = Column(Integer, ForeignKey("conversation.id_conversation", ondelete="CASCADE"), nullable=False)
 
     # Relations
     conversation = relationship("Conversation", back_populates="messages")
+
+    def to_dict(self):
+        return {
+            "content": self.content,
+            "role": self.role,
+        }
 
 
 # ============================================================
