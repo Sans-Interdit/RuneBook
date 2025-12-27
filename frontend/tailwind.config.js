@@ -20,12 +20,13 @@ module.exports = {
           // 100: "#FFC86E"
         },
         background: {
-          50: "#21005B",
+          50: "#16003B",
         }
       }
     }
   },
-  plugins: [  
+  plugins: [ 
+    require('tailwind-scrollbar'),
     require('tailwind-scrollbar-hide'),
   ],
 }

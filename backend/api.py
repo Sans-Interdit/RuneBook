@@ -6,13 +6,18 @@ import datetime
 import os
 from huggingface_hub import InferenceClient
 import jwt
-
+from qdrant_client import QdrantClient
+import re
 from openai import OpenAI
+import json
+from qdrant_client.http.models import Filter, FieldCondition, MatchValue
 
 client = OpenAI(
   base_url="https://openrouter.ai/api/v1",
   api_key=os.getenv("CHATBOT_KEY"),
 )
+
+qdrant_client = QdrantClient(url="http://localhost:6333")
 
 # FastAPI router
 router = APIRouter()
@@ -193,6 +198,13 @@ async def get_guides():
 # -------------------------
 # Chat Endpoints
 # -------------------------
+
+def extract_json(text: str):
+    match = re.search(r"\{.*\}", text, re.S)
+    if not match:
+        raise ValueError("Aucun JSON trouvé")
+    return json.loads(match.group())
+
 @router.post("/chat")
 async def chat(data: dict):
     """
@@ -206,16 +218,77 @@ async def chat(data: dict):
     """
     prompt = data.get("prompt")
 
+    # mots = ["Résumé" , ]
+    # if any(mot in texte for mot in mots):
+
     completion = client.chat.completions.create(
         model="qwen/qwen-2.5-7b-instruct",
         messages=[
-            {"role": "system", "content": "Tu es un assistant agissant comme un professeur bienveillante et aidant les utilisateurs à comprendre le jeu vidéo League of Legends. You must respond in French in 1000 characters maximum."},
-            {"role": "user", "content": prompt}
+            {"role": "system", "content": f"""
+Tu es un analyseur de requêtes League of Legends.
+
+À partir de la question utilisateur, extrais les informations suivantes :
+- champ : champion concerné (ou null)
+
+si un champion est mentionné, fournis les informations suivantes :
+- info : information recherchée (Lore, spell, stat) (ou null)
+
+Réponds uniquement en JSON valide.
+"""},
+            {"role": "user", "content": prompt},
         ],
     )
 
-    print(completion.choices[0].message.content)
-    return {"response": completion.choices[0].message.content}
+    formatted_json = extract_json(completion.choices[0].message.content)
+
+    systemPrompt = f"""
+Tu es un assistant agissant comme un professeur bienveillante et aidant les utilisateurs à comprendre le jeu vidéo League of Legends.
+             
+You must respond in French in 1000 characters maximum.
+"""
+    
+    if formatted_json.get("champ"):
+        systemPrompt += "N'invente aucune information, met du contexte et de la formulation sur les données en ta possession"
+    
+        filt = Filter(
+            must=[
+                FieldCondition(
+                    key="champion",
+                    match=MatchValue(value=formatted_json.get("champ"))
+                )
+            ]
+        )
+
+        result = qdrant_client.query_points(
+            collection_name="lol_champions",
+            query_filter=filt,
+            limit=1
+        )
+
+        points = result.points
+
+        info = formatted_json.get("info")
+
+        if points and info:
+            full_texte = points[0].payload.get("document")
+
+            
+            debut = full_texte.index(f"\n\n")
+
+
+
+
+    #     systemPrompt += f"Contexte : {result}"
+
+    # completion = client.chat.completions.create(
+    #     model="qwen/qwen-2.5-7b-instruct",
+    #     messages=[
+    #         {"role": "system", "content": systemPrompt},
+    #         {"role": "user", "content": prompt},
+    #     ],
+    # )
+
+    return {"response": "str(formatted_json)"}
 
 
 # -------------------------
@@ -257,7 +330,6 @@ async def add_conv(data: dict, user_id: int = Depends(get_current_user)):
     """
     title = data.get("title")
     date_now = datetime.datetime.now()
-
     new_conv = Conversation(name=title, updated_at=date_now, id_account=user_id)
     db_session.add(new_conv)
     db_session.commit()

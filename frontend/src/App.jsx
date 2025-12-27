@@ -16,10 +16,11 @@ import Terms from './pages/terms';
 export default function App() {
   return (
     <AppProvider>
-      <div className="flex flex-col min-h-screen">
-        <Router>
+      <Router>
+        <div className="flex flex-col h-screen">
           <Navbar />
-          <main className="flex flex-col flex-1">
+
+          <main className="flex flex-col flex-1 min-h-0">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/catalog" element={<Catalog />} />
@@ -31,8 +32,8 @@ export default function App() {
               <Route path="/logout" element={<Logout />} />
             </Routes>
           </main>
-        </Router>
-      </div>
+        </div>
+      </Router>
     </AppProvider>
   );
 }

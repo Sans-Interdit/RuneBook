@@ -3,9 +3,11 @@ import { Send, MessageSquare, Plus, Trash2, Clock, Sparkles, User, Bot } from "l
 import { addConv, delConv, getConv } from "../api/conversation";
 import { addMsg } from "../api/message"
 import { chat } from "../api/chat";
+import { useAppContext } from "../context/appContext";
 
 export default function Chatbot() {
   const [conversations, setConversations] = useState([]);
+  const { getIdContext } = useAppContext();
 
   const [currentConversationId, setCurrentConversationId] = useState(0);
   const [inputMessage, setInputMessage] = useState("");
@@ -15,7 +17,15 @@ export default function Chatbot() {
   const currentConversation = conversations.find(conv => conv.id === currentConversationId);
 
   useEffect(() => {
-    getConversations();
+    getIdContext()
+    .then((token) => {
+       if (token) {
+        getConversations();
+       }
+       else {
+          window.location.href = '/inscription';
+       }
+    })
   }, [])
 
   const getConversations = async () => {
@@ -113,9 +123,9 @@ export default function Chatbot() {
   };
 
   return (
-    <div className="flex flex-1 bg-primary-50">
+    <div className="flex flex-1 min-h-0 bg-primary-50">
       {/* Sidebar - Conversations History */}
-      <div className="flex flex-col border-r-2 w-80 border-primary-100/30">
+      <div className="flex flex-col h-full min-h-0 border-r-2 w-80 border-primary-100/30">
         {/* Sidebar Header */}
         <div className="p-6 border-b-2 border-primary-100/30">
           <h2 className="mb-4 text-2xl font-bold text-secondary-50 font-titre">
@@ -131,7 +141,7 @@ export default function Chatbot() {
         </div>
 
         {/* Conversations List */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-100/40 ">
           {conversations.map((conv) => (
             <div
               key={conv.id}

@@ -4,10 +4,12 @@ import { useAppContext } from "../context/appContext";
 import paysage from "/assets/paysage.png";
 import search from "/assets/search.png";
 import living_library from "/assets/living_library.png";
-import gif1 from "/assets/Aurelion_Sol_the_Star_Forger_Login_Screen_League_of_Legends.gif";
-import gif2 from "/assets/ezgif-3e39696d254a909f.gif";
-import gif3 from "/assets/Season_5_2015_Login_Screen_with_Music_League_of_Legends.gif";
 import gif4 from "/assets/ezgif-349f579d4f79ced3.gif";
+import img4 from "/assets/faker.png";
+import gif5 from "/assets/ezgif-4be597bc5e6fa90a.gif";
+import img5 from "/assets/baron.png";
+import gif7 from "/assets/ezgif-5c6a9a0b15a5c4d2.gif";
+import img7 from "/assets/ezreal.png";
 
 export default function Home() {
   const [currentGuideIndex, setCurrentGuideIndex] = useState(0);
@@ -15,46 +17,41 @@ export default function Home() {
   console.log(guides)
 
   return (
-    <div className="min-h-screen bg-primary-50">
+    <div className="flex flex-col overflow-auto bg-primary-50">
       {/* Hero Section */}
-      <div className="flex flex-col items-center justify-center px-6 py-10 text-center">
-        <h1 className="mb-6 text-6xl font-bold text-transparent bg-clip-text bg-secondary-50 font-titre">
+      <div className="flex flex-col items-center justify-center px-6 py-6 text-center">
+        <h1 className="mb-2 text-6xl font-bold text-transparent bg-clip-text bg-secondary-50 font-titre">
           RuneBook
         </h1>
-        <p className="mb-4 text-4xl font-semibold text-secondary-50 font-titre">
+        <p className="mb-6 text-4xl font-semibold text-secondary-50 font-titre">
           Where League of Legends feel logical
         </p>
-        <p className="max-w-3xl mb-8 text-xl leading-relaxed text-white font-text">
+        <p className="max-w-3xl text-xl leading-relaxed text-white font-text">
           Ton guide pour <span className="font-semibold text-secondary-50">comprendre</span> League of Legends et
           pas seulement devenir plus fort. Apprends la logique derrière chaque élément du jeu!
         </p>
         <img 
           src={paysage}
           alt="heatmap" 
-          className="object-contain mb-12 rounded-full h-[450px]">
+          className="object-contain mb-12 rounded-full h-[450px] mt-8">
         </img>
-        {/* <p className="max-w-2xl mb-8 text-2xl leading-relaxed text-white font-text">
-<br/>Explique ? hahaha pff... ouais c'est un peu chiant les gars hein<br/><br/>
-
-En gros Luden c'est un mythique passif mythique qui donne de la péné magique et donc en gros ça donne six de péné magique FLAT donc t'as deux items complets donc il a dix de péné flat donc en gros il monte à seize il a les bottes donc ça fait dix-huit donc seize plus dix-huit ça fait trente-quatre si je dis pas de conneries trente-quatre plus, il avait Shadowflame donc il a quarante-quatre et après du coup le Void-Staff faut faire quarante-quatre divisé par zéro six...
-        </p> */}
-        <div className="flex gap-6">
+        <div className="flex gap-10">
           <a 
             href="/catalog"
-            className="px-8 py-4 text-lg font-semibold transition-all duration-300 border-2 rounded-lg border-secondary-50 text-secondary-50 hover:bg-secondary-50 hover:text-primary-50 hover:scale-105"
+            className="px-10 py-6 text-xl font-semibold transition-all duration-300 rounded-lg bg-secondary-50 text-primary-50 hover:scale-105"
           >
             Explorer le Catalogue
           </a>
           <a 
             href="/chatbot"
-            className="px-8 py-4 text-lg font-semibold transition-all duration-300 border-2 rounded-lg border-primary-100 text-primary-100 hover:bg-primary-100 hover:text-primary-50 hover:scale-105"
+            className="px-10 py-6 text-xl font-semibold transition-all duration-300 rounded-lg bg-primary-100 text-primary-50 hover:scale-105"
           >
             Parler au Chatbot
           </a>
         </div>
       </div>
 
-    <div className="px-6 py-16 mx-auto max-w-7xl">
+    <div className="flex flex-col items-center px-6 py-16">
       <h2 className="mb-4 text-4xl font-bold text-center text-secondary-50 font-titre">
         Les différents objectifs
       </h2>
@@ -62,19 +59,39 @@ En gros Luden c'est un mythique passif mythique qui donne de la péné magique e
         Pour tout type de joueur voulant comprendre cet univers
       </p>
       
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+      <div className="grid w-3/4 grid-cols-1 gap-8 md:grid-cols-3">
         {/* Découvrir */}
         <div className="relative overflow-hidden transition-all duration-500 border-2 bg-gradient-to-br from-primary-100/20 to-transparent border-primary-100/30 rounded-3xl hover:scale-105 hover:border-primary-100 group">
           <div className="p-8">
+            <div className="relative mb-6 overflow-hidden rounded-2xl h-52 bg-gradient-to-br from-primary-100/10 to-primary-100/5 group">
+          
+              {/* Image statique */}
+              <img
+                src={img7} // image fixe (jpg/png)
+                alt="Découvrir"
+                className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300 opacity-100 group-hover:opacity-0"
+              />
+
+              {/* GIF */}
+              <img
+                src={gif5}
+                loading="lazy"
+                alt="Découvrir animé"
+                className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+              />
+
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            </div>
             {/* GIF Container */}
-            <div className="relative mb-6 overflow-hidden rounded-2xl h-52 bg-gradient-to-br from-primary-100/10 to-primary-100/5">
+            {/* <div className="relative mb-6 overflow-hidden rounded-2xl h-52 bg-gradient-to-br from-primary-100/10 to-primary-100/5">
               <img 
-                src={gif2}
+                src={gif5}
                 alt="Découvrir"
                 className="object-cover w-full h-full transition-opacity duration-300 opacity-80 group-hover:opacity-100"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-            </div>
+            </div> */}
             
             <h3 className="mb-3 text-2xl font-bold text-white">Découvrir</h3>
             <p className="text-lg text-white/80">Les bases du jeu</p>
@@ -86,15 +103,35 @@ En gros Luden c'est un mythique passif mythique qui donne de la péné magique e
         {/* Assimiler */}
         <div className="relative overflow-hidden transition-all duration-500 border-2 bg-gradient-to-br from-secondary-50/20 to-transparent border-secondary-50/30 rounded-3xl hover:scale-105 hover:border-secondary-50 group">
           <div className="p-8">
+            <div className="relative mb-6 overflow-hidden rounded-2xl h-52 bg-gradient-to-br from-primary-100/10 to-primary-100/5 group">
+              
+              {/* Image statique */}
+              <img
+                src={img5} // image fixe (jpg/png)
+                alt="Découvrir"
+                className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300 opacity-100 group-hover:opacity-0"
+              />
+
+              {/* GIF */}
+              <img
+                src={gif7}
+                loading="lazy"
+                alt="Découvrir animé"
+                className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+              />
+
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            </div>
             {/* GIF Container */}
-            <div className="relative mb-6 overflow-hidden rounded-2xl h-52 bg-gradient-to-br from-secondary-50/10 to-secondary-50/5">
+            {/* <div className="relative mb-6 overflow-hidden rounded-2xl h-52 bg-gradient-to-br from-secondary-50/10 to-secondary-50/5">
               <img 
-                src={gif3}
+                src={gif7}
                 alt="Assimiler"
                 className="object-cover w-full h-full transition-opacity duration-300 opacity-80 group-hover:opacity-100"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-            </div>
+            </div> */}
             
             <h3 className="mb-3 text-2xl font-bold text-white">Assimiler</h3>
             <p className="text-lg text-white/80">Les mécaniques</p>
@@ -106,15 +143,34 @@ En gros Luden c'est un mythique passif mythique qui donne de la péné magique e
         {/* Comprendre */}
         <div className="relative overflow-hidden transition-all duration-500 border-2 bg-gradient-to-br from-red-400/20 to-transparent border-red-400/30 rounded-3xl hover:scale-105 hover:border-red-400 group">
           <div className="p-8">
+            <div className="relative mb-6 overflow-hidden rounded-2xl h-52 bg-gradient-to-br from-primary-100/10 to-primary-100/5 group">
+              {/* Image statique */}
+              <img
+                src={img4} // image fixe (jpg/png)
+                alt="Découvrir"
+                className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300 opacity-100 group-hover:opacity-0"
+              />
+
+              {/* GIF */}
+              <img
+                src={gif4}
+                loading="lazy"
+                alt="Découvrir animé"
+                className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+              />
+
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            </div>
             {/* GIF Container */}
-            <div className="relative mb-6 overflow-hidden rounded-2xl h-52 bg-gradient-to-br from-red-400/10 to-red-400/5">
+            {/* <div className="relative mb-6 overflow-hidden rounded-2xl h-52 bg-gradient-to-br from-red-400/10 to-red-400/5">
               <img 
                 src={gif4} 
                 alt="Comprendre"
                 className="object-cover w-full h-full transition-opacity duration-300 opacity-80 group-hover:opacity-100"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-            </div>
+            </div> */}
             
             <h3 className="mb-3 text-2xl font-bold text-white">Comprendre</h3>
             <p className="text-lg text-white/80">La scène esport</p>
@@ -333,8 +389,8 @@ En gros Luden c'est un mythique passif mythique qui donne de la péné magique e
       </div>
 
       {/* CTA Section */}
-      <div className="px-6 py-20 mx-auto text-center max-w-7xl">
-        <div className="p-12 border-2 rounded-3xl bg-background-50 border-primary-100/30">
+      <div className="flex flex-col items-center px-6 py-20 text-center">
+        <div className="w-4/6 p-12 border-2 rounded-3xl bg-background-50 border-primary-100/30">
           <h2 className="mb-6 text-4xl font-bold text-secondary-50 font-titre">
             Prêt à Comprendre League of Legends ?
           </h2>
@@ -345,7 +401,7 @@ En gros Luden c'est un mythique passif mythique qui donne de la péné magique e
             href="/inscription"
             className="inline-block px-10 py-5 text-xl font-bold transition-all duration-300 rounded-xl bg-primary-100 text-primary-50 hover:scale-110 hover:shadow-2xl hover:shadow-primary-100/50"
           >
-            Commencer l'Aventure
+            Inscrivez vous
           </a>
         </div>
       </div>

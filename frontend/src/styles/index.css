@@ -3,3 +3,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.nav-background {
+  position: relative;
+  background-color: #21005B;
+  width: 100%;
+  overflow: hidden;
+}
+
+.nav-background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-image: url('/assets/background.gif');
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.3;
+  z-index: 0;
+}
+
+.nav-background > * {
+  position: relative;
+  z-index: 1;
+}

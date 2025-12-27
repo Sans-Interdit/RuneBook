@@ -31,7 +31,7 @@ export default function Catalog() {
   };
 
   return (
-    <div className="min-h-screen bg-primary-50">
+    <div className="overflow-auto bg-primary-50">
       {/* Header */}
       <div className="px-6 py-16 text-center">
         <h1 className="mb-4 text-5xl font-bold text-transparent bg-clip-text bg-secondary-50 font-titre">
@@ -170,7 +170,7 @@ export default function Catalog() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto p-8 border-2 rounded-2xl bg-background-50 border-secondary-50/50"
+            className="relative overflow-y-scroll w-full max-w-4xl max-h-[90vh] p-8 border-2 rounded-2xl bg-primary-50 border-secondary-50/50"
           >
             {/* Close Button */}
             <button

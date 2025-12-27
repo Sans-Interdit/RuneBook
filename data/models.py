@@ -6,7 +6,8 @@ from dotenv import load_dotenv
 if os.environ.get("PRODUCTION") != "true":
     load_dotenv(".env.development")
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL")
+
 Base = declarative_base()
 
 # ============================================================
