@@ -23,7 +23,7 @@ export default function Chatbot() {
         getConversations();
        }
        else {
-          window.location.href = '/inscription';
+          window.location.href = '/login';
        }
     })
   }, [])

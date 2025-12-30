@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit de Performance IA - RAG League of Legends</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Chart Container Styles as per requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        
+        /* Custom Scrollbar for tables */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+    <!-- Chosen Palette: Warm Neutrals & Semantic Signals -->
+    <!-- Background: Slate-50 (Light Neutral) -->
+    <!-- Text: Slate-800 (Readable Dark) -->
+    <!-- Success: Emerald-500 -->
+    <!-- Error: Rose-500 -->
+    <!-- Warning: Amber-400 -->
+    <!-- UI Accents: Indigo-600 -->
+</head>
+<body class="font-sans leading-relaxed bg-slate-50 text-slate-800">
+
+    <!-- Application Structure Plan: 
+         1. Header: High-level metrics (Accuracy, Hallucination Rate) for immediate impact.
+         2. Context Section: Brief explanation of the dataset and the RAG model's scope.
+         3. Analytics Dashboard: Two distinct columns.
+            - Left: Global Accuracy Distribution (Pie Chart) to show overall reliability.
+            - Right: Performance by Category (Bar Chart) to pinpoint if the model fails on specific topics (e.g., Ultimates vs Lanes).
+         4. Interactive Audit Log: A detailed table allowing the user to read the exact AI response vs. the Fact-Checked Truth.
+            - Features: Search, Filter by Verdict (Correct/Wrong), and visual indicators.
+         5. Synthesis & Recommendations: Dynamic text block summarizing why the errors occur (e.g., Retrieval granularity issues).
+    -->
+
+    <div class="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        
+        <!-- Header Section -->
+        <header class="pb-6 mb-10 text-center border-b sm:text-left border-slate-200">
+            <h1 class="mb-2 text-3xl font-bold tracking-tight text-slate-900">
+                📊 Audit de Performance RAG <span class="text-indigo-600">League of Legends</span>
+            </h1>
+            <p class="max-w-3xl text-slate-600">
+                Ce tableau de bord analyse objectivement les réponses générées par votre agent IA. 
+                Il compare les sorties du modèle RAG aux faits établis du jeu (Patch actuel) pour identifier les hallucinations, 
+                les erreurs de récupération et les réponses correctes.
+            </p>
+        </header>
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 gap-6 mb-10 md:grid-cols-4">
+            <!-- Total Evaluated -->
+            <div class="p-6 bg-white border-l-4 border-indigo-500 shadow-sm rounded-xl">
+                <p class="text-sm font-medium tracking-wider uppercase text-slate-500">Réponses Analysées</p>
+                <p class="mt-2 text-3xl font-bold text-slate-900" id="total-count">-</p>
+            </div>
+            
+            <!-- Accuracy Rate -->
+            <div class="p-6 bg-white border-l-4 shadow-sm rounded-xl border-emerald-500">
+                <p class="text-sm font-medium tracking-wider uppercase text-slate-500">Taux de Précision</p>
+                <p class="mt-2 text-3xl font-bold text-emerald-600" id="accuracy-rate">-%</p>
+                <p class="mt-1 text-xs text-slate-400">Réponses factuellement correctes</p>
+            </div>
+
+            <!-- Hallucination Rate -->
+            <div class="p-6 bg-white border-l-4 shadow-sm rounded-xl border-rose-500">
+                <p class="text-sm font-medium tracking-wider uppercase text-slate-500">Taux d'Hallucination</p>
+                <p class="mt-2 text-3xl font-bold text-rose-600" id="error-rate">-%</p>
+                <p class="mt-1 text-xs text-slate-400">Erreurs critiques ou inventions</p>
+            </div>
+
+            <!-- Partial/Vague -->
+            <div class="p-6 bg-white border-l-4 shadow-sm rounded-xl border-amber-400">
+                <p class="text-sm font-medium tracking-wider uppercase text-slate-500">Réponses Imprécises</p>
+                <p class="mt-2 text-3xl font-bold text-amber-500" id="partial-rate">-%</p>
+                <p class="mt-1 text-xs text-slate-400">Techniquement vrai mais incomplet</p>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <!-- Visualization & Content Choices:
+             - Pie Chart: Immediate visual breakdown of Good vs Bad. 
+             - Bar Chart: Categorical breakdown is crucial here because RAG models often fail on specific "intent" types (e.g., retrieving a specific skill name vs a general concept).
+             - Interaction: Clicking charts is not necessary for this scale, but filters below will drive exploration.
+             - Library: Chart.js is robust, responsive, and canvas-based (No SVG).
+        -->
+        <section class="grid grid-cols-1 gap-8 mb-12 lg:grid-cols-2">
+            
+            <!-- Chart 1: Global Distribution -->
+            <div class="p-6 bg-white shadow-sm rounded-xl">
+                <div class="mb-4">
+                    <h2 class="text-lg font-semibold text-slate-800">Distribution de la Qualité</h2>
+                    <p class="text-sm text-slate-500">Répartition globale des réponses selon la véracité factuelle.</p>
+                </div>
+                <div class="flex justify-center w-full">
+                    <div class="chart-container">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart 2: Category Performance -->
+            <div class="p-6 bg-white shadow-sm rounded-xl">
+                <div class="mb-4">
+                    <h2 class="text-lg font-semibold text-slate-800">Performance par Catégorie</h2>
+                    <p class="text-sm text-slate-500">Analyse des taux d'erreur par type de question (Ultimates vs Stats).</p>
+                </div>
+                <div class="flex justify-center w-full">
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detailed Audit Log -->
+        <section class="mb-12 overflow-hidden bg-white shadow-sm rounded-xl">
+            <div class="flex flex-col justify-between gap-4 p-6 border-b border-slate-100 md:flex-row md:items-center">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Journal d'Audit Détaillé</h2>
+                    <p class="mt-1 text-sm text-slate-500">Examinez chaque réponse IA confrontée à la vérité terrain (Ground Truth).</p>
+                </div>
+                
+                <!-- Controls -->
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterTable('all')" class="px-4 py-2 text-sm font-medium transition-colors rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 focus:ring-2 focus:ring-indigo-500">Tout voir</button>
+                    <button onclick="filterTable('incorrect')" class="px-4 py-2 text-sm font-medium transition-colors rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 focus:ring-2 focus:ring-rose-500">Erreurs Uniquement</button>
+                    <button onclick="filterTable('correct')" class="px-4 py-2 text-sm font-medium transition-colors rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 focus:ring-2 focus:ring-emerald-500">Correctes</button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="text-xs tracking-wider uppercase bg-slate-50 text-slate-600">
+                            <th class="p-4 font-semibold border-b border-slate-200">État</th>
+                            <th class="p-4 font-semibold border-b border-slate-200">Champion / Question</th>
+                            <th class="w-1/3 p-4 font-semibold border-b border-slate-200">Réponse IA (RAG)</th>
+                            <th class="w-1/3 p-4 font-semibold border-b border-slate-200">Correction & Analyse</th>
+                        </tr>
+                    </thead>
+                    <tbody id="audit-table-body" class="text-sm divide-y text-slate-700 divide-slate-100">
+                        <!-- Table rows generated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Insights Section -->
+        <section class="p-8 border border-indigo-100 bg-indigo-50 rounded-xl">
+            <h3 class="mb-4 text-xl font-bold text-indigo-900">🔍 Diagnostic & Recommandations</h3>
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+                <div>
+                    <h4 class="mb-2 font-semibold text-indigo-800">Problèmes Identifiés</h4>
+                    <ul class="space-y-2 list-disc list-inside text-indigo-900/80">
+                        <li><strong>Confusion de Compétences (Mapping) :</strong> L'IA récupère souvent la description du "Z" (W) ou du "E" au lieu du "R" (Ultime) lorsque le mot clé "Ultime" n'est pas explicitement proche du nom du sort dans les données sources.</li>
+                        <li><strong>Hallucinations Négatives :</strong> Pour Jinx et Ekko, l'IA affirme à tort que l'information n'existe pas, indiquant un échec de la recherche vectorielle (retrieval failure).</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="mb-2 font-semibold text-indigo-800">Actions Recommandées</h4>
+                    <ul class="space-y-2 list-disc list-inside text-indigo-900/80">
+                        <li><strong>Enrichissement des Métadonnées :</strong> Ajoutez explicitement les tags `[ULTIME]`, `[PASSIF]`, `[Q]`, `[W]`, `[E]` dans les chunks de texte de votre base vectorielle.</li>
+                        <li><strong>Révision du Chunking :</strong> Les descriptions de sorts semblent être coupées. Assurez-vous que chaque sort est un chunk complet avec le nom du champion associé.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- JavaScript Implementation -->
+    <script>
+        // --- DATA PROCESSING & STATE ---
+        // Evaluating the JSON snippet provided in the prompt context.
+        // I have manually graded the entries based on LoL Knowledge.
+        
+        const evaluatedData = [
+            {
+                id: 2,
+                champion: "Garen",
+                question: "Quelle est la compétence ultime de Garen ?",
+                category: "compétence_ultime",
+                response_ai: "La compétence ultime de Garen s'appelle \"Courage\". Elle active une réduction des dégâts reçus durant 4 secondes...",
+                verdict: "incorrect",
+                correction: "L'ultime est 'Justice de Demacia' (Demacian Justice). 'Courage' est son Z (W).",
+                analysis: "Confusion entre le Z et le R."
+            },
+            {
+                id: 3,
+                champion: "Lux",
+                question: "Quel type de dégâts inflige Lux ?",
+                category: "type_degats",
+                response_ai: "Lux inflige des dégâts magiques.",
+                verdict: "correct",
+                correction: "Correct.",
+                analysis: "Information statique bien récupérée."
+            },
+            {
+                id: 4,
+                champion: "Jax",
+                question: "Dans quelle voie est joué Jax ?",
+                category: "voie",
+                response_ai: "Jax joue principalement en voie top ou jungle.",
+                verdict: "correct",
+                correction: "Correct.",
+                analysis: "Rôle/Lane bien identifié."
+            },
+            {
+                id: 7,
+                champion: "Yasuo",
+                question: "Quelle est la compétence ultime de Yasuo ?",
+                category: "compétence_ultime",
+                response_ai: "La compétence ultime de Yasuo s'appelle \"Last Breath\".",
+                verdict: "correct",
+                correction: "Correct (Dernier Soupir).",
+                analysis: "Bonne récupération."
+            },
+            {
+                id: 43, 
+                champion: "Sett",
+                question: "Dans quelle voie est joué Sett ?",
+                category: "voie",
+                response_ai: "Sett est joué dans la voie du frontline ou tank.",
+                verdict: "partial",
+                correction: "Sett se joue Top (principalement) ou Support. 'Frontline/Tank' est un rôle, pas une voie.",
+                analysis: "Confusion sémantique entre Rôle et Lane."
+            },
+            {
+                id: 44,
+                champion: "Jinx",
+                question: "Quelle est la compétence ultime de Jinx ?",
+                category: "compétence_ultime",
+                response_ai: "Jinx n'a pas de compétence ultime mentionnée ici. Sa compétence E s'appelle \"Flame Chompers!\"...",
+                verdict: "incorrect",
+                correction: "L'ultime est 'Super Mega Death Rocket!'.",
+                analysis: "Échec de récupération (Retrieval Failure). L'IA n'a pas trouvé le chunk correspondant au R."
+            },
+            {
+                id: 45,
+                champion: "Talon",
+                question: "Quel type de dégâts inflige Talon ?",
+                category: "type_degats",
+                response_ai: "Talon inflige des dégâts physiques.",
+                verdict: "correct",
+                correction: "Correct.",
+                analysis: "Information statique bien récupérée."
+            },
+            {
+                id: 49,
+                champion: "Ekko",
+                question: "Quelle est la compétence ultime d'Ekko ?",
+                category: "compétence_ultime",
+                response_ai: "Ekko n'a pas de compétence ultime (R). Son ultime s'appelle \"Quantum Rupture\"...",
+                verdict: "incorrect",
+                correction: "L'ultime est 'Chronobreak' (Chronofracture). Quantum Rupture n'existe pas pour Ekko.",
+                analysis: "Hallucination sévère."
+            }
+        ];
+
+        // State Management
+        let currentFilter = 'all';
+
+        // --- DOM ELEMENTS ---
+        const tableBody = document.getElementById('audit-table-body');
+        const totalCountEl = document.getElementById('total-count');
+        const accuracyRateEl = document.getElementById('accuracy-rate');
+        const errorRateEl = document.getElementById('error-rate');
+        const partialRateEl = document.getElementById('partial-rate');
+
+        // --- LOGIC: METRICS CALCULATION ---
+        function calculateMetrics() {
+            const total = evaluatedData.length;
+            const correct = evaluatedData.filter(d => d.verdict === 'correct').length;
+            const incorrect = evaluatedData.filter(d => d.verdict === 'incorrect').length;
+            const partial = evaluatedData.filter(d => d.verdict === 'partial').length;
+
+            totalCountEl.textContent = total;
+            accuracyRateEl.textContent = Math.round((correct / total) * 100) + '%';
+            errorRateEl.textContent = Math.round((incorrect / total) * 100) + '%';
+            partialRateEl.textContent = Math.round((partial / total) * 100) + '%';
+            
+            return { total, correct, incorrect, partial };
+        }
+
+        // --- LOGIC: RENDER TABLE ---
+        function renderTable(filter) {
+            tableBody.innerHTML = '';
+            
+            const filteredData = evaluatedData.filter(item => {
+                if (filter === 'all') return true;
+                return item.verdict === filter;
+            });
+
+            filteredData.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-slate-50 transition-colors';
+                
+                // Badge Logic
+                let badgeClass = '';
+                let badgeText = '';
+                let badgeIcon = '';
+                
+                if (item.verdict === 'correct') {
+                    badgeClass = 'bg-emerald-100 text-emerald-800 border border-emerald-200';
+                    badgeText = 'Correct';
+                    badgeIcon = '✅';
+                } else if (item.verdict === 'incorrect') {
+                    badgeClass = 'bg-rose-100 text-rose-800 border border-rose-200';
+                    badgeText = 'Erreur';
+                    badgeIcon = '❌';
+                } else {
+                    badgeClass = 'bg-amber-100 text-amber-800 border border-amber-200';
+                    badgeText = 'Partiel';
+                    badgeIcon = '⚠️';
+                }
+
+                row.innerHTML = `
+                    <td class="p-4 align-top">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${badgeClass}">
+                            <span class="mr-1">${badgeIcon}</span> ${badgeText}
+                        </span>
+                    </td>
+                    <td class="p-4 align-top">
+                        <div class="font-bold text-slate-900">${item.champion}</div>
+                        <div class="mt-1 text-xs tracking-wide uppercase text-slate-500">${item.category.replace('_', ' ')}</div>
+                        <div class="mt-2 italic text-slate-600">"${item.question}"</div>
+                    </td>
+                    <td class="p-4 mx-2 align-top border-l-2 rounded-lg bg-slate-50/50 border-slate-200">
+                        <p class="text-sm leading-relaxed text-slate-800">${item.response_ai}</p>
+                    </td>
+                    <td class="p-4 align-top">
+                        <div class="text-sm font-semibold text-slate-700">Vérité Terrain :</div>
+                        <p class="mb-2 text-sm text-slate-600">${item.correction}</p>
+                        <div class="p-2 text-xs text-indigo-600 border border-indigo-100 rounded bg-indigo-50">
+                            <strong>Analyse:</strong> ${item.analysis}
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // --- LOGIC: CHARTS ---
+        function initCharts(metrics) {
+            // Chart 1: Distribution (Pie)
+            const ctxDist = document.getElementById('distributionChart').getContext('2d');
+            new Chart(ctxDist, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Correct', 'Erreur (Hallucination)', 'Partiel'],
+                    datasets: [{
+                        data: [metrics.correct, metrics.incorrect, metrics.partial],
+                        backgroundColor: ['#10b981', '#f43f5e', '#fbbf24'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 20, font: { family: 'sans-serif' } } },
+                        tooltip: { 
+                            backgroundColor: '#1e293b',
+                            padding: 12,
+                            cornerRadius: 8
+                        }
+                    }
+                }
+            });
+
+            // Logic for Category Chart Data
+            // Group verdicts by category
+            const categories = {};
+            evaluatedData.forEach(item => {
+                if (!categories[item.category]) {
+                    categories[item.category] = { correct: 0, incorrect: 0, partial: 0 };
+                }
+                categories[item.category][item.verdict]++;
+            });
+            
+            const catLabels = Object.keys(categories).map(k => k.replace('_', ' '));
+            const catCorrect = Object.values(categories).map(v => v.correct);
+            const catIncorrect = Object.values(categories).map(v => v.incorrect);
+            const catPartial = Object.values(categories).map(v => v.partial);
+
+            // Chart 2: Category Performance (Stacked Bar)
+            const ctxCat = document.getElementById('categoryChart').getContext('2d');
+            new Chart(ctxCat, {
+                type: 'bar',
+                data: {
+                    labels: catLabels,
+                    datasets: [
+                        { label: 'Correct', data: catCorrect, backgroundColor: '#10b981', borderRadius: 4 },
+                        { label: 'Partiel', data: catPartial, backgroundColor: '#fbbf24', borderRadius: 4 },
+                        { label: 'Erreur', data: catIncorrect, backgroundColor: '#f43f5e', borderRadius: 4 },
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: true, grid: { display: false } },
+                        y: { stacked: true, grid: { color: '#f1f5f9' }, beginAtZero: true, ticks: { stepSize: 1 } }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        // --- INITIALIZATION ---
+        function initApp() {
+            const metrics = calculateMetrics();
+            renderTable('all');
+            initCharts(metrics);
+        }
+
+        // Global function for buttons
+        window.filterTable = function(filterType) {
+            renderTable(filterType);
+        };
+
+        // Start
+        document.addEventListener('DOMContentLoaded', initApp);
+
+        // <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. Charts via Chart.js Canvas. Icons via Unicode. -->
+    </script>
+</body>
+</html>

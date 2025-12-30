@@ -1,0 +1,360 @@
+{
+  "dataset_info": {
+    "nom": "Questions factuelles - Champions League of Legends",
+    "objectif": "Évaluation système RAG - Informations champions",
+    "nombre_questions": 50,
+    "version": "1.0"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "question": "Quel est le rôle principal d'Ahri ?",
+      "reponse_attendue": "Mage/Assassin",
+      "categorie": "rôle",
+      "champion": "Ahri"
+    },
+    {
+      "id": 2,
+      "question": "Quelle est la compétence ultime de Garen ?",
+      "reponse_attendue": "Justice de Demacia",
+      "categorie": "compétence_ultime",
+      "champion": "Garen"
+    },
+    {
+      "id": 3,
+      "question": "Quel type de dégâts inflige Lux ?",
+      "reponse_attendue": "Dégâts magiques",
+      "categorie": "type_degats",
+      "champion": "Lux"
+    },
+    {
+      "id": 4,
+      "question": "Dans quelle voie est joué Jax ?",
+      "reponse_attendue": "Top lane (ou jungle)",
+      "categorie": "voie",
+      "champion": "Jax"
+    },
+    {
+      "id": 5,
+      "question": "Quelle est la particularité du passif de Teemo ?",
+      "reponse_attendue": "Camouflage quand il reste immobile",
+      "categorie": "passif",
+      "champion": "Teemo"
+    },
+    {
+      "id": 6,
+      "question": "Quel est le rôle principal de Jinx ?",
+      "reponse_attendue": "Tireur/ADC",
+      "categorie": "rôle",
+      "champion": "Jinx"
+    },
+    {
+      "id": 7,
+      "question": "Quelle est la compétence ultime de Yasuo ?",
+      "reponse_attendue": "Dernière Inspiration",
+      "categorie": "compétence_ultime",
+      "champion": "Yasuo"
+    },
+    {
+      "id": 8,
+      "question": "Quel type de dégâts inflige Darius ?",
+      "reponse_attendue": "Dégâts physiques",
+      "categorie": "type_degats",
+      "champion": "Darius"
+    },
+    {
+      "id": 9,
+      "question": "Quel est le rôle principal de Thresh ?",
+      "reponse_attendue": "Support",
+      "categorie": "rôle",
+      "champion": "Thresh"
+    },
+    {
+      "id": 10,
+      "question": "Dans quelle voie est joué Ezreal ?",
+      "reponse_attendue": "Bot lane/ADC",
+      "categorie": "voie",
+      "champion": "Ezreal"
+    },
+    {
+      "id": 11,
+      "question": "Quelle est la compétence ultime de Malphite ?",
+      "reponse_attendue": "Force Irrésistible",
+      "categorie": "compétence_ultime",
+      "champion": "Malphite"
+    },
+    {
+      "id": 12,
+      "question": "Quel type de dégâts inflige Zed ?",
+      "reponse_attendue": "Dégâts physiques",
+      "categorie": "type_degats",
+      "champion": "Zed"
+    },
+    {
+      "id": 13,
+      "question": "Quelle est la particularité du passif de Jhin ?",
+      "reponse_attendue": "Il ne peut avoir que 4 balles et la 4ème inflige des dégâts critiques",
+      "categorie": "passif",
+      "champion": "Jhin"
+    },
+    {
+      "id": 14,
+      "question": "Quel est le rôle principal de Lee Sin ?",
+      "reponse_attendue": "Jungler/Combattant",
+      "categorie": "rôle",
+      "champion": "Lee Sin"
+    },
+    {
+      "id": 15,
+      "question": "Quelle est la compétence ultime d'Ashe ?",
+      "reponse_attendue": "Flèche de Cristal Enchantée",
+      "categorie": "compétence_ultime",
+      "champion": "Ashe"
+    },
+    {
+      "id": 16,
+      "question": "Dans quelle voie est joué Twisted Fate ?",
+      "reponse_attendue": "Mid lane",
+      "categorie": "voie",
+      "champion": "Twisted Fate"
+    },
+    {
+      "id": 17,
+      "question": "Quel type de dégâts inflige Katarina ?",
+      "reponse_attendue": "Dégâts magiques",
+      "categorie": "type_degats",
+      "champion": "Katarina"
+    },
+    {
+      "id": 18,
+      "question": "Quel est le rôle principal de Blitzcrank ?",
+      "reponse_attendue": "Support/Tank",
+      "categorie": "rôle",
+      "champion": "Blitzcrank"
+    },
+    {
+      "id": 19,
+      "question": "Quelle est la compétence ultime de Lux ?",
+      "reponse_attendue": "Étincelle Finale",
+      "categorie": "compétence_ultime",
+      "champion": "Lux"
+    },
+    {
+      "id": 20,
+      "question": "Quelle est la particularité du passif d'Annie ?",
+      "reponse_attendue": "Après 4 sorts, le prochain sort étourdit",
+      "categorie": "passif",
+      "champion": "Annie"
+    },
+    {
+      "id": 21,
+      "question": "Dans quelle voie est joué Vayne ?",
+      "reponse_attendue": "Bot lane/ADC",
+      "categorie": "voie",
+      "champion": "Vayne"
+    },
+    {
+      "id": 22,
+      "question": "Quel type de dégâts inflige Master Yi ?",
+      "reponse_attendue": "Dégâts physiques (principalement)",
+      "categorie": "type_degats",
+      "champion": "Master Yi"
+    },
+    {
+      "id": 23,
+      "question": "Quel est le rôle principal de Soraka ?",
+      "reponse_attendue": "Support/Soigneur",
+      "categorie": "rôle",
+      "champion": "Soraka"
+    },
+    {
+      "id": 24,
+      "question": "Quelle est la compétence ultime de Darius ?",
+      "reponse_attendue": "Guillotine Noxienne",
+      "categorie": "compétence_ultime",
+      "champion": "Darius"
+    },
+    {
+      "id": 25,
+      "question": "Quel type de dégâts inflige Syndra ?",
+      "reponse_attendue": "Dégâts magiques",
+      "categorie": "type_degats",
+      "champion": "Syndra"
+    },
+    {
+      "id": 26,
+      "question": "Dans quelle voie est joué Renekton ?",
+      "reponse_attendue": "Top lane",
+      "categorie": "voie",
+      "champion": "Renekton"
+    },
+    {
+      "id": 27,
+      "question": "Quelle est la particularité du passif de Yasuo ?",
+      "reponse_attendue": "Double chance de coup critique",
+      "categorie": "passif",
+      "champion": "Yasuo"
+    },
+    {
+      "id": 28,
+      "question": "Quel est le rôle principal de Nami ?",
+      "reponse_attendue": "Support/Enchanteur",
+      "categorie": "rôle",
+      "champion": "Nami"
+    },
+    {
+      "id": 29,
+      "question": "Quelle est la compétence ultime de Karthus ?",
+      "reponse_attendue": "Requiem",
+      "categorie": "compétence_ultime",
+      "champion": "Karthus"
+    },
+    {
+      "id": 30,
+      "question": "Quel type de dégâts inflige Fiora ?",
+      "reponse_attendue": "Dégâts physiques (avec dégâts vrais)",
+      "categorie": "type_degats",
+      "champion": "Fiora"
+    },
+    {
+      "id": 31,
+      "question": "Dans quelle voie est joué Zed ?",
+      "reponse_attendue": "Mid lane",
+      "categorie": "voie",
+      "champion": "Zed"
+    },
+    {
+      "id": 32,
+      "question": "Quelle est la particularité du passif de Yone ?",
+      "reponse_attendue": "Tous les deux coups, il inflige des dégâts magiques supplémentaires",
+      "categorie": "passif",
+      "champion": "Yone"
+    },
+    {
+      "id": 33,
+      "question": "Quel est le rôle principal de Nautilus ?",
+      "reponse_attendue": "Support/Tank",
+      "categorie": "rôle",
+      "champion": "Nautilus"
+    },
+    {
+      "id": 34,
+      "question": "Quelle est la compétence ultime de Zoe ?",
+      "reponse_attendue": "Saut Dimensionnel",
+      "categorie": "compétence_ultime",
+      "champion": "Zoe"
+    },
+    {
+      "id": 35,
+      "question": "Quel type de dégâts inflige Akali ?",
+      "reponse_attendue": "Dégâts magiques et physiques (hybride)",
+      "categorie": "type_degats",
+      "champion": "Akali"
+    },
+    {
+      "id": 36,
+      "question": "Dans quelle voie est joué Draven ?",
+      "reponse_attendue": "Bot lane/ADC",
+      "categorie": "voie",
+      "champion": "Draven"
+    },
+    {
+      "id": 37,
+      "question": "Quelle est la particularité du passif de Draven ?",
+      "reponse_attendue": "Il gagne de l'or supplémentaire en rattrapant ses haches et en tuant des champions",
+      "categorie": "passif",
+      "champion": "Draven"
+    },
+    {
+      "id": 38,
+      "question": "Quel est le rôle principal de Vi ?",
+      "reponse_attendue": "Jungler/Combattant",
+      "categorie": "rôle",
+      "champion": "Vi"
+    },
+    {
+      "id": 39,
+      "question": "Quelle est la compétence ultime de Shen ?",
+      "reponse_attendue": "Unité d'Âme",
+      "categorie": "compétence_ultime",
+      "champion": "Shen"
+    },
+    {
+      "id": 40,
+      "question": "Quel type de dégâts inflige Veigar ?",
+      "reponse_attendue": "Dégâts magiques",
+      "categorie": "type_degats",
+      "champion": "Veigar"
+    },
+    {
+      "id": 41,
+      "question": "Dans quelle voie est joué Sett ?",
+      "reponse_attendue": "Top lane (ou support)",
+      "categorie": "voie",
+      "champion": "Sett"
+    },
+    {
+      "id": 42,
+      "question": "Quelle est la particularité du passif de Veigar ?",
+      "reponse_attendue": "Il gagne de la puissance magique en permanence en tuant des unités",
+      "categorie": "passif",
+      "champion": "Veigar"
+    },
+    {
+      "id": 43,
+      "question": "Quel est le rôle principal de Leona ?",
+      "reponse_attendue": "Support/Tank",
+      "categorie": "rôle",
+      "champion": "Leona"
+    },
+    {
+      "id": 44,
+      "question": "Quelle est la compétence ultime de Jinx ?",
+      "reponse_attendue": "Super Méga Roquette Mortelle",
+      "categorie": "compétence_ultime",
+      "champion": "Jinx"
+    },
+    {
+      "id": 45,
+      "question": "Quel type de dégâts inflige Talon ?",
+      "reponse_attendue": "Dégâts physiques",
+      "categorie": "type_degats",
+      "champion": "Talon"
+    },
+    {
+      "id": 46,
+      "question": "Dans quelle voie est joué Viktor ?",
+      "reponse_attendue": "Mid lane",
+      "categorie": "voie",
+      "champion": "Viktor"
+    },
+    {
+      "id": 47,
+      "question": "Quelle est la particularité du passif de Senna ?",
+      "reponse_attendue": "Elle collecte des âmes pour augmenter ses statistiques",
+      "categorie": "passif",
+      "champion": "Senna"
+    },
+    {
+      "id": 48,
+      "question": "Quel est le rôle principal d'Ekko ?",
+      "reponse_attendue": "Assassin/Combattant",
+      "categorie": "rôle",
+      "champion": "Ekko"
+    },
+    {
+      "id": 49,
+      "question": "Quelle est la compétence ultime d'Ekko ?",
+      "reponse_attendue": "Convergence Parallèle",
+      "categorie": "compétence_ultime",
+      "champion": "Ekko"
+    },
+    {
+      "id": 50,
+      "question": "Quel type de dégâts inflige Orianna ?",
+      "reponse_attendue": "Dégâts magiques",
+      "categorie": "type_degats",
+      "champion": "Orianna"
+    }
+  ]
+}

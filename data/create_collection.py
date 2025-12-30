@@ -38,47 +38,15 @@ def create_collection():
 
     client.create_payload_index(
         collection_name=COLLECTION_NAME,
-        field_name="metadata.positions",
+        field_name="chunk_type",
         field_schema=PayloadSchemaType.KEYWORD
     )
 
     client.create_payload_index(
         collection_name=COLLECTION_NAME,
-        field_name="metadata.classes",
+        field_name="spell_slot",
         field_schema=PayloadSchemaType.KEYWORD
     )
-
-    client.create_payload_index(
-        collection_name=COLLECTION_NAME,
-        field_name="metadata.legacy",
-        field_schema=PayloadSchemaType.KEYWORD
-    )
-
-    client.create_payload_index(
-        collection_name=COLLECTION_NAME,
-        field_name="metadata.resource",
-        field_schema=PayloadSchemaType.KEYWORD
-    )
-
-    client.create_payload_index(
-        collection_name=COLLECTION_NAME,
-        field_name="metadata.range_type",
-        field_schema=PayloadSchemaType.KEYWORD
-    )
-
-    client.create_payload_index(
-        collection_name=COLLECTION_NAME,
-        field_name="metadata.adaptive_type",
-        field_schema=PayloadSchemaType.KEYWORD
-    )
-
-    # Stats (filtrables numériquement)
-    for stat in ["damage", "toughness", "control", "mobility", "utility"]:
-        client.create_payload_index(
-            collection_name=COLLECTION_NAME,
-            field_name=f"stats.{stat}",
-            field_schema=PayloadSchemaType.INTEGER
-        )
 
     print(f"Collection '{COLLECTION_NAME}' created successfully.")
 

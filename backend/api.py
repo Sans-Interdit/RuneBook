@@ -10,7 +10,8 @@ from qdrant_client import QdrantClient
 import re
 from openai import OpenAI
 import json
-from qdrant_client.http.models import Filter, FieldCondition, MatchValue
+from qdrant_client.http.models import Filter, FieldCondition, MatchValue, Prefetch
+from sentence_transformers import SentenceTransformer
 
 client = OpenAI(
   base_url="https://openrouter.ai/api/v1",
@@ -18,6 +19,7 @@ client = OpenAI(
 )
 
 qdrant_client = QdrantClient(url="http://localhost:6333")
+model = SentenceTransformer("sentence-transformers/all-mpnet-base-v2")
 
 # FastAPI router
 router = APIRouter()
@@ -221,74 +223,114 @@ async def chat(data: dict):
     # mots = ["Résumé" , ]
     # if any(mot in texte for mot in mots):
 
-    completion = client.chat.completions.create(
+    classification = client.chat.completions.create(
         model="qwen/qwen-2.5-7b-instruct",
         messages=[
-            {"role": "system", "content": f"""
+            {"role": "system", "content": """
 Tu es un analyseur de requêtes League of Legends.
-
-À partir de la question utilisateur, extrais les informations suivantes :
-- champ : champion concerné (ou null)
-
-si un champion est mentionné, fournis les informations suivantes :
-- info : information recherchée (Lore, spell, stat) (ou null)
-
-Réponds uniquement en JSON valide.
+À partir de la question utilisateur, renvoie un JSON avec :
+{
+  "champ": "champion concerné ou null",
+  "info": "information recherchée (lore, spell, stat) ou null"
+}
+Ne renvoie que du JSON valide.
 """},
             {"role": "user", "content": prompt},
         ],
     )
 
-    formatted_json = extract_json(completion.choices[0].message.content)
+    print(classification.choices[0].message.content)
+
+    formatted_json = extract_json(classification.choices[0].message.content)
 
     systemPrompt = f"""
-Tu es un assistant agissant comme un professeur bienveillante et aidant les utilisateurs à comprendre le jeu vidéo League of Legends.
-             
-You must respond in French in 1000 characters maximum.
+Tu es un assistant agissant comme un professeur bienveillant et aidant les utilisateurs à comprendre le jeu vidéo League of Legends.
+Réponds en français de manière claire et concise avec un maximum de 1000 caractères.
 """
+    print(formatted_json)
     
     if formatted_json.get("champ"):
-        systemPrompt += "N'invente aucune information, met du contexte et de la formulation sur les données en ta possession"
-    
-        filt = Filter(
-            must=[
+        systemPrompt += """
+N'invente aucune information.
+Reformule les données en ta possession de maniere naturelle. 
+Réponds strictement à la question posée.
+Si les informations sont insuffisantes, excuse-toi et indique clairement que tu ne sais pas, sans tenter de deviner.
+"""
+
+        champ = formatted_json.get("champ")
+        info = formatted_json.get("info")
+        query_text = f"""
+Champion: {champ}
+Question: {prompt}
+Context: League of Legends champion {info} explanation
+        """
+        embedding = model.encode(query_text)
+
+        must_conditions = [
+            FieldCondition(
+                key="champion",
+                match=MatchValue(value=champ)
+            )
+        ]
+
+        if info:
+            must_conditions.append(
                 FieldCondition(
-                    key="champion",
-                    match=MatchValue(value=formatted_json.get("champ"))
+                    key="chunk_type",
+                    match=MatchValue(value=info)
                 )
-            ]
-        )
+            )
+
 
         result = qdrant_client.query_points(
             collection_name="lol_champions",
-            query_filter=filt,
+            prefetch=[
+                Prefetch(
+                    query=embedding,
+                    filter=Filter(
+                        must=must_conditions
+                    ),
+                    limit=3
+                )
+            ],
+            query=embedding,
             limit=1
         )
 
         points = result.points
 
-        info = formatted_json.get("info")
+        print(points)
 
-        if points and info:
-            full_texte = points[0].payload.get("document")
+        if points:
+            context_texts = [point.payload["text"] for point in points]
+            context = "\n".join(context_texts)
+            systemPrompt += f"Contexte : {context}"
 
-            
-            debut = full_texte.index(f"\n\n")
+        else:
+            return {"response": ""}
 
 
 
+    response = client.chat.completions.create(
+        model="qwen/qwen-2.5-7b-instruct",
+        messages=[
+            {
+                "role": "system",
+                "content": systemPrompt
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        temperature=0.8,
+        top_p=0.9,
+        # max_tokens=200,
+        # stop=["</s>", "<|endoftext|>", "<|im_end|>"]
+    )
 
-    #     systemPrompt += f"Contexte : {result}"
 
-    # completion = client.chat.completions.create(
-    #     model="qwen/qwen-2.5-7b-instruct",
-    #     messages=[
-    #         {"role": "system", "content": systemPrompt},
-    #         {"role": "user", "content": prompt},
-    #     ],
-    # )
-
-    return {"response": "str(formatted_json)"}
+    return {"response": response.choices[0].message.content}
 
 
 # -------------------------

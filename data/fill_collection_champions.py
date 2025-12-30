@@ -16,18 +16,18 @@ from qdrant_client.http.models import Filter, FieldCondition, MatchValue
 
 HEADERS = {"User-Agent": "Mozilla/5.0"}
 
-# client = QdrantClient(url="http://localhost:6333")
-# model = SentenceTransformer("sentence-transformers/all-mpnet-base-v2")
+client = QdrantClient(url="http://localhost:6333")
+model = SentenceTransformer("sentence-transformers/all-mpnet-base-v2")
 
-def format_champion_for_rag(champ, type_data, data):
+def toText(champ, type_data, data):
     out = []
 
-    out.append(f"Champion: {champ} - {type_data}")
+    out.append(f"Champion {champ} - {type_data}")
 
-    if data.isinstance(data, str):
+    if isinstance(data, str):
         out.append(data.strip())
 
-    elif data.isinstance(data, dict):
+    elif isinstance(data, dict):
         for key, value in data.items():
             out.append(f"- {key} : {value}")
 
@@ -225,8 +225,8 @@ def champion_exists(champion_name: str) -> bool:
 
 
 
-def insert_champion(payload: dict):
-    vector = model.encode(payload["document"]).tolist()
+def insert_chunk(payload: dict):
+    vector = model.encode(payload["text"]).tolist()
 
     point_id = str(uuid.uuid4())
 
@@ -241,7 +241,7 @@ def insert_champion(payload: dict):
         ]
     )
 
-    print(f"{payload['champion']} inserted into Qdrant.")
+    print(f"{payload['champion']} {payload['chunk_type']} inserted into Qdrant.")
 
 
 
@@ -261,10 +261,10 @@ if __name__ == "__main__":
 'Volibear', 'Warwick', 'Xayah', 'Xerath', 'Xin Zhao', 'Yasuo', 'Yone', 'Yorick', 'Yuumi', 'Zac', 'Zed', 'Zeri', 'Ziggs', 
 'Zilean', 'Zoe', 'Zyra'] # , 'Ambessa', 'Mel', 'Yunara', 'Zaahen'
     
-    for champ in champions_list[:3]:
-        # if champion_exists(champ):
-        #     print(f"{champ} déjà présent !")
-        #     continue
+    for champ in champions_list:
+        if champion_exists(champ):
+            print(f"{champ} déjà présent !")
+            continue
 
         WIKI_BASE = "https://leagueoflegends.fandom.com"
         PAGE = f"{champ}/LoL"
@@ -285,7 +285,6 @@ if __name__ == "__main__":
 
         champ_info_block = soup.select_one(".stat-wheel")
         text = champ_info_block.get_text(separator=" : ", strip=True)
-
         # transformer en dictionnaire
         parts = text.split(" : ")
         ratings = {}
@@ -293,6 +292,7 @@ if __name__ == "__main__":
             key = parts[i].strip()
             value = parts[i+1].strip()
             ratings[key] = value
+
 
         spells = extract_abilities_simple(soup)
 
@@ -305,19 +305,69 @@ if __name__ == "__main__":
         # }
 
         # print(json.dumps(data, indent=4, ensure_ascii=False)) # Dictionnaire
-        # print(format_champion_for_rag(champion, lore, info, ratings, spells)) # Texte
+        # print(toText(champion, lore, info, ratings, spells)) # Texte
 
         # LORE
-        payload = {
+        payload_lore = {
             "champion": champ,
             "chunk_type": "lore",
             "lore": lore,
-            "document": format_champion_for_rag(
+            "text": toText(
                 champ,
                 "lore",
                 lore
             )
         }
+
+        insert_chunk(payload_lore)
+
+        # infos
+        payload_infos = {
+            "champion": champ,
+            "chunk_type": "infos",
+            "infos": info,
+            "text": toText(
+                champ,
+                "infos",
+                info
+            )
+        }
+
+        insert_chunk(payload_infos)
+
+        # raitings
+        payload_ratings = {
+            "champion": champ,
+            "chunk_type": "ratings",
+            "ratings": ratings,
+            "text": toText(
+                champ,
+                "ratings",
+                ratings
+            )
+        }
+
+        insert_chunk(payload_ratings)
+
+        # spells
+        for i, spell in enumerate(spells):
+            spell_name = f"Spell {spell.get('slot', i)}"
+            if spell.get('slot', i) == "R":
+                spell_name += " (Ultimate spells)"
+            payload_spell = {
+                "champion": champ,
+                "chunk_type": "spell",
+                "spell_slot": spell.get("slot", i),
+                "spell": spell,
+                "text": toText(
+                    champ,
+                    spell_name,
+                    spell
+                )
+            }
+
+            insert_chunk(payload_spell)
+
 
         # payload = {
         #     "champion": champ,
@@ -325,7 +375,7 @@ if __name__ == "__main__":
         #     "metadata": info,
         #     "stats": ratings,
         #     "spells": spells,
-        #     "document": format_champion_for_rag(
+        #     "text": toText(
         #         champ,
         #         lore,
         #         info,
