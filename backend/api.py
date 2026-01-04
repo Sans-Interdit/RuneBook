@@ -205,7 +205,15 @@ def extract_json(text: str):
     match = re.search(r"\{.*\}", text, re.S)
     if not match:
         raise ValueError("Aucun JSON trouvé")
-    return json.loads(match.group())
+
+    raw = match.group()
+
+    # Correction des JSON sur-échappés générés par LLM
+    if '\\"' in raw:
+        raw = raw.replace('\\"', '"')
+
+    return json.loads(raw)
+
 
 @router.post("/chat")
 async def chat(data: dict):
@@ -227,19 +235,47 @@ async def chat(data: dict):
         model="qwen/qwen-2.5-7b-instruct",
         messages=[
             {"role": "system", "content": """
-Tu es un analyseur de requêtes League of Legends.
-À partir de la question utilisateur, renvoie un JSON avec :
-{
-  "champ": "champion concerné ou null",
-  "info": "information recherchée (lore, spell, stat) ou null"
-}
-Ne renvoie que du JSON valide.
+Tu es un classificateur de requêtes League of Legends.
+
+Réponds UNIQUEMENT en JSON valide (pas de markdown, pas d'explication).
+
+Règles:
+- Ta réponse DOIT être un JSON STRICTEMENT valide.
+- Aucune explication.
+- Aucun texte avant ou après.
+- Aucun caractère échappé inutile.
+- Utilise uniquement des guillemets doubles ".
+
+Format de sortie:
+{"champ": "champion_name|null", "info": "lore|spell|null"}
+             
+Exemples:
+Q: "L'histoire de Yasuo"
+A: {"champ": "Yasuo", "info": "lore"}
+
+Q: "Sorts d'Ahri"
+A: {"champ": "Ahri", "info": "spell"}
+
+Q: "Meilleurs items ADC"
+A: {"champ": null, "info": null}
+
+Q: "Quel rôle joue Graves ?"
+A: {"champ": "Graves", "info": "stats"}
+
+Règles:
+- "champ": nom exact du champion ou null
+- "info": 
+  * "lore" = histoire/background du champion
+  * "spell" = compétences/capacités du champion
+  * "stats" = données techniques du champion
+  * null = autre requête
+- Guillemets doubles obligatoires
 """},
             {"role": "user", "content": prompt},
         ],
     )
 
-    print(classification.choices[0].message.content)
+    print("class", classification.choices[0].message.content)
 
     formatted_json = extract_json(classification.choices[0].message.content)
 
@@ -252,7 +288,8 @@ Réponds en français de manière claire et concise avec un maximum de 1000 cara
     if formatted_json.get("champ"):
         systemPrompt += """
 N'invente aucune information.
-Reformule les données en ta possession de maniere naturelle. 
+Reformule les données en ta possession de maniere naturelle.
+Ne traduis jamais les termes techniques de League of Legends, considère que l'utilisateur doit les connaitre ou les apprendre en anglais.
 Réponds strictement à la question posée.
 Si les informations sont insuffisantes, excuse-toi et indique clairement que tu ne sais pas, sans tenter de deviner.
 """
@@ -286,15 +323,14 @@ Context: League of Legends champion {info} explanation
             collection_name="lol_champions",
             prefetch=[
                 Prefetch(
-                    query=embedding,
                     filter=Filter(
                         must=must_conditions
                     ),
-                    limit=3
+                    limit=5
                 )
             ],
             query=embedding,
-            limit=1
+            limit=3
         )
 
         points = result.points
@@ -306,9 +342,19 @@ Context: League of Legends champion {info} explanation
             context = "\n".join(context_texts)
             systemPrompt += f"Contexte : {context}"
 
-        else:
-            return {"response": ""}
+        # if points:
+        #     context_texts = []
+        #     for i, point in enumerate(points):
+        #         context = point.payload["text"]
+        #         context_texts.append(f"=== CONTEXT_ITEM_{i}_START ===\n" + context + "\n=== CONTEXT_ITEM_{i}_END ===")
+        #     context = "\n".join(context_texts)
+        #     systemPrompt += f"Contexte : {context}"
 
+    #     else:
+    #         return {"response": ""}
+
+    # else:
+    #     return {"response": ""}
 
 
     response = client.chat.completions.create(

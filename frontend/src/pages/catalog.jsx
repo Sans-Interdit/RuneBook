@@ -30,6 +30,12 @@ export default function Catalog() {
     return "bg-red-400";
   };
 
+  const map_fr = (level) => {
+    if (level === "New Player") return "Nouveau Joueur";
+    if (level === "Average Player") return "Joueur Medium";
+    if (level === "Confirmed Player") return "Joueur Confirmé";
+  }
+
   return (
     <div className="overflow-auto bg-primary-50">
       {/* Header */}
@@ -126,7 +132,7 @@ export default function Catalog() {
                     {guide.title}
                   </h3>
                   <span className={`ml-2 px-3 py-1 text-xs font-semibold rounded-full text-primary-50 whitespace-nowrap ${getLevelColor(guide.level)}`}>
-                    {guide.level}
+                    {map_fr(guide.level)}
                   </span>
                 </div>
 
@@ -201,7 +207,7 @@ export default function Catalog() {
                   ))}
                 </div>
                 <span className={`px-4 py-2 text-sm font-semibold rounded-full text-primary-50 whitespace-nowrap ${getLevelColor(selectedGuide.level)}`}>
-                  {selectedGuide.level}
+                  {map_fr(selectedGuide.level)}
                 </span>
               </div>
 

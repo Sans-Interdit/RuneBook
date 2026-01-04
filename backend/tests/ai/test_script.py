@@ -4,6 +4,7 @@ from backend.app import app
 
 client = TestClient(app)
 
+
 def get_rag_responses():
     # Charger le dataset
     with open('./backend/tests/ai/questions_1.json', 'r', encoding='utf-8') as f:
@@ -25,7 +26,7 @@ def get_rag_responses():
             new_value.append(q)
 
     # Sauvegarder les réponses dans un nouveau fichier
-    with open('./backend/tests/ai/responses_1.json', 'w', encoding='utf-8') as f:
+    with open('./backend/tests/ai/responses_3.json', 'w', encoding='utf-8') as f:
         json.dump(new_value, f, ensure_ascii=False, indent=4)
 
 if __name__ == "__main__":

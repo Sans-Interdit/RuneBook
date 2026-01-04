@@ -94,7 +94,7 @@ class Source(Base):
 class Guide(Base):
     __tablename__ = "guide"
 
-    id_guide = Column(Integer, primary_key=True)
+    id_guide = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String(50), nullable=False)
     content = Column(String(6000))
     level = Column(String(20))
@@ -122,7 +122,7 @@ class Guide(Base):
 class Tag(Base):
     __tablename__ = "tag"
 
-    id_tag = Column(Integer, primary_key=True)
+    id_tag = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(50), nullable=False)
 
     # Relations

@@ -1,0 +1,170 @@
+[
+    {
+        "id": 2,
+        "question": "Quelle est la compétence ultime de Garen ?",
+        "categorie": "compétence_ultime",
+        "champion": "Garen",
+        "response_ai": "La compétence ultime de Garen s'appelle \"Demacian Justice\". Elle lâche sur une cible ennemie la puissance de Demacia, infligeant des dégâts réels et révélant l'adversaire pendant un court instant."
+    },
+    {
+        "id": 4,
+        "question": "Dans quelle voie est joué Jax ?",
+        "categorie": "voie",
+        "champion": "Jax",
+        "response_ai": "Jax est joué dans la voie guerrier (tank/adin). Il combine des attributs de résilience et de dégâts, ce qui lui permet de jouer efficacement en tant que tank ou adin, en fonction de la stratégie de l'équipe."
+    },
+    {
+        "id": 7,
+        "question": "Quelle est la compétence ultime de Yasuo ?",
+        "categorie": "compétence_ultime",
+        "champion": "Yasuo",
+        "response_ai": "La compétence ultime de Yasuo s'appelle \"Last Breath\" et est représentée par la lettre R."
+    },
+    {
+        "id": 9,
+        "question": "Quel est le rôle principal de Thresh ?",
+        "categorie": "rôle",
+        "champion": "Thresh",
+        "response_ai": "Le rôle principal de Thresh dans League of Legends est celui d'un support contrôleur. Il excelle en imposant des contraintes sur les mouvements des adversaires et en les immobilisant temporairement grâce à ses compétences. Sa capacité ultime, The Box, lui permet de créer des barrières qui infligent des dégâts magiques et ralentissent les ennemis, faisant de lui un champion très efficace pour gérer les équilibres de team et contrôler les champs."
+    },
+    {
+        "id": 10,
+        "question": "Dans quelle voie est joué Ezreal ?",
+        "categorie": "voie",
+        "champion": "Ezreal",
+        "response_ai": "Ezreal est généralement joué dans la voie des carries ou des adc (Attack Damage Carry). Il peut également être utilisé en soutien dans certaines situations grâce à sa mobilité et à ses capacités offensives."
+    },
+    {
+        "id": 11,
+        "question": "Quelle est la compétence ultime de Malphite ?",
+        "categorie": "compétence_ultime",
+        "champion": "Malphite",
+        "response_ai": "La compétence ultime de Malphite s'appelle \"Unstoppable Force\" (Puissance Inébranlable)."
+    },
+    {
+        "id": 14,
+        "question": "Quel est le rôle principal de Lee Sin ?",
+        "categorie": "rôle",
+        "champion": "Lee Sin",
+        "response_ai": "Le rôle principal de Lee Sin est celui de jungler. Il peut également être classé comme un champion de diversité (Diver), combinant des traits de guerrier et d'assassin."
+    },
+    {
+        "id": 15,
+        "question": "Quelle est la compétence ultime d'Ashe ?",
+        "categorie": "compétence_ultime",
+        "champion": "Ashe",
+        "response_ai": "La compétence ultime d'Ashe s'appelle \"Enchanted Crystal Arrow\" et est représentée par la lettre R dans le menu des compétences."
+    },
+    {
+        "id": 18,
+        "question": "Quel est le rôle principal de Blitzcrank ?",
+        "categorie": "rôle",
+        "champion": "Blitzcrank",
+        "response_ai": "Le rôle principal de Blitzcrank est celui de support. Il peut également jouer dans la catégorie tank support du fait de ses bonnes capacités de durabilité et de contrôle."
+    },
+    {
+        "id": 19,
+        "question": "Quelle est la compétence ultime de Lux ?",
+        "categorie": "compétence_ultime",
+        "champion": "Lux",
+        "response_ai": "La compétence ultime de Lux s'appelle Final Spark."
+    },
+    {
+        "id": 21,
+        "question": "Dans quelle voie est joué Vayne ?",
+        "categorie": "voie",
+        "champion": "Vayne",
+        "response_ai": "Vayne est jouée dans la voie des assassins."
+    },
+    {
+        "id": 24,
+        "question": "Quelle est la compétence ultime de Darius ?",
+        "categorie": "compétence_ultime",
+        "champion": "Darius",
+        "response_ai": "La compétence ultime de Darius s'appelle \"Noxian Guillotine\" et est représentée par la touche R."
+    },
+    {
+        "id": 25,
+        "question": "Quel type de dégâts inflige Syndra ?",
+        "categorie": "type_degats",
+        "champion": "Syndra",
+        "response_ai": "Syndra inflige des dégâts magiques."
+    },
+    {
+        "id": 26,
+        "question": "Dans quelle voie est joué Renekton ?",
+        "categorie": "voie",
+        "champion": "Renekton",
+        "response_ai": "Renekton est généralement joué dans la voie des frontalières (top lane). Il est un tanky melee qui se concentre sur la domptage et l'agression directe des adversaires."
+    },
+    {
+        "id": 29,
+        "question": "Quelle est la compétence ultime de Karthus ?",
+        "categorie": "compétence_ultime",
+        "champion": "Karthus",
+        "response_ai": "La compétence ultime de Karthus s'appelle Requiem. Elle coûte 100 mana et a un refroidissement de 200/180/160 secondes. Karthus canalise pendant 0,25 seconde puis inflige des dégâts magiques globaux à tous les cibles ennemies."
+    },
+    {
+        "id": 30,
+        "question": "Quel type de dégâts inflige Fiora ?",
+        "categorie": "type_degats",
+        "champion": "Fiora",
+        "response_ai": "Fiora inflige des dégâts magiques."
+    },
+    {
+        "id": 34,
+        "question": "Quelle est la compétence ultime de Zoe ?",
+        "categorie": "compétence_ultime",
+        "champion": "Zoe",
+        "response_ai": "La compétence ultime de Zoe s'appelle \"Portal Jump\" et est souvent appelée simplement \"R\". Elle permet à Zoe de se téléporter dans une direction pendant 0,75 secondes, pendant lesquelles elle ne peut pas bouger mais a une vue imprenable. Ensuite, elle se téléporte de nouveau vers sa position d'origine."
+    },
+    {
+        "id": 36,
+        "question": "Dans quelle voie est joué Draven ?",
+        "categorie": "voie",
+        "champion": "Draven",
+        "response_ai": "Draven est joué en bas (bottom)."
+    },
+    {
+        "id": 38,
+        "question": "Quel est le rôle principal de Vi ?",
+        "categorie": "rôle",
+        "champion": "Vi",
+        "response_ai": "Le rôle principal de Vi est celui d'une chasseuse (Diver en anglais). Elle est également classée comme une assassine (Assassin Legacy), ce qui la positionne comme un champion capable de se concentrer sur des cibles spécifiques avec des capacités d'attaque et de mobilité avancées."
+    },
+    {
+        "id": 39,
+        "question": "Quelle est la compétence ultime de Shen ?",
+        "categorie": "compétence_ultime",
+        "champion": "Shen",
+        "response_ai": "La compétence ultime de Shen s'appelle \"Stand United\"."
+    },
+    {
+        "id": 41,
+        "question": "Dans quelle voie est joué Sett ?",
+        "categorie": "voie",
+        "champion": "Sett",
+        "response_ai": "Sett joue dans la voie Top."
+    },
+    {
+        "id": 44,
+        "question": "Quelle est la compétence ultime de Jinx ?",
+        "categorie": "compétence_ultime",
+        "champion": "Jinx",
+        "response_ai": "La compétence ultime de Jinx s'appelle \"Super Mega Death Rocket!\"."
+    },
+    {
+        "id": 46,
+        "question": "Dans quelle voie est joué Viktor ?",
+        "categorie": "voie",
+        "champion": "Viktor",
+        "response_ai": "Viktor joue dans la voie Moyen (Middle)."
+    },
+    {
+        "id": 49,
+        "question": "Quelle est la compétence ultime d'Ekko ?",
+        "categorie": "compétence_ultime",
+        "champion": "Ekko",
+        "response_ai": "La compétence ultime d'Ekko s'appelle Chronobreak. Elle a une coût de mana de 100, un refroidissement initial de 110 secondes qui diminue à 80 et 50 secondes avec chaque niveau supérieur, et une durée de lancer de 0,5 seconde. L'effet de cette compétence est le suivant : Ekko entre en stase pendant le temps de lancer, puis il se soigne et se déplace vers l'emplacement de son après-image, créée grâce au passif de Chronobreak, où il provoque une explosion magique."
+    }
+]

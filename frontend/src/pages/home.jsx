@@ -16,6 +16,12 @@ export default function Home() {
   const { guides } = useAppContext();
   console.log(guides)
 
+  const map_fr = (level) => {
+    if (level === "New Player") return "Nouveau Joueur";
+    if (level === "Average Player") return "Joueur Medium";
+    if (level === "Confirmed Player") return "Joueur Confirmé";
+  }
+
   return (
     <div className="flex flex-col overflow-auto bg-primary-50">
       {/* Hero Section */}
@@ -315,7 +321,7 @@ export default function Home() {
               className="flex transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${currentGuideIndex * 100}%)` }}
             >
-              {guides.map((guide, index) => (
+              {guides.slice(0,5).map((guide, index) => (
                 <div key={guide.id_guide} className="flex-shrink-0 w-full px-4">
                   <div className="p-8 transition-all duration-300 border-2 rounded-2xl bg-background-50 border-primary-100/30 hover:border-secondary-50 hover:shadow-xl hover:shadow-secondary-50/20">
                     <div className="flex items-center justify-between mb-4">
@@ -358,14 +364,14 @@ export default function Home() {
           
           {/* Navigation Buttons */}
           <button
-            onClick={() => setCurrentGuideIndex(currentGuideIndex === 0 ? guides.length - 1 : currentGuideIndex-1)}
+            onClick={() => setCurrentGuideIndex(currentGuideIndex === 0 ? guides.slice(0,5).length - 1 : currentGuideIndex-1)}
             className="absolute left-0 p-3 transition-all duration-300 transform -translate-y-1/2 rounded-full top-1/2 bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
           
           <button
-            onClick={() => setCurrentGuideIndex(currentGuideIndex === guides.length - 1 ? 0 : currentGuideIndex+1)}
+            onClick={() => setCurrentGuideIndex(currentGuideIndex === guides.slice(0,5).length - 1 ? 0 : currentGuideIndex+1)}
             className="absolute right-0 p-3 transition-all duration-300 transform -translate-y-1/2 rounded-full top-1/2 bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ChevronRight className="w-6 h-6" />
@@ -373,7 +379,7 @@ export default function Home() {
           
           {/* Indicators */}
           <div className="flex justify-center gap-2 mt-8">
-            {guides.map((_, index) => (
+            {guides.slice(0,5).map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentGuideIndex(index)}

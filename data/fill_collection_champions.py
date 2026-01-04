@@ -60,7 +60,7 @@ def fetch_page_html(wiki_base: str, page_title: str) -> Optional[str]:
         api_url,
         params=params,
         headers=HEADERS,
-        timeout=15
+        timeout=30
     ) as resp:
         resp.raise_for_status()
         data = resp.json()    
@@ -281,7 +281,7 @@ if __name__ == "__main__":
             lore = clean_text_basic(lore)
 
 
-        info = extract_infobox(soup)
+        stats = extract_infobox(soup)
 
         champ_info_block = soup.select_one(".stat-wheel")
         text = champ_info_block.get_text(separator=" : ", strip=True)
@@ -299,7 +299,7 @@ if __name__ == "__main__":
         # data = {
         #     "champion": champion,
         #     "lore": lore,
-        #     "info": info,
+        #     "stats": stats,
         #     "ratings": ratings,
         #     "spells": spells,
         # }
@@ -307,10 +307,20 @@ if __name__ == "__main__":
         # print(json.dumps(data, indent=4, ensure_ascii=False)) # Dictionnaire
         # print(toText(champion, lore, info, ratings, spells)) # Texte
 
+
+
+        # data["aliases"] = []
+        # data["aliases"]["lane"] = ["position", "voie", "lane"]
+        # if data["slot"] == "R":
+        #     data["spell_aliases"] = ["ultimate", "ultime", "spell R", "sort R"]
+
+
+
         # LORE
         payload_lore = {
             "champion": champ,
             "chunk_type": "lore",
+            # "aliases": {"position": ["lane", "voie", ]
             "lore": lore,
             "text": toText(
                 champ,
@@ -324,12 +334,12 @@ if __name__ == "__main__":
         # infos
         payload_infos = {
             "champion": champ,
-            "chunk_type": "infos",
-            "infos": info,
+            "chunk_type": "stats",
+            "stats": stats,
             "text": toText(
                 champ,
-                "infos",
-                info
+                "stats",
+                stats
             )
         }
 
@@ -351,9 +361,6 @@ if __name__ == "__main__":
 
         # spells
         for i, spell in enumerate(spells):
-            spell_name = f"Spell {spell.get('slot', i)}"
-            if spell.get('slot', i) == "R":
-                spell_name += " (Ultimate spells)"
             payload_spell = {
                 "champion": champ,
                 "chunk_type": "spell",
@@ -361,10 +368,11 @@ if __name__ == "__main__":
                 "spell": spell,
                 "text": toText(
                     champ,
-                    spell_name,
+                    f"Spell {spell.get('slot', i)}",
                     spell
                 )
             }
+
 
             insert_chunk(payload_spell)
 

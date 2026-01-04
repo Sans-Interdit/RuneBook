@@ -96,6 +96,52 @@ tags = ["Modes", "Carte"]
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # import requests
 # from bs4 import BeautifulSoup
 # import re
