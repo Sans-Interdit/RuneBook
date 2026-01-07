@@ -59,7 +59,7 @@ class Message(Base):
     __tablename__ = "message"
 
     id_message = Column(Integer, primary_key=True)
-    content = Column(String(1200), nullable=False)
+    content = Column(String(5000), nullable=False)
     role = Column(String(10), nullable=False)  # e.g., "user" or "assistant"
     id_conversation = Column(Integer, ForeignKey("conversation.id_conversation", ondelete="CASCADE"), nullable=False)
 

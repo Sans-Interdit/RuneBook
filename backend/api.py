@@ -281,19 +281,13 @@ Règles:
 
     systemPrompt = f"""
 Tu es un assistant agissant comme un professeur bienveillant et aidant les utilisateurs à comprendre le jeu vidéo League of Legends.
-Réponds en français de manière claire et concise avec un maximum de 1000 caractères.
+Réponds UNIQUEMENT en français de manière claire et concise avec un maximum de 1000 caractères.
 """
-    print(formatted_json)
+    # print(formatted_json)
+
+    points = []
     
     if formatted_json.get("champ"):
-        systemPrompt += """
-N'invente aucune information.
-Reformule les données en ta possession de maniere naturelle.
-Ne traduis jamais les termes techniques de League of Legends, considère que l'utilisateur doit les connaitre ou les apprendre en anglais.
-Réponds strictement à la question posée.
-Si les informations sont insuffisantes, excuse-toi et indique clairement que tu ne sais pas, sans tenter de deviner.
-"""
-
         champ = formatted_json.get("champ")
         info = formatted_json.get("info")
         query_text = f"""
@@ -335,26 +329,35 @@ Context: League of Legends champion {info} explanation
 
         points = result.points
 
-        print(points)
+    else:
+        query_text = f"""Question: {prompt}
+Context: League of Legends explanation"""
+        
+        embedding = model.encode(query_text)
 
-        if points:
-            context_texts = [point.payload["text"] for point in points]
-            context = "\n".join(context_texts)
-            systemPrompt += f"Contexte : {context}"
+        result = qdrant_client.query_points(
+            collection_name="lol_guides",
+            query=embedding,
+            limit=2
+        )
 
-        # if points:
-        #     context_texts = []
-        #     for i, point in enumerate(points):
-        #         context = point.payload["text"]
-        #         context_texts.append(f"=== CONTEXT_ITEM_{i}_START ===\n" + context + "\n=== CONTEXT_ITEM_{i}_END ===")
-        #     context = "\n".join(context_texts)
-        #     systemPrompt += f"Contexte : {context}"
+        points = result.points
 
-    #     else:
-    #         return {"response": ""}
 
-    # else:
-    #     return {"response": ""}
+    if points:
+        # print([point.payload["title"] for point in points])
+        systemPrompt += """N'invente aucune information.
+Selectionne et reformule les données en ta possession de maniere naturelle.
+Ne traduis jamais les termes techniques de League of Legends, si un mot te semble propre à League of Legends, laisse-le en anglais.
+Réponds strictement à la question posée.
+Si les informations sont insuffisantes, excuse-toi et indique clairement que tu ne sais pas, sans tenter de deviner."""
+
+        context_texts = [
+            point.payload.get("content") or point.payload.get("text")
+            for point in points
+        ]        
+        context = "\n".join(context_texts)
+        systemPrompt += f"Contexte : {context}"
 
 
     response = client.chat.completions.create(

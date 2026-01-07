@@ -14,7 +14,13 @@ import img7 from "/assets/ezreal.png";
 export default function Home() {
   const [currentGuideIndex, setCurrentGuideIndex] = useState(0);
   const { guides } = useAppContext();
-  console.log(guides)
+  const [selectedGuide, setSelectedGuide] = useState(null);
+
+  const getLevelColor = (level) => {
+    if (level === "New Player") return "bg-green-400";
+    if (level === "Average Player") return "bg-secondary-50";
+    return "bg-red-400";
+  };
 
   const map_fr = (level) => {
     if (level === "New Player") return "Nouveau Joueur";
@@ -25,11 +31,11 @@ export default function Home() {
   return (
     <div className="flex flex-col overflow-auto bg-primary-50">
       {/* Hero Section */}
-      <div className="flex flex-col items-center justify-center px-6 py-6 text-center">
-        <h1 className="mb-2 text-6xl font-bold text-transparent bg-clip-text bg-secondary-50 font-titre">
+      <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
+        <h1 className="mb-4 text-6xl font-bold text-transparent bg-clip-text bg-secondary-50 font-titre">
           RuneBook
         </h1>
-        <p className="mb-6 text-4xl font-semibold text-secondary-50 font-titre">
+        <p className="mb-8 text-4xl font-semibold text-secondary-50 font-titre">
           Where League of Legends feel logical
         </p>
         <p className="max-w-3xl text-xl leading-relaxed text-white font-text">
@@ -39,9 +45,9 @@ export default function Home() {
         <img 
           src={paysage}
           alt="heatmap" 
-          className="object-contain mb-12 rounded-full h-[450px] mt-8">
+          className="object-contain my-12 rounded-full h-[450px]">
         </img>
-        <div className="flex gap-10">
+        <div className="flex gap-10 py-8">
           <a 
             href="/catalog"
             className="px-10 py-6 text-xl font-semibold transition-all duration-300 rounded-lg bg-secondary-50 text-primary-50 hover:scale-105"
@@ -322,7 +328,11 @@ export default function Home() {
               style={{ transform: `translateX(-${currentGuideIndex * 100}%)` }}
             >
               {guides.slice(0,5).map((guide, index) => (
-                <div key={guide.id_guide} className="flex-shrink-0 w-full px-4">
+                <div 
+                  key={guide.id_guide}
+                  onClick={() => setSelectedGuide(guide)}
+                  className="flex-shrink-0 w-full px-4 cursor-pointer"
+                >
                   <div className="p-8 transition-all duration-300 border-2 rounded-2xl bg-background-50 border-primary-100/30 hover:border-secondary-50 hover:shadow-xl hover:shadow-secondary-50/20">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-2xl font-bold text-secondary-50 font-titre">
@@ -352,9 +362,6 @@ export default function Home() {
                       <span className="text-sm text-secondary-50">
                         Source: {guide.source}
                       </span>
-                      <button className="px-6 py-2 font-semibold transition-all duration-300 rounded-lg bg-secondary-50 text-primary-50 hover:bg-secondary-50 hover:scale-105">
-                        Lire le guide
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -411,6 +418,66 @@ export default function Home() {
           </a>
         </div>
       </div>
+
+      {/* Modal for Guide Details */}
+      {selectedGuide && (
+        <div
+          onClick={() => setSelectedGuide(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/70"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative overflow-y-scroll w-full max-w-4xl max-h-[90vh] p-8 border-2 rounded-2xl bg-primary-50 border-secondary-50/50"
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedGuide(null)}
+              className="absolute text-3xl text-white transition-all duration-300 top-4 right-6 hover:text-secondary-50"
+            >
+              ×
+            </button>
+
+            {/* Guide Header */}
+            <div className="mb-6">
+              <div className="flex items-start justify-start mb-4">
+                <h2 className="flex-1 pr-8 text-3xl font-bold text-secondary-50 font-titre">
+                  {selectedGuide.title}
+                </h2>
+              </div>
+
+              <div className="flex flex-row items-center justify-between w-full mb-4">
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2">
+                  {selectedGuide.tags.map((tag, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 text-sm border rounded-full text-primary-100 border-primary-100/50"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+                <span className={`px-4 py-2 text-sm font-semibold rounded-full text-primary-50 whitespace-nowrap ${getLevelColor(selectedGuide.level)}`}>
+                  {map_fr(selectedGuide.level)}
+                </span>
+              </div>
+
+              {/* Source */}
+              <p className="text-sm text-secondary-50 font-text">
+                Source: {selectedGuide.source}
+              </p>
+            </div>
+
+            {/* Guide Content */}
+            <div className="prose prose-lg max-w-none">
+              <p className="text-base leading-relaxed text-white whitespace-pre-line font-text">
+                {selectedGuide.content}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

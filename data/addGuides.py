@@ -1,4 +1,4 @@
-from data.models import engine, Account, Tag, Guide, session as db_session
+from data.models import Tag, Guide, session as db_session
 
 def addGuide(title, content, tags, difficulty):
     # Check if guide already exists
@@ -35,6 +35,23 @@ def addGuide(title, content, tags, difficulty):
 
 
 
+title = "Rôles des joueurs - Répartition et responsabilités"
+
+content = """Dans une partie classique de League of Legends, chaque équipe est composée de cinq joueurs, chacun occupant un rôle précis, associé à une position de départ sur la carte. Cette répartition permet une distribution équilibrée de l'or et de l'expérience au sein de l'équipe.
+
+Un joueur commence sur la voie du haut (toplane), un autre sur la voie du milieu (midlane), tandis que deux joueurs débutent sur la voie du bas (botlane). Sur cette dernière, on retrouve généralement un carry AD (ADC), chargé d'infliger des dégâts sur la durée, accompagné d’un support, dont le rôle est de protéger, assister et contrôler les ennemis. Ces quatre joueurs évoluent principalement sur leur voie en début de partie et cherchent à accumuler de l'or et de l'expérience en éliminant les sbires adverses, tout en empêchant leurs opposants directs d'en faire autant.
+
+Le cinquième joueur est le jungler. Il commence la partie dans la jungle, où il élimine des monstres neutres afin de gagner de l'or et de l'expérience. En plus de cette progression personnelle, le jungler a un rôle clé de soutien global : il se déplace entre les voies pour surprendre les ennemis (ganks), aider ses alliés en difficulté et sécuriser des objectifs importants.
+
+Au fil de la partie, les rôles deviennent plus flexibles. Les joueurs quittent progressivement leurs voies initiales pour se regrouper, combattre en équipe et prendre des objectifs majeurs. Bien que chaque rôle ait des responsabilités spécifiques, la coopération et l’adaptation sont essentielles pour mener l’équipe à la victoire.
+
+Grâce à l'expérience accumulée, les champions montent de niveau, améliorant leurs statistiques et leurs compétences. L'or gagné permet quant à lui d'acheter des objets, renforçant encore davantage leur puissance. Une bonne compréhension de son rôle et de ses priorités est fondamentale pour progresser et contribuer efficacement au succès de l'équipe."""
+ 
+tags = ["Rôles", "Lanes", "Gameplay", "Fondamentaux"]
+
+difficulty = "New Player"
+
+addGuide(title, content, tags, difficulty)
 
 
 
@@ -462,5 +479,176 @@ tags = ["Gameplay", "Macro"]
 difficulty = "Average Player"
 
 
+
+addGuide(title, content, tags, difficulty)
+
+
+
+
+title = "Toplaners"
+
+content = """Les joueurs de la voie du haut évoluent sur une voie isolée (dans le coin supérieur de la carte), et doivent être autonomes grâce à d'excellents duels en 1v1, un farm précis et une bonne gestion des vagues de sbires pour générer de l'or indépendamment, tout en minimisant leur vulnérabilité aux ganks. La plus grande distance entre les tours de la voie du haut (comparée à la voie du milieu) permet de geler la vague et de prolonger les échanges, ce qui rend les sur-avancées ou une mauvaise gestion des vagues particulièrement punitives. Les joueurs de la voie du haut choisissent généralement des bruisers ou des tanks résistants. Ils utilisent souvent Téléportation combinée à Flash ou Flash combiné à Embrasement. La plupart des champions joués sur la voie du haut sont des champions de mêlée infligeant des dégâts physiques. Les joueurs de la voie du haut sont généralement efficaces en split-push. Parmi les cinq positions, la gestion des vagues est primordiale sur la voie du haut. Le contre-picking est crucial, car les joueurs de la voie du haut choisissent souvent leurs champions en dernier lors de la draft afin d'exploiter les matchups avec des champions capables de sustain, de poke ou de gap closer. La connaissance des matchups est donc essentielle à cette position. La plupart des joueurs de la voie du haut utilisent les runes Conquérant ou Poigne de l'immortel. Leurs objets de départ sont soit la Lame de Doran combinée à une potion de soin, soit le Bouclier de Doran combiné à une potion de soin."""
+
+tags = ["bases", "presentation"]
+
+difficulty = "New Player"
+
+
+
+addGuide(title, content, tags, difficulty)
+
+
+
+
+title = "Junglers"
+
+content = """Le jungler parcourt la jungle neutre de la carte, farmant les monstres pour gagner de l'or et de l'expérience, tout en gérant les ganks, le contrôle des objectifs et le contre-jungling. Ce rôle exige une excellente vision de la carte, une grande efficacité dans ses déplacements et une capacité d'adaptation pour priver le jungler adverse de ressources. Il utilise généralement Châtiment combiné à Flash. Le jungler a pour mission de sécuriser les monstres épiques comme les Dragons, les Larves du Néant, le Héraut de la Faille, le Baron et le Dragon Ancestral. La plupart des junglers sont des combattants au corps à corps, infligeant soit des dégâts magiques, soit des dégâts physiques. Le jungler dispose d'objets de départ spécifiques, parmi lesquels trois options : Jeune pousse de Piétineur de Mousse, Jeune pousse de Marchevent ou Chiot de Griffe Brûlante. Ces objets sont parfois combinés avec une Potion de Soin, mais certains junglers préfèrent économiser leur or pour des achats ultérieurs. Les ganks sont primordiaux pour ce rôle."""
+
+tags = ["bases", "presentation"]
+
+difficulty = "New Player"
+
+
+
+addGuide(title, content, tags, difficulty)
+
+
+
+
+title = "Midlaners"
+
+content = """Les midlaners évoluent sur une voie solo au centre de la carte, ce qui leur confère un contrôle unique et une grande influence sur la partie. Ils jouent généralement des mages (à burst ou à contrôle) et des assassins qui excellent sur les voies solo grâce à leur capacité à nettoyer rapidement les vagues de sbires et à leur montée en puissance avec l'expérience. Leur position leur permet de se déplacer rapidement vers les voies latérales, de participer à des escarmouches dans la jungle ou de prendre des objectifs comme le Dragon et le Héraut de la Faille. Les midlaners privilégient la gestion des vagues de sbires pour obtenir la priorité sur leur voie, ce qui leur permet de se déplacer en toute sécurité vers la voie du haut ou du bas pour des ganks et mettre la pression. Ils farment efficacement sur cette voie courte tout en surveillant les déplacements du jungler ennemi pour éviter les ganks, et coordonnent souvent leurs invasions avec leur propre jungler. Lors des combats d'équipe, ils ciblent les carrys fragiles comme l'ADC adverse avec des dégâts explosifs ou contrôlent la zone avec du poke et du contrôle de foule. La plupart des midlaners sont des DPS à distance ou au corps à corps, infligeant des dégâts magiques. La plupart des midlaners utilisent soit Flash combiné à Embrasement, soit Flash combiné à Téléportation. La voie du milieu est la plus risquée en raison de la pression constante des junglers ennemis. Le roaming est l'une des compétences les plus importantes à ce poste."""
+
+tags = ["bases", "presentation"]
+
+difficulty = "New Player"
+
+
+
+addGuide(title, content, tags, difficulty)
+
+
+
+
+title = "AD Carries"
+
+content = """Les ADC sont les principaux infligeant des dégâts physiques. Ils évoluent sur la voie du bas aux côtés d'un support (la seule voie duo du jeu). Leur force réside dans leur capacité à infliger des dégâts continus grâce à leurs attaques automatiques, dont la puissance augmente avec les objets améliorant les dégâts d'attaque, la vitesse d'attaque, les chances de coup critique et les effets à l'impact. Leur rôle est particulièrement efficace lors des combats d'équipe en milieu et fin de partie, où ils peuvent éliminer aussi bien les tanks que les champions fragiles s'ils sont bien protégés. Ils dépendent fortement de leur support pour la protection, l'engagement et le contrôle de la vision. Les ADC optent généralement pour le Saut éclair combiné à la Barrière. Ce sont généralement les champions les plus fragiles de la classe. Les ADC commencent généralement la partie avec la Lame de Doran et une Potion de soin. Tous les ADC utilisent le mana comme ressource. La plupart des ADC choisissent Tempo mortel comme rune."""
+
+tags = ["bases", "presentation"]
+
+difficulty = "New Player"
+
+
+
+addGuide(title, content, tags, difficulty)
+
+
+
+
+title = "Supports"
+
+content = """Le rôle de support consiste à soutenir l'ADC et son équipe grâce à des capacités utilitaires et une vision. C'est le seul rôle du jeu dont les revenus ne proviennent pas du farm, mais plutôt des objets de support et des assistances. Les supports débutent la partie sur la voie duo, en bas de la carte. Ils font équipe avec l'ADC, privilégiant les assistances aux éliminations tout en contrôlant le rythme de la voie. Ce rôle exige une excellente connaissance de la carte et une grande adaptabilité tout au long de la partie. Les supports protègent l'ADC en neutralisant les menaces grâce à des contrôles de foule, des boucliers ou des soins, ce qui permet un farm et des échanges de coups sûrs. Ils dictent la dynamique de la voie du bas par des engagements ou des désengagements agressifs, déterminant souvent les conditions de victoire dès le début grâce à des choix de champions comme les tanks, les enchanteurs ou les mages. Ils se positionnent aux côtés de l'ADC pour menacer les ennemis et réagir rapidement, évitant un jeu passif qui leur fait perdre le contrôle. Les supports se déplacent souvent sur la voie du milieu lorsqu'ils ont du temps libre. Tout comme les junglers, les supports disposent d'un objet de départ spécifique appelé Atlas du Monde, acheté automatiquement au début de la partie. L'Atlas mondial est combiné avec soit deux potions de soin, soit une balise de contrôle. Tous les supports utilisent le mana comme ressource. Les supports choisissent généralement les runes Invocation d'Aery, Comète arcanique ou Réplique. Parmi les autres runes de support, moins courantes, on trouve Gardien et Augmentation glaciale."""
+
+tags = ["bases", "presentation"]
+
+difficulty = "New Player"
+
+
+
+addGuide(title, content, tags, difficulty)
+
+
+
+
+
+
+title = "Commandes et contrôles - Bases"
+
+content = """League of Legends se joue principalement à la souris et au clavier. Le clic droit permet de déplacer son champion et d'attaquer automatiquement les ennemis à portée. Le clic gauche sert à sélectionner des unités, des compétences ou des éléments de l'interface.
+
+Les compétences du champion sont assignées par défaut aux touches Q, W, E et R. Elles peuvent être lancées soit en cliquant sur l’icône correspondante, soit via les raccourcis clavier. La plupart des joueurs utilisent le mode de lancement rapide (smart cast) pour gagner en réactivité.
+
+Les sorts d'invocateur sont assignés aux touches D et F. Les objets peuvent être activés à l’aide des touches numériques (1 à 7). La touche B permet de retourner à la base, tandis que la touche P ouvre la boutique.
+
+La caméra peut être déplacée avec la souris sur les bords de l’écran ou à l’aide des touches directionnelles. La barre espace recentre la caméra sur le champion, ce qui est fortement recommandé pour les débutants."""
+ 
+tags = ["Commandes", "Contrôles", "Interface", "Bases"]
+
+difficulty = "New Player"
+
+addGuide(title, content, tags, difficulty)
+
+
+
+
+
+
+
+title = "Objectif du jeu - Conditions de victoire"
+
+content = """L'objectif principal d'une partie de League of Legends est de détruire le Nexus ennemi, situé au cœur de la base adverse. Pour y parvenir, les joueurs doivent progresser à travers les lanes, détruire les tourelles ennemies et remporter des combats stratégiques.
+
+La carte principale, la Faille de l'invocateur, est divisée en trois lanes : la toplane, la midlane et la botlane, ainsi qu'une jungle. Chaque lane est protégée par des tourelles qu'il faut détruire dans un ordre précis.
+
+Les équipes gagnent un avantage en accumulant de l'or, de l'expérience et des objectifs neutres (dragons, Héraut de la Faille, Baron Nashor). Une bonne coordination et une prise de décision collective sont essentielles pour transformer ces avantages en victoire."""
+ 
+tags = ["Objectifs", "Victoire", "Carte", "Bases"]
+
+difficulty = "New Player"
+
+addGuide(title, content, tags, difficulty)
+
+
+
+
+
+
+title = "Rôles et positions - Introduction"
+
+content = """Chaque équipe est composée de cinq joueurs, chacun occupant un rôle spécifique. La toplane accueille généralement des champions résistants ou capables de tenir seuls sur la durée. La midlane est souvent occupée par des champions infligeant beaucoup de dégâts ou capables de se déplacer rapidement sur la carte.
+
+La botlane est composée de deux joueurs : le carry AD (ADC), chargé d'infliger des dégâts soutenus, et le support, dont le rôle est de protéger, soigner ou contrôler les ennemis. Le jungler évolue quant à lui dans la jungle, éliminant des camps de monstres et intervenant sur les lanes pour créer des opportunités.
+
+Comprendre son rôle et ses responsabilités est fondamental pour progresser et jouer efficacement en équipe."""
+ 
+tags = ["Rôles", "Lanes", "Gameplay", "Bases"]
+
+difficulty = "New Player"
+
+addGuide(title, content, tags, difficulty)
+
+
+
+
+
+title = "Or et expérience - Progression"
+
+content = """L'or et l'expérience sont les deux ressources principales permettant à un champion de devenir plus puissant. L'expérience est gagnée en restant à proximité des sbires ennemis lorsqu'ils meurent, ainsi qu'en éliminant des champions ou des monstres de la jungle.
+
+Monter de niveau permet d'améliorer ses compétences et d'augmenter ses statistiques de base. L'or, quant à lui, sert à acheter des objets dans la boutique afin d'améliorer les performances du champion.
+
+Un bon équilibre entre farming, participation aux combats et prise d'objectifs est essentiel pour maintenir une progression constante tout au long de la partie."""
+ 
+tags = ["Économie", "Expérience", "Objets", "Bases"]
+
+difficulty = "New Player"
+
+addGuide(title, content, tags, difficulty)
+
+
+
+
+
+title = "Vision et balises - Fondamentaux"
+
+content = """La vision est un élément clé de League of Legends. Elle permet d'anticiper les déplacements ennemis, d'éviter les embuscades et de sécuriser les objectifs importants.
+
+Les balises de vision (wards) peuvent être placées sur la carte pour révéler une zone pendant une durée limitée. Chaque joueur peut poser des balises grâce à la balise de vision incluse dans son inventaire.
+
+Contrôler la vision autour des objectifs comme les dragons ou le Baron Nashor donne un avantage stratégique majeur. Même les joueurs débutants doivent prendre l'habitude de poser régulièrement des wards."""
+ 
+tags = ["Vision", "Wards", "Stratégie", "Bases"]
+
+difficulty = "New Player"
 
 addGuide(title, content, tags, difficulty)
