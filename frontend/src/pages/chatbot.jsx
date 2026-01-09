@@ -17,6 +17,7 @@ export default function Chatbot() {
   const currentConversation = conversations.find(conv => conv.id === currentConversationId);
 
   useEffect(() => {
+    console.log(import.meta.env.VITE_IP_BACK)
     getIdContext()
     .then((token) => {
        if (token) {
