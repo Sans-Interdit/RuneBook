@@ -10,7 +10,7 @@ export const AppProvider = ({ children }) => {
   const getIdContext = () => {
     return getId()
     .then(res => {
-      console.log(res.data);
+      // console.log(res.data);
       return res.data;
     })
     .catch(err => {
