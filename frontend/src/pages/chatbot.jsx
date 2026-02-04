@@ -26,12 +26,14 @@ export default function Chatbot() {
   useEffect(() => {
     getIdContext()
     .then((token) => {
-       if (token) {
+      const isTokenValid = token && typeof token === "object" && !("document" in token);
+      
+      if (isTokenValid) {
         getConversations();
-       }
-       else {
-          window.location.href = '/login';
-       }
+      }
+      else {
+        window.location.href = '/login';
+      }
     })
   }, [])
 
@@ -145,12 +147,12 @@ export default function Chatbot() {
   };
 
   return (
-    <div className="flex flex-1 min-h-0 bg-primary-50 overflow-hidden">
+    <div className="flex flex-1 min-h-0 overflow-hidden bg-primary-50">
       {/* Sidebar - Conversations History */}
       <div className="z-10 flex flex-col h-full min-h-0 border-r-2 w-80 border-primary-100/30">
         {/* Sidebar Header */}
         <div className="p-6 border-b-2 border-primary-100/30">
-          <h2 className="mb-4 text-2xl text-center font-bold text-secondary-50 font-titre">
+          <h2 className="mb-4 text-2xl font-bold text-center text-secondary-50 font-titre">
             Mes Conversations avec {character}
           </h2>
           <button
@@ -207,8 +209,8 @@ export default function Chatbot() {
         {/* Chat Header */}
         <div className="p-6 border-b-2 border-primary-100/30">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary-100 overflow-hidden">
-              <img src={`/assets/${character}.jpg`} className="h-full w-auto rounded-full max-w-none"/>
+            <div className="flex items-center justify-center w-12 h-12 overflow-hidden rounded-full bg-primary-100">
+              <img src={`/assets/${character}.jpg`} className="w-auto h-full rounded-full max-w-none"/>
             </div>
             <div>
               <h1 className="text-2xl font-bold text-secondary-50 font-titre">
@@ -222,13 +224,13 @@ export default function Chatbot() {
         </div>
 
         {/* Messages Area */}
-        <div className="relative flex-1 p-6 overflow-y-auto bg-cover bg-center"
+        <div className="relative flex-1 p-6 overflow-y-auto bg-center bg-cover"
           style={{ backgroundImage: `url('/assets/${zoneMapping(character)}.jpg')` }}>
-          <div className="absolute inset-0 bg-primary-50/80 z-0 pointer-events-none" />
+          <div className="absolute inset-0 z-0 pointer-events-none bg-primary-50/80" />
           {currentConversation?.messages.length === 0 ? (
-            <div className="relative flex flex-col items-center justify-center h-full text-center z-10">
-              <div className="flex items-center justify-center w-20 h-20 mb-6 rounded-full bg-secondary-50 overflow-hidden">
-                <img src={`/assets/${character}.jpg`} className="h-full w-auto rounded-full max-w-none"/>
+            <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
+              <div className="flex items-center justify-center w-20 h-20 mb-6 overflow-hidden rounded-full bg-secondary-50">
+                <img src={`/assets/${character}.jpg`} className="w-auto h-full rounded-full max-w-none"/>
               </div>
               <h2 className="mb-2 text-2xl font-bold text-secondary-50 font-titre">
                 Prêt à Apprendre ?
@@ -265,7 +267,7 @@ export default function Chatbot() {
               </div>
             </div>
           ) : (
-            <div className="relative max-w-4xl mx-auto space-y-6 z-10">
+            <div className="relative z-10 max-w-4xl mx-auto space-y-6">
               {currentConversation?.messages.map((message, index) => (
                 <div
                   key={index}
@@ -278,9 +280,9 @@ export default function Chatbot() {
                       : 'bg-secondary-50'
                   }`}>
                     {message.role === 'user' ? (
-                      <img src={`/assets/summoner.png`} className="h-full w-auto rounded-full max-w-none"/>
+                      <img src={`/assets/summoner.png`} className="w-auto h-full rounded-full max-w-none"/>
                     ) : (
-                      <img src={`/assets/${character}.jpg`} className="h-full w-auto rounded-full max-w-none"/>
+                      <img src={`/assets/${character}.jpg`} className="w-auto h-full rounded-full max-w-none"/>
                       // <Bot className="w-5 h-5 text-primary-50" />
                     )}
                   </div>
@@ -311,8 +313,8 @@ export default function Chatbot() {
               {/* Typing Indicator */}
               {isTyping && (
                 <div className="flex gap-4">
-                  <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary-100 to-secondary-50 overflow-hidden">
-                    <img src={`/assets/${character}.jpg`} className="h-full w-auto rounded-full max-w-none"/>
+                  <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 overflow-hidden rounded-full bg-gradient-to-br from-primary-100 to-secondary-50">
+                    <img src={`/assets/${character}.jpg`} className="w-auto h-full rounded-full max-w-none"/>
                   </div>
                   <div className="inline-block p-4 border-2 rounded-tl-none rounded-2xl bg-primary-50 border-primary-100/30">
                     <div className="flex gap-1">
