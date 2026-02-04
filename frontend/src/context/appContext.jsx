@@ -28,7 +28,10 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     getGuides()
     .then((data) => setGuides(data.data))
-    .catch((err) => console.error(err));
+    .catch((err) => {
+      setGuides([])
+      console.error(err);
+    });
   }, []);
 
   const registerContext = async (email, password) => {
