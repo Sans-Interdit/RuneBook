@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/api/*", "destination": "/api/:splat" },
+    { "source": "/api/:path*", "destination": "/api/:path*" },
     { "source": "/((?!assets/).*)", "destination": "/index.html" }
   ]
 }
