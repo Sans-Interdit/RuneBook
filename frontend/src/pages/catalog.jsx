@@ -15,14 +15,14 @@ export default function Catalog() {
   const allTags = Array.isArray(guides) ? [...new Set(guides.flatMap(guide => guide.tags))] : [];
 
   // Filter guides based on search and filters
-  const filteredGuides = guides.filter(guide => {
+  const filteredGuides = Array.isArray(guides) ? guides.filter(guide => {
     const matchesSearch = guide.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          guide.content.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesLevel = selectedLevel === "all" || guide.level === selectedLevel;
     const matchesTag = selectedTag === "all" || guide.tags.includes(selectedTag);
     
     return matchesSearch && matchesLevel && matchesTag;
-  });
+  }) : [];
 
   const getLevelColor = (level) => {
     if (level === "New Player") return "bg-green-400";
