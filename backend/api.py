@@ -8,7 +8,6 @@ from huggingface_hub import InferenceClient
 import jwt
 from qdrant_client import QdrantClient
 import re
-from openai import OpenAI
 import json
 from qdrant_client.http.models import Filter, FieldCondition, MatchValue, Prefetch
 from sentence_transformers import SentenceTransformer
