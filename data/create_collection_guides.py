@@ -1,16 +1,21 @@
+import os
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
     Distance,
     VectorParams,
     PayloadSchemaType
 )
+import dotenv
 
+dotenv.load_dotenv(".env.development")
 COLLECTION_NAME = "lol_guides"
-VECTOR_SIZE = 768
+VECTOR_SIZE = 384
 
 def create_collection():
     client = QdrantClient(
-        url="http://localhost:6333"
+        url=os.getenv("QDRANT_URL"),
+        api_key=os.getenv("QDRANT_KEY"),
+        timeout=5.0
     )
 
     # Suppression optionnelle (décommentez si nécessaire)

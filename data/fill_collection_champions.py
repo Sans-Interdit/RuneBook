@@ -13,11 +13,20 @@ from sentence_transformers import SentenceTransformer
 from qdrant_client import QdrantClient
 import uuid
 from qdrant_client.http.models import Filter, FieldCondition, MatchValue
+import os
+import dotenv
 
+dotenv.load_dotenv(".env.development")
 HEADERS = {"User-Agent": "Mozilla/5.0"}
 
-client = QdrantClient(url="http://localhost:6333")
-model = SentenceTransformer("sentence-transformers/all-mpnet-base-v2")
+client = QdrantClient(
+    url=os.getenv("QDRANT_URL"),
+    api_key=os.getenv("QDRANT_KEY"),
+    timeout=5.0
+)
+
+model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+# "sentence-transformers/all-mpnet-base-v2"
 
 def toText(champ, type_data, data):
     out = []

@@ -4,13 +4,22 @@ from qdrant_client.models import (
     VectorParams,
     PayloadSchemaType
 )
+import os
+import dotenv
+
+dotenv.load_dotenv(".env.development")
+
 
 COLLECTION_NAME = "lol_champions"
-VECTOR_SIZE = 768
+VECTOR_SIZE = 384
 
+print(os.getenv("QDRANT_URL"))
+print(os.getenv("QDRANT_KEY"))
 def create_collection():
     client = QdrantClient(
-        url="http://localhost:6333"
+        url=os.getenv("QDRANT_URL"),
+        api_key=os.getenv("QDRANT_KEY"),
+        timeout=5.0
     )
 
     # Suppression optionnelle (décommentez si nécessaire)

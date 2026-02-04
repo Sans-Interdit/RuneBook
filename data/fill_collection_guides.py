@@ -3,19 +3,31 @@ from qdrant_client import QdrantClient
 import uuid
 from qdrant_client.http.models import Filter, FieldCondition, MatchValue
 from data.models import Tag, Guide, session as db_session
-from openai import OpenAI
+# from openai import OpenAI
 import os
 from dotenv import load_dotenv
+from mistralai import Mistral
 
 load_dotenv(".env.development")
 
-client_ai = OpenAI(
-  base_url="https://openrouter.ai/api/v1",
-  api_key=os.getenv("CHATBOT_KEY"),
+# client_ai = OpenAI(
+#   base_url="https://openrouter.ai/api/v1",
+#   api_key=os.getenv("CHATBOT_KEY"),
+# )
+
+mistral = Mistral(api_key=os.getenv("LLM_KEY"))
+
+
+client = QdrantClient(
+    url=os.getenv("QDRANT_URL"),
+    api_key=os.getenv("QDRANT_KEY"),
+    timeout=5.0
 )
 
-client = QdrantClient(url="http://localhost:6333")
-model = SentenceTransformer("sentence-transformers/all-mpnet-base-v2")
+model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+# "sentence-transformers/all-mpnet-base-v2"
+
+
 
 # def toText(payload : dict) -> str:
 #     out = []
@@ -33,8 +45,8 @@ model = SentenceTransformer("sentence-transformers/all-mpnet-base-v2")
 #     return "\n".join(out)  
 
 def insert_chunk(payload: dict):
-    response = client_ai.chat.completions.create(
-        model="qwen/qwen-2.5-7b-instruct",
+    response = mistral.chat.complete(
+        model="ministral-8b-latest", 
         messages=[
             {
                 "role": "system",

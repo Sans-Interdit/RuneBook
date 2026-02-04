@@ -22,11 +22,17 @@ SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
 
 mistral = Mistral(api_key=os.getenv("LLM_KEY"))
 
-qdrant_client = QdrantClient(url="http://localhost:6333")
+qdrant_client = QdrantClient(
+    url=os.getenv("QDRANT_URL"),
+    api_key=os.getenv("QDRANT_KEY"),
+    timeout=5.0
+)
+
 model = SentenceTransformer(
     "sentence-transformers/all-MiniLM-L6-v2",
     device="cpu"
 )
+# "sentence-transformers/all-mpnet-base-v2",
 
 # FastAPI router
 router = APIRouter()
