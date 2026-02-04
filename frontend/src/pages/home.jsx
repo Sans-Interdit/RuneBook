@@ -327,7 +327,8 @@ export default function Home() {
               className="flex transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${currentGuideIndex * 100}%)` }}
             >
-              {guides.slice(0,5).map((guide, index) => (
+              {Array.isArray(guides) && 
+              guides?.slice(0,5).map((guide, index) => (
                 <div 
                   key={guide.id_guide}
                   onClick={() => setSelectedGuide(guide)}
