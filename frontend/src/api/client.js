@@ -1,8 +1,12 @@
 // src/api/client.js
 import axios from "axios";
 
+const base = import.meta.env.VITE_IP_BACK
+  ? import.meta.env.VITE_IP_BACK + "/api"
+  : "";
+
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_IP_BACK+"/api",
+  baseURL: base,
   withCredentials: true, // utile si tu gères des cookies ou sessions
 });
 
