@@ -1,8 +1,8 @@
 {
-  "routes": [
+  "rewrites": [
     {
       "source": "/((?!assets/).*)",
-      "dest": "/index.html"
+      "destination": "/index.html"
     }
   ]
 }
