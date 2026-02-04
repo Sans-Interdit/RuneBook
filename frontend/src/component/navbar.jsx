@@ -19,8 +19,10 @@ export const Navbar = () => {
   React.useEffect(() => {
     const verifyConnexion = async () => {
       const token = await getIdContext();
-      if (token) {
-        console.log(token)
+
+      const isTokenValid = token && typeof token === "object" && !("document" in token);
+
+      if (isTokenValid) {
         setNavLinks((links) => {
           // if (links.some(link => link.to === "/chatbot")) return links;
           return [
