@@ -12,7 +12,7 @@ export default function Catalog() {
   const [selectedGuide, setSelectedGuide] = useState(null);
 
   // Extract all unique tags
-  const allTags = guides ? [...new Set(guides.flatMap(guide => guide.tags))] : [];
+  const allTags = Array.isArray(guides) ? [...new Set(guides.flatMap(guide => guide.tags))] : [];
 
   // Filter guides based on search and filters
   const filteredGuides = guides.filter(guide => {
