@@ -387,7 +387,17 @@ export default function Home() {
           
           {/* Indicators */}
           <div className="flex justify-center gap-2 mt-8">
-            
+            {guides && guides.slice(0,5).map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentGuideIndex(index)}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  index === currentGuideIndex 
+                    ? 'w-8 bg-primary-100' 
+                    : 'w-2 bg-primary-100/30 hover:bg-primary-100/50'
+                }`}
+              />
+            ))}
           </div>
         </div>
       </div>
