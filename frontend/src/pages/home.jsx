@@ -387,7 +387,7 @@ export default function Home() {
           
           {/* Indicators */}
           <div className="flex justify-center gap-2 mt-8">
-            {guides && guides.slice(0,5).map((_, index) => (
+            {Array.isArray(guides) && guides.slice(0,5).map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentGuideIndex(index)}
