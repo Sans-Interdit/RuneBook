@@ -12,6 +12,7 @@ backend/sharevents-bac56-362c818a2b0b.json
 data/__pycache__
 
 frontend/node_modules
+frontend/dist
 frontend/dev-dist
 
 migrations
