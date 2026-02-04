@@ -19,3 +19,4 @@ migrations
 merise.lo1
 merise.loo
 poetry.lock
+venv
