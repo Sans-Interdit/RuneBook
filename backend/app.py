@@ -21,14 +21,9 @@ def create_app() -> FastAPI:
 
     app = FastAPI()
 
-    # Configurer les fichiers statiques (comme Flask static_folder)
-    # static_path = os.path.join(BASE_DIR, "backend", "static", "prod" if isProd else "dist", "dev")
-    # print(static_path)
-    # app.mount("/", StaticFiles(directory=static_path, html=True), name="static")
-
     # CORS
     if isProd:
-        origins = ["https://...................."]
+        origins = [os.getenv("URL_FRONT")]
     else:
         origins = [
             "http://127.0.0.1:5001",

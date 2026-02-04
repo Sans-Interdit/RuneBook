@@ -1,9 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Send, MessageSquare, Plus, Trash2, Clock, Sparkles, User, Bot } from "lucide-react";
+import { Send, MessageSquare, Plus, Trash2, Clock, Sparkles, User, Bot, Map } from "lucide-react";
 import { addConv, delConv, getConv } from "../api/conversation";
 import { addMsg } from "../api/message"
 import { chat } from "../api/chat";
 import { useAppContext } from "../context/appContext";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { useLocation } from "react-router-dom";
 
 export default function Chatbot() {
   const [conversations, setConversations] = useState([]);
@@ -14,10 +17,13 @@ export default function Chatbot() {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
 
+  const { search } = useLocation();
+  const queryParams = new URLSearchParams(search);
+  const character = queryParams.get("character") || "heimerdinger";
+
   const currentConversation = conversations.find(conv => conv.id === currentConversationId);
 
   useEffect(() => {
-    console.log(import.meta.env.VITE_IP_BACK)
     getIdContext()
     .then((token) => {
        if (token) {
@@ -29,8 +35,22 @@ export default function Chatbot() {
     })
   }, [])
 
+  const zoneMapping = (charac) => {
+    const zoneMap = {
+      "heimerdinger" : "piltover",
+      "pantheon" : "targon",
+      "ornn" : "freljord",
+      "leblanc" : "noxus",
+      "morgana" : "demacia",
+      "shen" : "ionia",
+      "azir" : "shurima"
+    }
+    console.log(zoneMap[charac])
+    return zoneMap[charac]
+  }
+
   const getConversations = async () => {
-    const res = await getConv();
+    const res = await getConv(character);
     if (res.status == 200) {
       const conversations = res.data.map(conv => ({
         ...conv,
@@ -66,7 +86,7 @@ export default function Chatbot() {
     setIsTyping(true);
 
     // AI response
-    const res = await chat(inputMessage);
+    const res = await chat(inputMessage, character);
     const aiResponse = {role: "assistant", content: res}
     setConversations(prev => prev.map(conv => 
       conv.id === currentConversationId 
@@ -81,14 +101,15 @@ export default function Chatbot() {
   };
 
   const handleNewConversation = async () => {
-    const title = "Nouvelle conversation " + (conversations.length + 1);
-    const res = await addConv(title);
+    const title = "Conversation " + (conversations.length + 1) + " - " + character;
+    const res = await addConv(title, character);
     const id_conv = res?.data?.id
 
     if (id_conv) {
       const newConv = {
         id: id_conv,
         title: title,
+        character: character,
         timestamp: new Date(),
         messages: []
       };
@@ -124,13 +145,13 @@ export default function Chatbot() {
   };
 
   return (
-    <div className="flex flex-1 min-h-0 bg-primary-50">
+    <div className="flex flex-1 min-h-0 bg-primary-50 overflow-hidden">
       {/* Sidebar - Conversations History */}
-      <div className="flex flex-col h-full min-h-0 border-r-2 w-80 border-primary-100/30">
+      <div className="z-10 flex flex-col h-full min-h-0 border-r-2 w-80 border-primary-100/30">
         {/* Sidebar Header */}
         <div className="p-6 border-b-2 border-primary-100/30">
-          <h2 className="mb-4 text-2xl font-bold text-secondary-50 font-titre">
-            Mes Conversations
+          <h2 className="mb-4 text-2xl text-center font-bold text-secondary-50 font-titre">
+            Mes Conversations avec {character}
           </h2>
           <button
             onClick={handleNewConversation}
@@ -186,8 +207,8 @@ export default function Chatbot() {
         {/* Chat Header */}
         <div className="p-6 border-b-2 border-primary-100/30">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary-100">
-              <MessageSquare className="w-6 h-6 text-primary-50" />
+            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary-100 overflow-hidden">
+              <img src={`/assets/${character}.jpg`} className="h-full w-auto rounded-full max-w-none"/>
             </div>
             <div>
               <h1 className="text-2xl font-bold text-secondary-50 font-titre">
@@ -201,11 +222,13 @@ export default function Chatbot() {
         </div>
 
         {/* Messages Area */}
-        <div className="flex-1 p-6 overflow-y-auto">
+        <div className="relative flex-1 p-6 overflow-y-auto bg-cover bg-center"
+          style={{ backgroundImage: `url('/assets/${zoneMapping(character)}.jpg')` }}>
+          <div className="absolute inset-0 bg-primary-50/80 z-0 pointer-events-none" />
           {currentConversation?.messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <div className="flex items-center justify-center w-20 h-20 mb-6 rounded-full bg-secondary-50">
-                <MessageSquare className="w-10 h-10 text-primary-50" />
+            <div className="relative flex flex-col items-center justify-center h-full text-center z-10">
+              <div className="flex items-center justify-center w-20 h-20 mb-6 rounded-full bg-secondary-50 overflow-hidden">
+                <img src={`/assets/${character}.jpg`} className="h-full w-auto rounded-full max-w-none"/>
               </div>
               <h2 className="mb-2 text-2xl font-bold text-secondary-50 font-titre">
                 Prêt à Apprendre ?
@@ -242,22 +265,23 @@ export default function Chatbot() {
               </div>
             </div>
           ) : (
-            <div className="max-w-4xl mx-auto space-y-6">
+            <div className="relative max-w-4xl mx-auto space-y-6 z-10">
               {currentConversation?.messages.map((message, index) => (
                 <div
                   key={index}
                   className={`flex gap-4 ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
                 >
                   {/* Avatar */}
-                  <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
+                  <div className={`flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center overflow-hidden ${
                     message.role === 'user' 
                       ? 'bg-primary-100' 
                       : 'bg-secondary-50'
                   }`}>
                     {message.role === 'user' ? (
-                      <User className="w-5 h-5 text-primary-50" />
+                      <img src={`/assets/summoner.png`} className="h-full w-auto rounded-full max-w-none"/>
                     ) : (
-                      <Bot className="w-5 h-5 text-primary-50" />
+                      <img src={`/assets/${character}.jpg`} className="h-full w-auto rounded-full max-w-none"/>
+                      // <Bot className="w-5 h-5 text-primary-50" />
                     )}
                   </div>
 
@@ -268,9 +292,17 @@ export default function Chatbot() {
                         ? 'bg-primary-100 text-primary-50 rounded-tr-none'
                         : 'bg-background-50 border-2 border-primary-100/30 text-white rounded-tl-none'
                     }`}>
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap font-text">
-                        {message.content}
-                      </p>
+                      <div
+                        className={`text-sm prose max-w-none font-text ${
+                          message.role === 'user'
+                            ? 'prose-invert prose-p:text-primary-50 prose-strong:text-primary-50 prose-a:text-primary-50'
+                            : 'prose-invert prose-p:text-white prose-strong:text-white prose-a:text-white'
+                        }`}
+                      >
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {message.content}
+                        </ReactMarkdown>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -279,8 +311,8 @@ export default function Chatbot() {
               {/* Typing Indicator */}
               {isTyping && (
                 <div className="flex gap-4">
-                  <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary-100 to-secondary-50">
-                    <Bot className="w-5 h-5 text-primary-50" />
+                  <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary-100 to-secondary-50 overflow-hidden">
+                    <img src={`/assets/${character}.jpg`} className="h-full w-auto rounded-full max-w-none"/>
                   </div>
                   <div className="inline-block p-4 border-2 rounded-tl-none rounded-2xl bg-primary-50 border-primary-100/30">
                     <div className="flex gap-1">
@@ -298,15 +330,16 @@ export default function Chatbot() {
         </div>
 
         {/* Input Area */}
-        <div className="p-6 border-t-2 border-primary-100/30">
-          <div className="max-w-4xl mx-auto">
+        <div className="flex flex-row p-6 border-t-2 border-primary-100/30">
+          <div className="flex-1 max-w-4xl mx-auto">
             <div className="flex gap-4">
               <input
                 type="text"
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
+                // disabled={!currentConversation}
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                placeholder="Pose ta question ici..."
+                placeholder={currentConversation ? "Pose ta question ici..." : "Crée une conversation"}
                 className="flex-1 px-6 py-4 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 border-primary-100/30 placeholder-white/50 focus:border-secondary-50 focus:outline-none font-text"
               />
               <button
@@ -314,13 +347,23 @@ export default function Chatbot() {
                 disabled={!inputMessage.trim() || isTyping}
                 className="px-6 py-4 font-semibold transition-all duration-300 rounded-lg bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                <Send className="w-5 h-5" />
+                <div className="transform-gpu">
+                  <Send className="w-5 h-5" />
+                </div>
               </button>
             </div>
             <p className="mt-3 text-xs text-center text-primary-100">
               L'assistant peut faire des erreurs. Vérifie les informations importantes.
             </p>
           </div>
+          <a
+            href="/map"
+            className="p-6 font-semibold transition-all duration-300 rounded-lg bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          >
+            <div className="transform-gpu">
+              <Map className="w-10 h-10" />
+            </div>
+          </a>
         </div>
       </div>
     </div>

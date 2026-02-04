@@ -10,9 +10,9 @@ export async function delConv(id : string) {
   }
 }
 
-export async function addConv(title: string) {
+export async function addConv(title: string, character: string) {
   try {
-    const res = await api.post(`/add-conv`, { title });
+    const res = await api.post(`/add-conv`, { title, character });
     return res;
   } catch (err) {
     console.error(err);
@@ -20,9 +20,9 @@ export async function addConv(title: string) {
   }
 }
 
-export async function getConv() {
+export async function getConv(character: string) {
   try {
-    const res = await api.get(`/get-conv`);
+    const res = await api.get(`/get-conv?character=${character}`);
     return res;
   } catch (err) {
     console.error(err);

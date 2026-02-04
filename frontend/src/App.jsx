@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/home';
 import Catalog from './pages/catalog'
 import Chatbot from './pages/chatbot'
+import WorldMap from './pages/worldmap'
 import Connexion from './pages/login'
 import Inscription from './pages/inscription'
 import Privacy from './pages/privacy';
@@ -25,6 +26,7 @@ export default function App() {
               <Route path="/" element={<Home />} />
               <Route path="/catalog" element={<Catalog />} />
               <Route path="/chatbot" element={<Chatbot />} />
+              <Route path="/map" element={<WorldMap />} />
               <Route path="/login" element={<Connexion />} />
               <Route path="/inscription" element={<Inscription />} />
               <Route path="/privacy" element={<Privacy />} />

@@ -1,6 +1,6 @@
 [project]
 name = "backend"
-version = "0.1.0"
+version = "1.0.0"
 description = "Backend for the RuneBook project"
 authors = [
     { name = "Yanis Bouchilloux", email = "bouchilloux.yanis@gmail.com" }
@@ -27,7 +27,8 @@ dependencies = [
     "beautifulsoup4 (>=4.14.3,<5.0.0)",
     "lxml (>=6.0.2,<7.0.0)",
     "qdrant-client (>=1.16.2,<2.0.0)",
-    "sentence-transformers (>=5.2.0,<6.0.0)"
+    "sentence-transformers (>=5.2.0,<6.0.0)",
+    "mistralai (>=1.10.1,<2.0.0)"
 ]
 
 # Dépendances de dev

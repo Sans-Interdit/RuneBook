@@ -1,0 +1,352 @@
+[
+    {
+        "id": 1,
+        "question": "Quel est le rôle principal d'Ahri ?",
+        "categorie": "rôle",
+        "champion": "Ahri",
+        "response_ai": "Ahri est classée principalement sous le rôle **Middle** (milieu de l'écran) dans *League of Legends*. Elle est conçue pour jouer en **Burst** (explosion de dégâts)."
+    },
+    {
+        "id": 2,
+        "question": "Quelle est la compétence ultime de Garen ?",
+        "categorie": "compétence_ultime",
+        "champion": "Garen",
+        "response_ai": "L'ultime de Garen s'appelle **Demacian Justice**.\n\nElle est notée sous le nom :\n- *spell R*\n- *sort R*\n- *ultimate*\n- *ultime*\n\nSon cooldown varie selon son niveau : **120 / 100 / 80**."
+    },
+    {
+        "id": 3,
+        "question": "Quel type de dégâts inflige Lux ?",
+        "categorie": "type_degats",
+        "champion": "Lux",
+        "response_ai": "D'après les informations disponibles, Lux utilise principalement des **dégâts magiques** (*magic damage*) pour ses attaques et ses sorts, conformément à son rôle de *Burst Artillery* et son adaptation à la magie."
+    },
+    {
+        "id": 4,
+        "question": "Dans quelle voie est joué Jax ?",
+        "categorie": "voie",
+        "champion": "Jax",
+        "response_ai": "Jax est joué en **Top Jungle**."
+    },
+    {
+        "id": 5,
+        "question": "Quelle est la particularité du passif de Teemo ?",
+        "categorie": "passif",
+        "champion": "Teemo",
+        "response_ai": "Le passif de Teemo permet à ses **basic attacks** d’apporter un **bonus de magie** au ciblé à chaque impact.\nDe plus, il inflige une **poison** qui fait subir du **magie damage** toutes les secondes sur une durée de **4 secondes**.\nLes nouvelles attaques qui infligent cette poison **rafraîchissent la durée**."
+    },
+    {
+        "id": 6,
+        "question": "Quel est le rôle principal de Jinx ?",
+        "categorie": "rôle",
+        "champion": "Jinx",
+        "response_ai": "Jinx est classée comme un **Marksman** (Archer), ce qui signifie qu’elle est principalement utilisée en tant que **Bottom** (Dueliste de bas niveau).\n\nSon rôle principal repose sur son **type de ressources** : elle utilise de la **mana** pour ses attaques et ses sorts."
+    },
+    {
+        "id": 7,
+        "question": "Quelle est la compétence ultime de Yasuo ?",
+        "categorie": "compétence_ultime",
+        "champion": "Yasuo",
+        "response_ai": "Le **Spell R** de Yasuo s'appelle **Last Breath**.\n\nIl permet à Yasuo de **blinker** vers un ennemi aérien visible et le plus proche du curseur, appliquant un effet appelé *Flow* maximal et réinitialisant les stacks de **Gathering Storm**."
+    },
+    {
+        "id": 8,
+        "question": "Quel type de dégâts inflige Darius ?",
+        "categorie": "type_degats",
+        "champion": "Darius",
+        "response_ai": "Darius inflige des **dégâts physiques**.\n\n*(Cela provient directement de son *Adaptive type* : Physical.)*"
+    },
+    {
+        "id": 9,
+        "question": "Quel est le rôle principal de Thresh ?",
+        "categorie": "rôle",
+        "champion": "Thresh",
+        "response_ai": "Thresh est principalement utilisé comme **Support** dans *League of Legends*.\n\nSon rôle principal est de servir en **Catcher** (ou *Support Tank* dans son héritage), ce qui signifie qu’il agit en soutien aux champions de son équipe."
+    },
+    {
+        "id": 10,
+        "question": "Dans quelle voie est joué Ezreal ?",
+        "categorie": "voie",
+        "champion": "Ezreal",
+        "response_ai": "Ezreal est joué en tant que **Marksman** (en anglais : *Top Lane*).\n\n*(Cela correspond à la position \"Bottom\" du contexte, mais précise que sa classe est spécifiquement associée à la voie \"Top\" dans *League of Legends*, où les champions Marksman sont traditionnellement positionnés.)*\n\nSi tu veux préciser sa voie exacte dans le jeu, il est classé dans la **Top Lane** (en anglais : *Top*)."
+    },
+    {
+        "id": 11,
+        "question": "Quelle est la compétence ultime de Malphite ?",
+        "categorie": "compétence_ultime",
+        "champion": "Malphite",
+        "response_ai": "La compétence ultime de Malphite s'appelle **Unstoppable Force** (ou *sort R*). Elle lui permet de se déplacer rapidement vers un emplacement ciblé avec une immunité de déplacement.\n\nÀ son arrivée, il inflige des dégâts magiques sur les ennemis proches et les soumet à une **knock-up** pendant **1,5 seconde**."
+    },
+    {
+        "id": 12,
+        "question": "Quel type de dégâts inflige Zed ?",
+        "categorie": "type_degats",
+        "champion": "Zed",
+        "response_ai": "Zed inflige des dégâts **physiques** (*Physical damage*)."
+    },
+    {
+        "id": 13,
+        "question": "Quelle est la particularité du passif de Jhin ?",
+        "categorie": "passif",
+        "champion": "Jhin",
+        "response_ai": "Le passif de Jhin, appelé **\"Death in 4 Acts\"**, permet à ses attaques de base consommer des munitions dans **4 tours** de jeu.\nUne fois toutes les munitions épuisées, Jhin peut recharger ses munitions en **2,5 secondes** immédiatement après l’expiration.\nSi Jhin reste hors combat pendant **10 secondes** sans utiliser de munitions ou de contrôle de foule (*crowd control*), il peut recharger ses munitions automatiquement, mais cette recharge peut être interrompue par une attaque ou un sort lancé.\n\nLe passif **\"Every Moment Matters\"** ajoute une augmentation de **4% à 44%** de dégâts physiques par attaque, selon son niveau, avec des bonus supplémentaires liés à la chance de crit et à la vitesse d’attaque."
+    },
+    {
+        "id": 14,
+        "question": "Quel est le rôle principal de Lee Sin ?",
+        "categorie": "rôle",
+        "champion": "Lee Sin",
+        "response_ai": "Le rôle principal de **Lee Sin** est celui de **Jungle**.\n\nIl est spécifiquement conçu pour jouer en **position de Jungle**."
+    },
+    {
+        "id": 15,
+        "question": "Quelle est la compétence ultime d'Ashe ?",
+        "categorie": "compétence_ultime",
+        "champion": "Ashe",
+        "response_ai": "L’**ultimate** d’Ashe est appelée **Enchanted Crystal Arrow**.\n\nVoici ses détails :\n- **Coût** : 100 Mana.\n- **Cooldown** : 100 / 80 / 60 (selon le niveau).\n- **Temps de casting** : 0,25 seconde.\n- **Portée** : Global.\n- **Rayon d’effet** : 400 / 350 (selon le niveau).\n- **Largeur** : 260.\n- **Vitesse** : 1500 - 2100.\n\nL’arrow traverse une zone, donnant une vision de 1 seconde à chaque passage. Elle éclate sur un ennemi, infligeant des dégâts magiques et le **stunning** (1 à 3,5 secondes selon la distance parcourue), ainsi qu’une vision autour de lui pendant 1 seconde."
+    },
+    {
+        "id": 16,
+        "question": "Dans quelle voie est joué Twisted Fate ?",
+        "categorie": "voie",
+        "champion": "Twisted Fate",
+        "response_ai": "Twisted Fate commence sur la **midlane**.\n\n*(Citation exacte : \"Un joueur commence sur la voie du haut (toplane), un autre sur la voie du milieu (midlane), ...\")*"
+    },
+    {
+        "id": 17,
+        "question": "Quel type de dégâts inflige Katarina ?",
+        "categorie": "type_degats",
+        "champion": "Katarina",
+        "response_ai": "Katarina inflige **dégâts magiques** (*magic damage*) sur ses sorts **Q** et **E**.\n\nPour le **Spell R** (*Death Lotus*), les dagues lancées par Katarina appliquent également **Grievous Wounds**, qui sont un type de **dégâts magiques** avec des effets spécifiques (durée de 3 secondes)."
+    },
+    {
+        "id": 18,
+        "question": "Quel est le rôle principal de Blitzcrank ?",
+        "categorie": "rôle",
+        "champion": "Blitzcrank",
+        "response_ai": "Blitzcrank est principalement utilisé en tant que **Support**.\n\nPlus précisément, il est classé comme un **Catcher** (en anglais) dans *League of Legends*, ce qui correspond à un rôle de soutien tactique, souvent axé sur la gestion des ressources et l’assistance aux champions.\n\nSon rôle historique (Legacy) était aussi lié au **Tank Support**, indiquant une capacité à absorber des dégâts et à soutenir les alliés."
+    },
+    {
+        "id": 19,
+        "question": "Quelle est la compétence ultime de Lux ?",
+        "categorie": "compétence_ultime",
+        "champion": "Lux",
+        "response_ai": "La compétence ultime de Lux s'appelle **Final Spark**.\n\nElle coûte **100 Mana** et a un **cooldown** de 60 / 50 / 40 secondes.\n\nElle projette un **laser** dans la direction ciblée qui inflige du **dégâts magiques** (300 / 400 / 500 **+ 120% AP**) aux ennemis touchés et révèle ces derniers pendant **1,5 seconde**, ainsi que la zone environnante."
+    },
+    {
+        "id": 20,
+        "question": "Quelle est la particularité du passif d'Annie ?",
+        "categorie": "passif",
+        "champion": "Annie",
+        "response_ai": "D'après le lore, Annie possède une **affinité naturelle pour le feu** qui se manifeste très tôt dans sa vie par des **éruptions émotionnelles imprévisibles**, qu’elle parvient finalement à maîtriser.\n\nSon passif reflète cette capacité à canaliser cette énergie, bien que son **innocence et son manque de maturité** restent centraux dans son développement."
+    },
+    {
+        "id": 21,
+        "question": "Dans quelle voie est joué Vayne ?",
+        "categorie": "voie",
+        "champion": "Vayne",
+        "response_ai": "Vayne est joué en **Top** et en **Bottom**."
+    },
+    {
+        "id": 22,
+        "question": "Quel type de dégâts inflige Master Yi ?",
+        "categorie": "type_degats",
+        "champion": "Master Yi",
+        "response_ai": "Master Yi inflige des **dégâts physiques** (Physical damage) en combat, conformément à son type d'**Adaptive type** mentionné dans le contexte."
+    },
+    {
+        "id": 23,
+        "question": "Quel est le rôle principal de Soraka ?",
+        "categorie": "rôle",
+        "champion": "Soraka",
+        "response_ai": "Les informations du contexte sont insuffisantes."
+    },
+    {
+        "id": 24,
+        "question": "Quelle est la compétence ultime de Darius ?",
+        "categorie": "compétence_ultime",
+        "champion": "Darius",
+        "response_ai": "La compétence ultime de Darius s'appelle **Noxian Guillotine** (ou *Spell R*).\n\nElle permet à Darius d'**essayer d'exécuter le champion ennemi cible** en se lançant vers eux.\nLors de son animation, elle inflige du **vrai dommage** (true damage) sur le cible, augmenté de **0% à 100%** selon le nombre de *Hemorrhage stacks* accumulés sur lui.\nElle donne également une **vision** dans un rayon autour de la cible pendant **2,5 secondes**, à partir du début de l'animation de casting."
+    },
+    {
+        "id": 25,
+        "question": "Quel type de dégâts inflige Syndra ?",
+        "categorie": "type_degats",
+        "champion": "Syndra",
+        "response_ai": "Syndra inflige **dégâts magiques** (*magic damage*) à travers ses sorts.\n\n- **Passive** : Aucun dégât direct, mais accélère l'haste des *Dark Spheres*.\n- **R** : Les *Dark Spheres* collectées frappent les cibles ennemies et leur infligent des dégâts magiques.\n- **E** : *Scatter the Weak* fait subir des dégâts magiques aux ennemis touchés par le cône de force."
+    },
+    {
+        "id": 26,
+        "question": "Dans quelle voie est joué Renekton ?",
+        "categorie": "voie",
+        "champion": "Renekton",
+        "response_ai": "Renekton est joué en **Top**.\n\n*(Cela correspond à la ligne de jeu désignée dans le contexte.)*"
+    },
+    {
+        "id": 27,
+        "question": "Quelle est la particularité du passif de Yasuo ?",
+        "categorie": "passif",
+        "champion": "Yasuo",
+        "response_ai": "Le contexte ne fournit pas d'informations sur le **passif** de Yasuo, seulement ses sorts **Q, E et R**.\n\nLes informations du contexte sont insuffisantes."
+    },
+    {
+        "id": 28,
+        "question": "Quel est le rôle principal de Nami ?",
+        "categorie": "rôle",
+        "champion": "Nami",
+        "response_ai": "Nami est principalement classée comme un **Support** dans *League of Legends*.\n\nElle agit en tant qu'**Enchanter** (chanteuse) et utilise la **Mana** comme ressource principale.\n\nSon rôle consiste à fournir des avantages tactiques aux joueurs de son équipe, notamment en **dégâts magiques**, en **soins** ou en **protection**."
+    },
+    {
+        "id": 29,
+        "question": "Quelle est la compétence ultime de Karthus ?",
+        "categorie": "compétence_ultime",
+        "champion": "Karthus",
+        "response_ai": "L'ultime de Karthus s'appelle **Requiem**.\n\n- **Coût** : 100 Mana.\n- **Durée de canalisation** : 3 secondes.\n- **Effet** : Il inflige un **magic damage** à tous les cibles ennemies atteignables.\n- **Détail de déclenchement** : La canalisation commence, puis après 3 secondes, un cri **\"Die!\"** est émis, infligeant le dégâts."
+    },
+    {
+        "id": 30,
+        "question": "Quel type de dégâts inflige Fiora ?",
+        "categorie": "type_degats",
+        "champion": "Fiora",
+        "response_ai": "Fiora inflige des dégâts **physiques**.\n\n*(Cela correspond à la définition donnée dans \"Adaptive type : Physical\" dans le contexte.)*"
+    },
+    {
+        "id": 31,
+        "question": "Dans quelle voie est joué Zed ?",
+        "categorie": "voie",
+        "champion": "Zed",
+        "response_ai": "Zed est joué dans la **Middle Jungle**.\n\n*(Source : \"Position(s) : Middle Jungle\" dans le contexte.)*"
+    },
+    {
+        "id": 32,
+        "question": "Quelle est la particularité du passif de Yone ?",
+        "categorie": "passif",
+        "champion": "Yone",
+        "response_ai": "Le passif de Yone s'appelle **Way of the Hunter** et il présente deux particularités principales :\n1. **Doublement de la chance de crit** : Son crit total est multiplié par deux de toutes autres sources.\n2. **Conversion des excès de crit en dégâts** :\n   - Pour chaque **1% de crit supplémentaire au-delà de 100%**, cela se convertit en **+0,5 bonus AD**.\n   - Pour chaque **50% de crit supplémentaire au-delà de 100%**, cela se convertit en **+25 bonus AD**."
+    },
+    {
+        "id": 33,
+        "question": "Quel est le rôle principal de Nautilus ?",
+        "categorie": "rôle",
+        "champion": "Nautilus",
+        "response_ai": "Nautilus est principalement utilisé en tant que **Support** dans *League of Legends*.\n\nSon rôle principal, tel que défini dans le contexte, est donc **d'assister les autres champions** en fournissant des ressources (mana) et en agissant comme un **Vanguard** (protecteur) pour les joueurs d'équipe."
+    },
+    {
+        "id": 34,
+        "question": "Quelle est la compétence ultime de Zoe ?",
+        "categorie": "compétence_ultime",
+        "champion": "Zoe",
+        "response_ai": "La compétence ultime de Zoe s'appelle **Portal Jump** (ou *ultimate*, *sort R*, *sortime*). Elle coûte **40 Mana**, a une cooldown de **11 / 8 / 5**, nécessite un temps de casting de **0,25 secondes**, et une portée de **575**."
+    },
+    {
+        "id": 35,
+        "question": "Quel type de dégâts inflige Akali ?",
+        "categorie": "type_degats",
+        "champion": "Akali",
+        "response_ai": "Akali inflige des **dégâts magiques** (*magic damage*) à ses cibles.\n\n- **Passive (Assassin's Mark)** : Aucun dégât direct, mais elle crée une zone avec des bonus de vitesse de déplacement.\n- **Q (Five Point Strike)** : Dégâts magiques sur les cibles touchées dans le cône.\n- **R (Perfect Execution)** : Dégâts magiques sur les ennemis traversés pendant le dash, avec une augmentation proportionnelle à leur santé manquante pour le *Recast*."
+    },
+    {
+        "id": 36,
+        "question": "Dans quelle voie est joué Draven ?",
+        "categorie": "voie",
+        "champion": "Draven",
+        "response_ai": "Draven est classé comme un champion de la voie **Bottom** (ou *Bottom Lane*). Cela signifie qu'il est généralement joué dans le bas de l'arène, en duo avec un autre champion."
+    },
+    {
+        "id": 37,
+        "question": "Quelle est la particularité du passif de Draven ?",
+        "categorie": "passif",
+        "champion": "Draven",
+        "response_ai": "Le passif de Draven, appelé **League of Draven**, se déclenche lorsque Draven attrape un **Spinning Axe**, tue un **non-champion** (comme un minion, un monstre ou une tour), ou détruit une **turret**.\n\nÀ chaque déclenchement, il lui donne une **stack d'Adoration**."
+    },
+    {
+        "id": 38,
+        "question": "Quel est le rôle principal de Vi ?",
+        "categorie": "rôle",
+        "champion": "Vi",
+        "response_ai": "Le rôle principal de Vi est **Jungle**, comme le précise sa section *Position(s)* dans le contexte."
+    },
+    {
+        "id": 39,
+        "question": "Quelle est la compétence ultime de Shen ?",
+        "categorie": "compétence_ultime",
+        "champion": "Shen",
+        "response_ai": "La compétence ultime de Shen s'appelle **Stand United**.\nElle est placée en **R** (Rune).\nSon nom alternatif inclut : *ultimate*, *ultime*, *spell R*, *sort R*.\nElle a un **cooldown** variant selon le niveau : 200 / 180 / 160.\nSon **temps de casting** est **none**.\nElle cible un **allié champion** sur une **plage globale**.\nÀ l'utilisation, Shen concentre sa volonté pendant **3 secondes**, offrant au ciblé un bouclier de **5 secondes** (augmenté de **0% à 60%** selon la santé manquante du ciblé)."
+    },
+    {
+        "id": 40,
+        "question": "Quel type de dégâts inflige Veigar ?",
+        "categorie": "type_degats",
+        "champion": "Veigar",
+        "response_ai": "Veigar inflige **des dégâts magiques** (*magic damage*) selon ses compétences.\n\n- **Spell R (Primordial Burst)** : Dégâts magiques proportionnels à la **soins manquante (missing health)** de la cible.\n- **Q (Baleful Strike)** : Dégâts magiques, augmentés par **50 à 70% de son pouvoir d’attaque (AP)** en fonction de son niveau."
+    },
+    {
+        "id": 41,
+        "question": "Dans quelle voie est joué Sett ?",
+        "categorie": "voie",
+        "champion": "Sett",
+        "response_ai": "Sett est joué en tant que **Top**.\n\n*(Correspond à la phrase : \"Position(s) : Top\" dans le contexte.)*"
+    },
+    {
+        "id": 42,
+        "question": "Quelle est la particularité du passif de Veigar ?",
+        "categorie": "passif",
+        "champion": "Veigar",
+        "response_ai": "Le passif de Veigar, appelé *Phenomenal Evil Power*, lui permet de générer des **stacks de Phenomenal Evil** pour chaque champion ennemi touché par ses sorts.\nChaque stack confère **+1 pouvoir d’aptitude (ability power)** à Veigar.\nDe plus, **5 stacks supplémentaires** sont obtenus dès qu’il inflige un **takedown** (dégâts mortels) à un ennemi."
+    },
+    {
+        "id": 43,
+        "question": "Quel est le rôle principal de Leona ?",
+        "categorie": "rôle",
+        "champion": "Leona",
+        "response_ai": "Leona est principalement utilisée comme **Support** dans *League of Legends*.\n\nSon rôle principal est souvent associé à la catégorie **\"Legacy Tank Support\"**, ce qui signifie qu’elle est conçue pour soutenir les unités en les protégeant physiquement."
+    },
+    {
+        "id": 44,
+        "question": "Quelle est la compétence ultime de Jinx ?",
+        "categorie": "compétence_ultime",
+        "champion": "Jinx",
+        "response_ai": "La compétence ultime de Jinx est appelée **\"Super Mega Death Rocket!\"** (ou *ultime*, *sort R*, *spell R*, *sort R* selon les appels).\n\nElle coûte **100 Mana** et a un **cooldown** de **85 / 65 / 45** selon ses niveaux.\nElle est lancée dans une direction précise avec un **temps de casting de 0,6 seconde**.\nElle a un **rayon d'effet de 400 / 1000 / 1000** (selon les niveaux).\nLa projectile voyage à une vitesse de **1700 / 2200** et explose en **collision** avec un ennemi pour infliger du **dégâts physiques** aux ennemis proches.\nElle donne aussi une **vision de 2 secondes** autour de l'explosion."
+    },
+    {
+        "id": 45,
+        "question": "Quel type de dégâts inflige Talon ?",
+        "categorie": "type_degats",
+        "champion": "Talon",
+        "response_ai": "Talon inflige des dégâts **physiques** (*Physical damage*)."
+    },
+    {
+        "id": 46,
+        "question": "Dans quelle voie est joué Viktor ?",
+        "categorie": "voie",
+        "champion": "Viktor",
+        "response_ai": "Viktor est joué en tant que **Middle** (moyen)."
+    },
+    {
+        "id": 47,
+        "question": "Quelle est la particularité du passif de Senna ?",
+        "categorie": "passif",
+        "champion": "Senna",
+        "response_ai": "Le passif de Senna s'appelle **Basic Attack** et consiste à :\n- Utiliser sa **relic cannon** lors d’un coup de base.\n- Ce coup de base utilise une **rayon non-projectile** qui inflige **100% de dégâts physiques** (AD) à la cible.\n- Ce coup de base peut aussi **appliquer des effets sur-hit ou sur-attaque** (comme *Weakened Soul* pour l’**Absolution**)."
+    },
+    {
+        "id": 48,
+        "question": "Quel est le rôle principal d'Ekko ?",
+        "categorie": "rôle",
+        "champion": "Ekko",
+        "response_ai": "Ekko est principalement utilisé dans le rôle de **Jungle Middle**.\n\nIl peut aussi être joué en **Middle** comme champion de type *Assassin Mage*."
+    },
+    {
+        "id": 49,
+        "question": "Quelle est la compétence ultime d'Ekko ?",
+        "categorie": "compétence_ultime",
+        "champion": "Ekko",
+        "response_ai": "L'ultime d'Ekko s'appelle **Chronobreak**.\n\n- **Coût** : 100 Mana.\n- **Cooldown** : 110 / 80 / 50 (selon le niveau).\n- **Temps de casting** : 0,5 seconde.\n- **Effet de rayon** : 375 / Global.\n- **Passif** : Un après-image temporaire apparaît et suit la position où Ekko était il y a 4 secondes, dès qu'il apprend cette compétence ou quand son cooldown est inférieur à 4 secondes."
+    },
+    {
+        "id": 50,
+        "question": "Quel type de dégâts inflige Orianna ?",
+        "categorie": "type_degats",
+        "champion": "Orianna",
+        "response_ai": "Orianna inflige **dégâts magiques** (*magic damage*) à travers ses sorts :\n\n- **Spell E (Command: Protect)** : Le *Ball* passe par les ennemis pour infliger des dégâts magiques.\n- **Spell Q (Command: Attack)** : Le *Ball* passe par les ennemis pour infliger des dégâts magiques, avec une réduction de 30% (*70%*) contre ceux touchés au-delà du premier.\n- **Spell W (Command: Dissonance)** : Émet un *electric pulse* qui inflige des dégâts magiques."
+    }
+]

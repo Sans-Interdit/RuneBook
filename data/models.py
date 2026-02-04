@@ -34,7 +34,8 @@ class Conversation(Base):
     __tablename__ = "conversation"
 
     id_conversation = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(30), nullable=False)
+    name = Column(String(40), nullable=False)
+    character = Column(String(30), nullable=False)
     updated_at = Column(DateTime, nullable=False)
     id_account = Column(Integer, ForeignKey("account.id_account"), nullable=False)
 

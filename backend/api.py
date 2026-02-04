@@ -12,22 +12,39 @@ from openai import OpenAI
 import json
 from qdrant_client.http.models import Filter, FieldCondition, MatchValue, Prefetch
 from sentence_transformers import SentenceTransformer
+from mistralai import Mistral
 
-client = OpenAI(
-  base_url="https://openrouter.ai/api/v1",
-  api_key=os.getenv("CHATBOT_KEY"),
-)
+SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
+
+# client = OpenAI(
+#   base_url="https://openrouter.ai/api/v1",
+#   api_key=os.getenv("LLM_KEY"),
+# )
+
+mistral = Mistral(api_key=os.getenv("LLM_KEY"))
 
 qdrant_client = QdrantClient(url="http://localhost:6333")
-model = SentenceTransformer("sentence-transformers/all-mpnet-base-v2")
+model = SentenceTransformer(
+    "sentence-transformers/all-mpnet-base-v2",
+    device="cpu"
+)
 
 # FastAPI router
 router = APIRouter()
 
+characters = {
+    "heimerdinger": "Heimerdinger est un scientifique yordle excentrique, méticuleux et philosophe, animé par une curiosité insatiable pour la science et l'innovation. Doté d’un esprit brillant et d’un génie technique exceptionnel, il consacre sa vie à résoudre les mystères les plus ardus de l’univers et à concevoir des inventions aussi ingénieuses que complexes.",
+    "leblanc": "L’énigmatique LeBlanc est une manipulatrice maîtresse des illusions et des intrigues, figure centrale de la cabale secrète de la Rose Noire qui tire les ficelles dans l’ombre depuis des siècles. Toujours voilée et insaisissable, elle orchestre des machinations politiques et magiques à Noxus en dissimulant ses motivations derrière un masque de mystère et de duplicité, utilisant sa magie pour tromper, prédire et diriger les événements sans jamais être pleinement révélée.",
+    "morgana": "Morgana est une âme tourmentée et puissante magicienne des ténèbres, déchirée entre ses origines célestes et son humanité. Ayant rejeté une justice divine rigide, elle incarne la compassion envers les souffrances humaines tout en punissant ceux qu’elle juge corrompus, cherchant à protéger les opprimés et à offrir une forme de rédemption plus nuancée que celle de sa sœur.",
+    "azir": "Azir est un empereur ressuscité à l’aura majestueuse, animé par un profond sens du devoir envers la grandeur passée de Shurima. Visionnaire et déterminé, il porte l’héritage de son peuple avec fierté et autorité, aspirant à restaurer un empire prospère tout en faisant face aux trahisons et aux épreuves qui ont forgé sa destinée ancienne.",
+    "shen": "Shen, l’Œil du Crépuscule, est un leader stoïque et discipliné, entièrement dédié à maintenir l’équilibre entre les mondes spirituel et matériel. Calme, réfléchi et sans préjugés, il cherche à prendre des décisions sans être influencé par ses émotions, incarnant une philosophie d’harmonie et d’exécution précise des devoirs du Kinkou, même si cela le met en conflit avec ses propres désirs personnels.",
+    "ornn": "Ornn, le dieu-forgeron du Freljord, est un artisant taciturne et indépendant, préférant la solitude de sa forge volcanique au tumulte des affaires divines ou mortelles. Fier et pragmatique, il façonne des armes légendaires avec une maîtrise incomparable, intervenant rarement dans les conflits — mais toujours avec une puissance brute et un sens profond de l’artisanat authentique lorsqu’il le fait.",
+    "pantheon": "Pantheon est un guerrier Rakkor au courage indomptable, forgé par la douleur, la perte et une volonté inébranlable de protéger les mortels. Stoïque et résilient, il incarne la lutte contre des forces supérieures, refusant de renier sa propre humanité ou son engagement envers ceux qui comptent sur lui, combattant avec une détermination obstinée même face à des ennemis divins.",
+}
+
 # -------------------------
 # JWT Management
 # -------------------------
-SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
 
 def create_token(response: Response, account_id: int):
     """
@@ -227,13 +244,12 @@ async def chat(data: dict):
         dict: Dictionary containing the chat model's response.
     """
     prompt = data.get("prompt")
+    character = data.get("character")
 
     # mots = ["Résumé" , ]
     # if any(mot in texte for mot in mots):
 
-    classification = client.chat.completions.create(
-        model="qwen/qwen-2.5-7b-instruct",
-        messages=[
+    classification = mistral.chat.complete(model="ministral-8b-latest", messages=[
             {"role": "system", "content": """
 Tu es un classificateur de requêtes League of Legends.
 
@@ -280,10 +296,13 @@ Règles:
     formatted_json = extract_json(classification.choices[0].message.content)
 
     systemPrompt = f"""
-Tu es un assistant agissant comme un professeur bienveillant et aidant les utilisateurs à comprendre le jeu vidéo League of Legends.
-Réponds UNIQUEMENT en français de manière claire et concise avec un maximum de 1000 caractères.
+Tu incarnes le personnage {character} de League of Legends : {characters[character]}
+Tu dois communiquer avec les utilisateurs en respectant la personnalité, le ton et le style de {character}.
+Tu aides les utilisateurs à comprendre le jeu vidéo League of Legends.
+Réponds UNIQUEMENT en français de manière claire avec un maximum de 1000 caractères.
 """
-    # print(formatted_json)
+
+    print(formatted_json, type(formatted_json.get("champ")))
 
     points = []
     
@@ -343,26 +362,28 @@ Context: League of Legends explanation"""
 
         points = result.points
 
-
     if points:
         # print([point.payload["title"] for point in points])
         systemPrompt += """N'invente aucune information.
-Selectionne et reformule les données en ta possession de maniere naturelle.
-Ne traduis jamais les termes techniques de League of Legends, si un mot te semble propre à League of Legends, laisse-le en anglais.
-Réponds strictement à la question posée.
-Si les informations sont insuffisantes, excuse-toi et indique clairement que tu ne sais pas, sans tenter de deviner."""
+Réponds uniquement en reformulant de façon naturelle le contenu du contexte.
+Chaque phrase de la réponse doit pouvoir être rattachée à une phrase précise du contexte.
+Si ce n’est plus possible, arrête la réponse.
+N'essaie pas d'enrichir les données avec des informations supplémentaire entre parenthèses.
+Ne traduis jamais les termes techniques de League of Legends, si un mot te semble propre à League of Legends, exprime le uniquement en anglais.
+Si le contexte ne contient pas d’éléments permettant de répondre à la question, réponds uniquement par une excuse."""
 
         context_texts = [
             point.payload.get("content") or point.payload.get("text")
             for point in points
-        ]        
+        ]
+        # TODO : save personnalités?
         context = "\n".join(context_texts)
-        systemPrompt += f"Contexte : {context}"
+        # print(context)
+        systemPrompt += f"\n\nContexte : {context}"
 
+    print("systemPrompt : " + systemPrompt)
 
-    response = client.chat.completions.create(
-        model="qwen/qwen-2.5-7b-instruct",
-        messages=[
+    response = mistral.chat.complete(model="ministral-8b-latest", messages=[
             {
                 "role": "system",
                 "content": systemPrompt
@@ -420,14 +441,15 @@ async def add_conv(data: dict, user_id: int = Depends(get_current_user)):
         dict: Message confirming addition and the new conversation ID.
     """
     title = data.get("title")
+    character = data.get("character")
     date_now = datetime.datetime.now()
-    new_conv = Conversation(name=title, updated_at=date_now, id_account=user_id)
+    new_conv = Conversation(name=title, character=character, updated_at=date_now, id_account=user_id)
     db_session.add(new_conv)
     db_session.commit()
     return {"message": "Conversation added", "id": new_conv.id_conversation}
 
 @router.get("/get-conv")
-async def get_conv(user_id: int = Depends(get_current_user)):
+async def get_conv(character: str, user_id: int = Depends(get_current_user)):
     """
     Retrieve all conversations for the current user, ordered by last updated.
 
@@ -437,7 +459,7 @@ async def get_conv(user_id: int = Depends(get_current_user)):
     Returns:
         list: List of dictionaries representing each conversation.
     """
-    convs = db_session.query(Conversation).filter_by(id_account=user_id).order_by(Conversation.updated_at.desc()).all()
+    convs = db_session.query(Conversation).filter_by(id_account=user_id).filter_by(character=character).order_by(Conversation.updated_at.desc()).all()
     return [c.to_dict() for c in convs]
 
 
@@ -464,7 +486,7 @@ async def add_message(data: dict = Body(...), user_id: int = Depends(get_current
     id_conv = data.get("id_conv")
     message = data.get("message")
     role = data.get("role")
-
+    print(id_conv, message, role)
     if not id_conv or not message or not role:
         raise HTTPException(status_code=400, detail="Missing required fields")
 
