@@ -20,6 +20,7 @@ export const Navbar = () => {
     const verifyConnexion = async () => {
       const token = await getIdContext();
       if (token) {
+        console.log(token)
         setNavLinks((links) => {
           // if (links.some(link => link.to === "/chatbot")) return links;
           return [
