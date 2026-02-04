@@ -327,46 +327,7 @@ export default function Home() {
               className="flex transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${currentGuideIndex * 100}%)` }}
             >
-              {Array.isArray(guides) && 
-              guides?.slice(0,5).map((guide, index) => (
-                <div 
-                  key={guide.id_guide}
-                  onClick={() => setSelectedGuide(guide)}
-                  className="flex-shrink-0 w-full px-4 cursor-pointer"
-                >
-                  <div className="p-8 transition-all duration-300 border-2 rounded-2xl bg-background-50 border-primary-100/30 hover:border-secondary-50 hover:shadow-xl hover:shadow-secondary-50/20">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-2xl font-bold text-secondary-50 font-titre">
-                        {guide.title}
-                      </h3>
-                      <span className={`px-4 py-2 text-sm font-semibold rounded-full text-primary-50 ${guide.level == "New Player" ? "bg-green-400" : guide.level == "Average Player" ? "bg-secondary-50" : "bg-red-400"}`}>
-                        {guide.level}
-                      </span>
-                    </div>
-                    
-                    <p className="mb-6 text-white line-clamp-4 font-text">
-                      {guide.content.substring(0, 250)}...
-                    </p>
-                    
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {guide.tags.map((tag, tagIndex) => (
-                        <span 
-                          key={tagIndex}
-                          className="px-3 py-1 text-sm border rounded-full text-primary-100 border-primary-100/50"
-                        >
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-secondary-50">
-                        Source: {guide.source}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
+ 
             </div>
           </div>
           
