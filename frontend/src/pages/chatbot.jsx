@@ -126,10 +126,15 @@ export default function Chatbot() {
 
     const res = await delConv(id);
     if (res.status === 200) {
-      setConversations(prev => prev.filter(conv => conv.id !== id));
-      if (currentConversationId === id) {
-        setCurrentConversationId(conversations.find(conv => conv.id !== id)?.id || conversations[0].id);
-      }
+      setConversations(prev => {
+        const newConversations = prev.filter(conv => conv.id !== id);
+
+        if (currentConversationId === id) {
+          setCurrentConversationId(newConversations[0]?.id || 0);
+        }
+
+        return newConversations;
+      });
     }
   };
 
@@ -153,7 +158,7 @@ export default function Chatbot() {
         {/* Sidebar Header */}
         <div className="p-6 border-b-2 border-primary-100/30">
           <h2 className="mb-4 text-2xl font-bold text-center text-secondary-50 font-titre">
-            Mes Conversations avec {character}
+            Mes conversations avec {character}
           </h2>
           <button
             onClick={handleNewConversation}
@@ -341,12 +346,12 @@ export default function Chatbot() {
                 onChange={(e) => setInputMessage(e.target.value)}
                 // disabled={!currentConversation}
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                placeholder={currentConversation ? "Pose ta question ici..." : "Crée une conversation"}
+                placeholder={currentConversation ? "Pose ta question ici..." : "Créez une conversation"}
                 className="flex-1 px-6 py-4 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 border-primary-100/30 placeholder-white/50 focus:border-secondary-50 focus:outline-none font-text"
               />
               <button
                 onClick={handleSendMessage}
-                disabled={!inputMessage.trim() || isTyping}
+                disabled={!inputMessage.trim() || isTyping || currentConversationId == 0}
                 className="px-6 py-4 font-semibold transition-all duration-300 rounded-lg bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 <div className="transform-gpu">
