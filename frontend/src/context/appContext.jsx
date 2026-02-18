@@ -39,8 +39,16 @@ export const AppProvider = ({ children }) => {
   };
 
   const loginContext = async (email, password) => {
-    await login(email, password);
+    try {
+      await login(email, password);
+    } catch (error) {
+      if (error.response?.status === 401) {
+        throw new Error("INVALID_CREDENTIALS");
+      }
+      throw new Error("SERVER_ERROR");
+    }
   };
+
 
   const logoutContext = async () => {
     await logout();

@@ -54,21 +54,22 @@ export default function Login() {
       return;
     }
     
-    // Submit form
     setIsSubmitting(true);
     
     try {
-      setSubmitSuccess(true);
-
       await loginContext(formData.email, formData.password);
 
-      // Redirect after success
       window.location.href = '/chatbot';
-
-      
-    } catch (error) {
-      setErrors({ submit: "Une erreur est survenue. Veuillez réessayer." });
-    } finally {
+    }
+    catch (error) {
+      if (error.message === "INVALID_CREDENTIALS") {
+        setErrors({submit: "Email ou mot de passe incorrect"});
+      }
+      else {
+        setErrors({submit: "Erreur serveur\nVeuillez réessayer plus tard"});
+      }
+    }
+    finally {
       setIsSubmitting(false);
     }
   };

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, Request, Response, Body
 from sqlalchemy.orm import Session
-from data.models import engine, Account, Guide, Conversation, Message, session as db_session
+from data.models import engine, Account, Guide, Conversation, Message, SessionLocal#, session as db_session
 import bcrypt
 import datetime
 import os
@@ -46,6 +46,13 @@ characters = {
     "ornn": "Ornn, le dieu-forgeron du Freljord, est un artisant taciturne et indépendant, préférant la solitude de sa forge volcanique au tumulte des affaires divines ou mortelles. Fier et pragmatique, il façonne des armes légendaires avec une maîtrise incomparable, intervenant rarement dans les conflits — mais toujours avec une puissance brute et un sens profond de l’artisanat authentique lorsqu’il le fait.",
     "pantheon": "Pantheon est un guerrier Rakkor au courage indomptable, forgé par la douleur, la perte et une volonté inébranlable de protéger les mortels. Stoïque et résilient, il incarne la lutte contre des forces supérieures, refusant de renier sa propre humanité ou son engagement envers ceux qui comptent sur lui, combattant avec une détermination obstinée même face à des ennemis divins.",
 }
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 # -------------------------
 # JWT Management
@@ -115,7 +122,7 @@ def get_current_user(request: Request):
 # User Endpoints
 # -------------------------
 @router.post("/login")
-async def login(response: Response, data: dict):
+async def login(response: Response, data: dict, db: Session = Depends(get_db)):
     """
     Authenticate a user with email and password, then create a JWT token.
 
@@ -132,7 +139,8 @@ async def login(response: Response, data: dict):
     email = data.get("email")
     password = data.get("password")
 
-    account = db_session.query(Account).filter_by(email=email).first()
+    account = db.query(Account).filter_by(email=email).first()
+    print(account)
     if not account or not bcrypt.checkpw(password.encode("utf-8"), account.password.encode("utf-8")):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
@@ -141,7 +149,7 @@ async def login(response: Response, data: dict):
     return {"message": "Login successful"}
 
 @router.post("/register")
-async def register(response: Response, data: dict):
+async def register(response: Response, data: dict, db: Session = Depends(get_db)):
     """
     Register a new user with email and password and create a JWT token.
 
@@ -162,14 +170,14 @@ async def register(response: Response, data: dict):
     if not email or not password:
         raise HTTPException(status_code=400, detail="Missing required fields")
 
-    existing_user = db_session.query(Account).filter_by(email=email).first()
+    existing_user = db.query(Account).filter_by(email=email).first()
     if existing_user:
         raise HTTPException(status_code=409, detail="Email already in use")
 
     hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
     new_account = Account(email=email, password=hashed_password, created_at=date_now)
-    db_session.add(new_account)
-    db_session.commit()
+    db.add(new_account)
+    db.commit()
 
     create_token(response, new_account.id_account)
 
@@ -412,7 +420,7 @@ Si le contexte ne contient pas d’éléments permettant de répondre à la ques
 # Conversation Endpoints
 # -------------------------
 @router.delete("/del-conv")
-async def delete_conv(id: int, user_id: int = Depends(get_current_user)):
+async def delete_conv(id: int, user_id: int = Depends(get_current_user), db: Session = Depends(get_db)):
     """
     Delete a conversation by its ID.
 
@@ -426,15 +434,15 @@ async def delete_conv(id: int, user_id: int = Depends(get_current_user)):
     Returns:
         dict: Success message confirming deletion.
     """
-    conv = db_session.query(Conversation).filter_by(id_conversation=id).first()
+    conv = db.query(Conversation).filter_by(id_conversation=id).first()
     if not conv:
         raise HTTPException(status_code=404, detail="Conversation not found")
-    db_session.delete(conv)
-    db_session.commit()
+    db.delete(conv)
+    db.commit()
     return {"message": "Conversation deleted"}
 
 @router.post("/add-conv")
-async def add_conv(data: dict, user_id: int = Depends(get_current_user)):
+async def add_conv(data: dict, user_id: int = Depends(get_current_user), db: Session = Depends(get_db)):
     """
     Add a new conversation for the current user.
 
@@ -449,12 +457,12 @@ async def add_conv(data: dict, user_id: int = Depends(get_current_user)):
     character = data.get("character")
     date_now = datetime.datetime.now()
     new_conv = Conversation(name=title, character=character, updated_at=date_now, id_account=user_id)
-    db_session.add(new_conv)
-    db_session.commit()
+    db.add(new_conv)
+    db.commit()
     return {"message": "Conversation added", "id": new_conv.id_conversation}
 
 @router.get("/get-conv")
-async def get_conv(character: str, user_id: int = Depends(get_current_user)):
+async def get_conv(character: str, user_id: int = Depends(get_current_user), db: Session = Depends(get_db)):
     """
     Retrieve all conversations for the current user, ordered by last updated.
 
@@ -464,7 +472,7 @@ async def get_conv(character: str, user_id: int = Depends(get_current_user)):
     Returns:
         list: List of dictionaries representing each conversation.
     """
-    convs = db_session.query(Conversation).filter_by(id_account=user_id).filter_by(character=character).order_by(Conversation.updated_at.desc()).all()
+    convs = db.query(Conversation).filter_by(id_account=user_id).filter_by(character=character).order_by(Conversation.updated_at.desc()).all()
     return [c.to_dict() for c in convs]
 
 
@@ -472,7 +480,7 @@ async def get_conv(character: str, user_id: int = Depends(get_current_user)):
 # Messages Endpoints
 # -------------------------
 @router.post("/add-msg")
-async def add_message(data: dict = Body(...), user_id: int = Depends(get_current_user)):
+async def add_message(data: dict = Body(...), user_id: int = Depends(get_current_user), db: Session = Depends(get_db)):
     """
     Add a new message to a conversation.
 
@@ -495,12 +503,12 @@ async def add_message(data: dict = Body(...), user_id: int = Depends(get_current
     if not id_conv or not message or not role:
         raise HTTPException(status_code=400, detail="Missing required fields")
 
-    conv = db_session.query(Conversation).filter_by(id_conversation=id_conv).first()
+    conv = db.query(Conversation).filter_by(id_conversation=id_conv).first()
     if not conv:
         raise HTTPException(status_code=404, detail="Conversation not found")
 
     new_msg = Message(content=message, role=role, id_conversation=id_conv)
-    db_session.add(new_msg)
+    db.add(new_msg)
     conv.updated_at = datetime.datetime.now()
-    db_session.commit()
+    db.commit()
     return {"message": "Message added"}

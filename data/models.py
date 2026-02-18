@@ -146,7 +146,14 @@ class Possess(Base):
 # ============================================================
 
 engine = create_engine(DATABASE_URL)
+
 Base.metadata.create_all(engine)
 
-Session = sessionmaker(bind=engine)
-session = Session()
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+
+# Session = sessionmaker(bind=engine)
+# session = Session()
