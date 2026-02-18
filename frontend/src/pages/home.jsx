@@ -31,11 +31,11 @@ export default function Home() {
   return (
     <div className="flex flex-col overflow-auto bg-primary-50">
       {/* Hero Section */}
-      <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
-        <h1 className="mb-4 text-6xl font-bold text-transparent bg-clip-text bg-secondary-50 font-titre">
+      <div className="flex flex-col items-center justify-center px-6 py-8 text-center">
+        <h1 className="mb-2 text-6xl font-bold text-transparent bg-clip-text bg-secondary-50 font-titre">
           RuneBook
         </h1>
-        <p className="mb-8 text-4xl font-semibold text-secondary-50 font-titre">
+        <p className="mb-6 text-4xl font-semibold text-secondary-50 font-titre">
           Where League of Legends feel logical
         </p>
         <p className="max-w-3xl text-xl leading-relaxed text-white font-text">
@@ -45,7 +45,7 @@ export default function Home() {
         <img 
           src={paysage}
           alt="heatmap" 
-          className="object-contain my-12 rounded-full h-[450px]">
+          className="object-contain my-8 rounded-full h-[400px]">
         </img>
         <div className="flex gap-10 py-8">
           <a 
