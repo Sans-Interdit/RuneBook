@@ -75,15 +75,29 @@ def create_token(response: Response, account_id: int):
     }
     token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
-    response.set_cookie(
-        key="access_token",
-        value=token,
-        httponly=True,
-        secure=False,
-        samesite="Lax",
-        path="/",
-        max_age=3600 * 24,
-    )
+    if os.getenv("PRODUCTION") == "true":
+        response.set_cookie(
+            key="access_token",
+            value=token,
+            httponly=True,
+            secure=True,
+            samesite="None",  # pour cross-site
+            path="/",
+            max_age=3600 * 24,
+        )
+
+    else:
+        response.set_cookie(
+            key="access_token",
+            value=token,
+            httponly=True,
+            secure=False,
+            samesite="Lax",
+            path="/",
+            max_age=3600 * 24,
+        )
+
+
 
     return token
 
