@@ -72,19 +72,35 @@ export default function Inscription() {
       return;
     }
     
-    // Submit form
     setIsSubmitting(true);
     
-    try {
-      setSubmitSuccess(true);
+    // try {
+    //   setSubmitSuccess(true);
 
-      registerContext(formData.email, formData.password)
+    //   await registerContext(formData.email, formData.password)
       
+    //   window.location.href = '/chatbot';
+      
+    // } catch (error) {
+    //   setErrors({ submit: "Une erreur est survenue. Veuillez réessayer." });
+    // } finally {
+    //   setIsSubmitting(false);
+    // }
+
+    try {
+      await registerContext(formData.email, formData.password);
+
       window.location.href = '/chatbot';
-      
-    } catch (error) {
-      setErrors({ submit: "Une erreur est survenue. Veuillez réessayer." });
-    } finally {
+    }
+    catch (error) {
+      if (error.message === "EMAIL_USED") {
+        setErrors({submit: "Email déjà utilisé"});
+      }
+      else {
+        setErrors({submit: "Erreur serveur. Veuillez réessayer plus tard"});
+      }
+    }
+    finally {
       setIsSubmitting(false);
     }
   };

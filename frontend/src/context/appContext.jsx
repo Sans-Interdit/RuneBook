@@ -35,7 +35,14 @@ export const AppProvider = ({ children }) => {
   }, []);
 
   const registerContext = async (email, password) => {
-    await register(email, password);
+    try {
+      await register(email, password);
+    } catch (error) {
+      if (error.response?.status === 409) {
+        throw new Error("EMAIL_USED");
+      }
+      throw new Error("SERVER_ERROR");
+    }
   };
 
   const loginContext = async (email, password) => {
