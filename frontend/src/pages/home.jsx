@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BookCheck, ChevronLeft, ChevronRight, MessageSquare, Search, Trophy } from "lucide-react";
 import { useAppContext } from "../context/appContext";
 import paysage from "/assets/paysage.png";
@@ -15,6 +15,18 @@ export default function Home() {
   const [currentGuideIndex, setCurrentGuideIndex] = useState(0);
   const { guides } = useAppContext();
   const [selectedGuide, setSelectedGuide] = useState(null);
+
+  useEffect(() => {
+    if (selectedGuide) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "auto"
+    }
+
+    return () => {
+      document.body.style.overflow = "auto"
+    }
+  }, [selectedGuide])
 
   const getLevelColor = (level) => {
     if (level === "New Player") return "bg-green-400";
@@ -39,7 +51,7 @@ export default function Home() {
           Where League of Legends feel logical
         </p>
         <p className="max-w-3xl text-xl leading-relaxed text-white font-text">
-          Ton guide pour <span className="font-semibold text-secondary-50">comprendre</span> League of Legends et
+          Ton guide pour comprendre League of Legends et
           pas seulement devenir plus fort. Apprends la logique derrière chaque élément du jeu!
         </p>
         <img 
@@ -64,132 +76,114 @@ export default function Home() {
       </div>
 
     <div className="flex flex-col items-center px-6 py-16">
-      <h2 className="mb-4 text-4xl font-bold text-center text-secondary-50 font-titre">
+      <h2 className="mb-4 text-4xl font-semibold text-center text-secondary-50 font-titre">
         Les différents objectifs
       </h2>
       <p className="mb-16 text-xl text-center text-white font-text">
-        Pour tout type de joueur voulant comprendre cet univers
+        Pour tout type de joueur voulant se saisir de cet univers
       </p>
       
       <div className="grid w-3/4 grid-cols-1 gap-8 md:grid-cols-3">
-        {/* Découvrir */}
-        <div className="relative overflow-hidden transition-all duration-500 border-2 bg-gradient-to-br from-primary-100/20 to-transparent border-primary-100/30 rounded-3xl hover:scale-105 hover:border-primary-100 group">
+        {/* Fondamentaux */}
+        <a 
+          className="relative overflow-hidden transition-all duration-500 border-2 bg-gradient-to-br from-primary-100/20 to-transparent border-primary-100/30 rounded-3xl hover:scale-105 hover:border-primary-100 group"
+          href="/catalog?level=new"
+        >
           <div className="p-8">
             <div className="relative mb-6 overflow-hidden rounded-2xl h-52 bg-gradient-to-br from-primary-100/10 to-primary-100/5 group">
           
-              {/* Image statique */}
               <img
-                src={img7} // image fixe (jpg/png)
-                alt="Découvrir"
+                src={img7}
+                alt="image fondamentaux"
                 className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300 opacity-100 group-hover:opacity-0"
               />
 
-              {/* GIF */}
               <img
                 src={gif5}
                 loading="lazy"
-                alt="Découvrir animé"
+                alt="animation fondamentaux"
                 className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300 opacity-0 group-hover:opacity-100"
               />
 
-              {/* Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             </div>
-            {/* GIF Container */}
-            {/* <div className="relative mb-6 overflow-hidden rounded-2xl h-52 bg-gradient-to-br from-primary-100/10 to-primary-100/5">
-              <img 
-                src={gif5}
-                alt="Découvrir"
-                className="object-cover w-full h-full transition-opacity duration-300 opacity-80 group-hover:opacity-100"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-            </div> */}
+
             
-            <h3 className="mb-3 text-2xl font-bold text-white">Découvrir</h3>
-            <p className="text-lg text-white/80">Les bases du jeu</p>
-            
+            <h3 className="mb-6 text-2xl font-bold text-center text-secondary-50">Les fondamentaux</h3>
+            <div className="flex justify-center w-full">
+              <span className={`px-4 py-2 text-sm font-semibold rounded-full text-primary-50 bg-green-400`}>
+                Nouveau Joueurs
+              </span>
+            </div>
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-100 to-transparent"></div>
           </div>
-        </div>
+        </a>
 
-        {/* Assimiler */}
-        <div className="relative overflow-hidden transition-all duration-500 border-2 bg-gradient-to-br from-secondary-50/20 to-transparent border-secondary-50/30 rounded-3xl hover:scale-105 hover:border-secondary-50 group">
+        {/* Maîtrise */}
+        <a
+          className="relative overflow-hidden transition-all duration-500 border-2 bg-gradient-to-br from-secondary-50/20 to-transparent border-secondary-50/30 rounded-3xl hover:scale-105 hover:border-secondary-50 group"
+          href="/catalog?level=average"
+        >
           <div className="p-8">
             <div className="relative mb-6 overflow-hidden rounded-2xl h-52 bg-gradient-to-br from-primary-100/10 to-primary-100/5 group">
               
-              {/* Image statique */}
               <img
-                src={img5} // image fixe (jpg/png)
-                alt="Découvrir"
+                src={img5}
+                alt="image maîtrise"
                 className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300 opacity-100 group-hover:opacity-0"
               />
 
-              {/* GIF */}
               <img
                 src={gif7}
                 loading="lazy"
-                alt="Découvrir animé"
+                alt="animation maîtrise"
                 className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300 opacity-0 group-hover:opacity-100"
               />
 
-              {/* Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             </div>
-            {/* GIF Container */}
-            {/* <div className="relative mb-6 overflow-hidden rounded-2xl h-52 bg-gradient-to-br from-secondary-50/10 to-secondary-50/5">
-              <img 
-                src={gif7}
-                alt="Assimiler"
-                className="object-cover w-full h-full transition-opacity duration-300 opacity-80 group-hover:opacity-100"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-            </div> */}
-            
-            <h3 className="mb-3 text-2xl font-bold text-white">Assimiler</h3>
-            <p className="text-lg text-white/80">Les mécaniques</p>
-            
+            <h3 className="mb-6 text-2xl font-bold text-center text-secondary-50">La Maîtrise du Gameplay</h3>
+            <div className="flex justify-center w-full">
+              <span className={`px-4 py-2 text-sm font-semibold rounded-full text-primary-50 bg-secondary-50`}>
+                Joueur Medium
+              </span>
+            </div>  
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-secondary-50 to-transparent"></div>
           </div>
-        </div>
+        </a>
 
-        {/* Comprendre */}
-        <div className="relative overflow-hidden transition-all duration-500 border-2 bg-gradient-to-br from-red-400/20 to-transparent border-red-400/30 rounded-3xl hover:scale-105 hover:border-red-400 group">
+        {/* Compétitif */}
+        <a
+          className="relative overflow-hidden transition-all duration-500 border-2 bg-gradient-to-br from-red-400/20 to-transparent border-red-400/30 rounded-3xl hover:scale-105 hover:border-red-400 group"
+          href="/catalog?level=confirmed"
+        >
           <div className="p-8">
             <div className="relative mb-6 overflow-hidden rounded-2xl h-52 bg-gradient-to-br from-primary-100/10 to-primary-100/5 group">
-              {/* Image statique */}
               <img
-                src={img4} // image fixe (jpg/png)
-                alt="Découvrir"
+                src={img4}
+                alt="image compétitif"
                 className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300 opacity-100 group-hover:opacity-0"
               />
 
-              {/* GIF */}
               <img
                 src={gif4}
                 loading="lazy"
-                alt="Découvrir animé"
+                alt="animation compétitif"
                 className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300 opacity-0 group-hover:opacity-100"
               />
 
-              {/* Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             </div>
-            {/* GIF Container */}
-            {/* <div className="relative mb-6 overflow-hidden rounded-2xl h-52 bg-gradient-to-br from-red-400/10 to-red-400/5">
-              <img 
-                src={gif4} 
-                alt="Comprendre"
-                className="object-cover w-full h-full transition-opacity duration-300 opacity-80 group-hover:opacity-100"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-            </div> */}
-            
-            <h3 className="mb-3 text-2xl font-bold text-white">Comprendre</h3>
-            <p className="text-lg text-white/80">La scène esport</p>
-            
+
+            <h3 className="mb-6 text-2xl font-bold text-center text-secondary-50">L’Écosystème Compétitif</h3>
+            <div className="flex justify-center w-full">
+              <span className={`px-4 py-2 text-sm font-semibold rounded-full text-primary-50 bg-red-400`}>
+                Joueur Confirmé
+              </span>
+            </div>              
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-400 to-transparent"></div>
           </div>
-        </div>
+        </a>
       </div>
 
       {/* Progress indicator */}
@@ -203,7 +197,7 @@ export default function Home() {
     </div>
 
       <div className="px-6 py-16 mx-auto max-w-7xl">
-        <h2 className="mb-4 text-4xl font-bold text-center text-secondary-50 font-titre">
+        <h2 className="mb-4 text-4xl font-semibold text-center text-secondary-50 font-titre">
           Notre Chatbot
         </h2>
         <p className="mb-12 text-xl text-center text-white font-text">
@@ -212,19 +206,19 @@ export default function Home() {
         <div className="flex items-center justify-center w-full">
           <img 
             src={living_library} 
-            alt="heatmap" 
+            alt="living_library" 
             className="object-contain mb-12 rounded-full md:w-1/2 sm:w-full">
           </img>
         </div>
         <div className="grid gap-8 md:grid-cols-2">
           {/* Left side - Description */}
-          <div className="flex flex-col justify-center p-8 border-2 rounded-2xl bg-background-50 border-primary-100/30">
+          <div className="flex flex-col justify-between p-8 border-2 rounded-2xl bg-background-50 border-primary-100/30">
             <MessageSquare className="w-16 h-16 mb-6 text-secondary-50" />
             <h3 className="mb-4 text-2xl font-bold text-secondary-50 font-titre">
               Un Apprentissage à Ton Rythme
             </h3>
             <p className="mb-6 text-lg leading-relaxed text-white font-text">
-              Notre chatbot IA est conçu pour être <span className="font-semibold text-secondary-50">bienveillant</span> et <span className="font-semibold text-secondary-50">pédagogue</span>. 
+              Notre chatbot IA est conçu pour être bienveillant et pédagogue. 
               Il adapte ses réponses à ton niveau et ne te submergera jamais d'informations complexes.
             </p>
             <ul className="mb-8 space-y-5">
@@ -249,7 +243,7 @@ export default function Home() {
             </ul>
             <a 
               href="/chatbot"
-              className="inline-block px-8 py-4 text-lg font-semibold text-center transition-all duration-300 rounded-lg bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-105"
+              className="self-start inline-block px-8 py-4 mx-auto text-lg font-semibold text-center transition-all duration-300 rounded-lg bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-105"
             >
               Essayer le Chatbot
             </a>
@@ -257,7 +251,7 @@ export default function Home() {
 
           {/* Right side - Example conversation */}
           <div className="flex flex-col p-8 border-2 rounded-2xl bg-background-50 border-primary-100/30">
-            <h3 className="mb-6 text-xl font-bold text-center text-secondary-50 font-titre">
+            <h3 className="mb-6 text-xl font-semibold text-center text-secondary-50 font-titre">
               Exemple de Conversation
             </h3>
             <div className="flex-1 space-y-4">
@@ -308,7 +302,7 @@ export default function Home() {
 
       {/* Guides Carousel */}
       <div className="px-6 py-16 mx-auto max-w-7xl">
-        <h2 className="mb-4 text-4xl font-bold text-center text-secondary-50 font-titre">
+        <h2 className="mb-4 text-4xl font-semibold text-center text-secondary-50 font-titre">
           Nos Guides
         </h2>
         <p className="mb-12 text-xl text-center text-white font-text">
@@ -328,7 +322,7 @@ export default function Home() {
               style={{ transform: `translateX(-${currentGuideIndex * 100}%)` }}
             >
               {Array.isArray(guides) && 
-              guides?.slice(0,5).map((guide, index) => (
+              guides?.slice(0,6).map((guide, index) => (
                 <div 
                   key={guide.id_guide}
                   onClick={() => setSelectedGuide(guide)}
@@ -336,7 +330,7 @@ export default function Home() {
                 >
                   <div className="p-8 transition-all duration-300 border-2 rounded-2xl bg-background-50 border-primary-100/30 hover:border-secondary-50 hover:shadow-xl hover:shadow-secondary-50/20">
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-2xl font-bold text-secondary-50 font-titre">
+                      <h3 className="text-2xl font-semibold text-secondary-50 font-titre">
                         {guide.title}
                       </h3>
                       <span className={`px-4 py-2 text-sm font-semibold rounded-full text-primary-50 ${guide.level == "New Player" ? "bg-green-400" : guide.level == "Average Player" ? "bg-secondary-50" : "bg-red-400"}`}>
@@ -372,14 +366,14 @@ export default function Home() {
           
           {/* Navigation Buttons */}
           <button
-            onClick={() => setCurrentGuideIndex(currentGuideIndex === 0 ? guides.slice(0,5).length - 1 : currentGuideIndex-1)}
+            onClick={() => setCurrentGuideIndex(currentGuideIndex === 0 ? guides.slice(0,6).length - 1 : currentGuideIndex-1)}
             className="absolute left-0 p-3 transition-all duration-300 transform -translate-y-1/2 rounded-full top-1/2 bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
           
           <button
-            onClick={() => setCurrentGuideIndex(currentGuideIndex === guides.slice(0,5).length - 1 ? 0 : currentGuideIndex+1)}
+            onClick={() => setCurrentGuideIndex(currentGuideIndex === guides.slice(0,6).length - 1 ? 0 : currentGuideIndex+1)}
             className="absolute right-0 p-3 transition-all duration-300 transform -translate-y-1/2 rounded-full top-1/2 bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ChevronRight className="w-6 h-6" />
@@ -387,7 +381,7 @@ export default function Home() {
           
           {/* Indicators */}
           <div className="flex justify-center gap-2 mt-8">
-            {Array.isArray(guides) && guides.slice(0,5).map((_, index) => (
+            {Array.isArray(guides) && guides.slice(0,6).map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentGuideIndex(index)}
@@ -405,8 +399,8 @@ export default function Home() {
       {/* CTA Section */}
       <div className="flex flex-col items-center px-6 py-20 text-center">
         <div className="w-4/6 p-12 border-2 rounded-3xl bg-background-50 border-primary-100/30">
-          <h2 className="mb-6 text-4xl font-bold text-secondary-50 font-titre">
-            Prêt à Comprendre League of Legends ?
+          <h2 className="mb-6 text-4xl font-semibold text-secondary-50 font-titre">
+            Alors, curieux ?
           </h2>
           <p className="max-w-2xl mx-auto mb-8 text-xl text-white font-text">
             Rejoins RuneBook et commence ton voyage d'apprentissage avec un guide bienveillant qui ne te submergera jamais d'informations.
@@ -415,7 +409,7 @@ export default function Home() {
             href="/inscription"
             className="inline-block px-10 py-5 text-xl font-bold transition-all duration-300 rounded-xl bg-primary-100 text-primary-50 hover:scale-110 hover:shadow-2xl hover:shadow-primary-100/50"
           >
-            Inscrivez vous
+            Inscris toi!
           </a>
         </div>
       </div>

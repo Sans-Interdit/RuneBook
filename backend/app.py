@@ -17,8 +17,6 @@ print("Production mode:", isProd)
 
 # Create app FastAPI
 def create_app() -> FastAPI:
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
     app = FastAPI()
 
     # CORS

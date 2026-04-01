@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BookOpen, Search, Filter, Tag, ExternalLink } from "lucide-react";
 import { useAppContext } from "../context/appContext";
 import search from "/assets/search.png";
+import { useLocation } from "react-router-dom";
 
 export default function Catalog() {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
   const { guides } = useAppContext();
   
   const [searchTerm, setSearchTerm] = useState("");
@@ -11,13 +15,14 @@ export default function Catalog() {
   const [selectedTag, setSelectedTag] = useState("all");
   const [selectedGuide, setSelectedGuide] = useState(null);
 
+  const levels = ["new", "average", "confirmed"]
+
   // Extract all unique tags
   const allTags = Array.isArray(guides) ? [...new Set(guides.flatMap(guide => guide.tags))] : [];
 
   // Filter guides based on search and filters
   const filteredGuides = Array.isArray(guides) ? guides.filter(guide => {
-    const matchesSearch = guide.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         guide.content.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = guide.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesLevel = selectedLevel === "all" || guide.level === selectedLevel;
     const matchesTag = selectedTag === "all" || guide.tags.includes(selectedTag);
     
@@ -36,6 +41,23 @@ export default function Catalog() {
     if (level === "Confirmed Player") return "Joueur Confirmé";
   }
 
+  useEffect(() => {
+    // console.log(searchParams.get("tag"));
+    // console.log(searchParams.get("level"));
+
+    if (searchParams.get("level") == "new") {
+      setSelectedLevel("New Player")
+    }
+
+    if (searchParams.get("level") == "average") {
+      setSelectedLevel("Average Player")
+    }
+
+    if (searchParams.get("level") == "confirmed") {
+      setSelectedLevel("Confirmed Player")
+    }
+  }, [])
+
   return (
     <div className="overflow-auto bg-primary-50">
       {/* Header */}
@@ -44,7 +66,7 @@ export default function Catalog() {
           Catalogue de Guides
         </h1>
         <p className="max-w-2xl mx-auto text-xl text-white font-text">
-          Explore notre collection de guides pour comprendre League of Legends à ton rythme
+          Explore notre collection de guides pour interpréter League of Legends à ton rythme
         </p>
       </div>
       <div className="flex items-center justify-center w-full">
@@ -80,9 +102,9 @@ export default function Catalog() {
                 className="px-4 py-2 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 border-primary-100/30 focus:border-secondary-50 focus:outline-none font-text"
               >
                 <option value="all">Tous les niveaux</option>
-                <option value="New Player">New Player</option>
-                <option value="Average Player">Average Player</option>
-                <option value="Confirmed Player">Confirmed Player</option>
+                <option value="New Player">Nouveau Joueur</option>
+                <option value="Average Player">Joueur Medium</option>
+                <option value="Confirmed Player">Joueur Confirmé</option>
               </select>
             </div>
 

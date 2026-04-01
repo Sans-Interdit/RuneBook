@@ -22,10 +22,10 @@ function AppContent() {
   const showNavbar = location.pathname !== "/map";
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col h-screen overflow-hidden">
       {showNavbar && <Navbar />}
 
-      <main className="flex flex-col flex-1 min-h-0">
+      <main className="flex flex-col flex-1 min-h-0 overflow-hidden">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/catalog" element={<Catalog />} />

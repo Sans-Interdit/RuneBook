@@ -21,10 +21,10 @@ export default function Login() {
   };
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     }));
     
     // Clear error for this field when user starts typing
@@ -184,27 +184,6 @@ export default function Login() {
                 {errors.password}
               </div>
             )}
-          </div>
-
-          {/* Remember Me Checkbox */}
-          <div className="mb-6">
-            <label className="flex items-center gap-3 cursor-pointer group">
-              <div className="relative flex-shrink-0">
-                <input
-                  type="checkbox"
-                  name="rememberMe"
-                  checked={formData.rememberMe}
-                  onChange={handleInputChange}
-                  className="w-5 h-5 transition-all duration-300 border-2 rounded appearance-none cursor-pointer bg-primary-50 border-primary-100/30 checked:bg-secondary-50 checked:border-secondary-50 focus:outline-none focus:ring-2 focus:ring-secondary-50/50"
-                />
-                {formData.rememberMe && (
-                  <CheckCircle className="absolute w-5 h-5 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none text-primary-50 top-1/2 left-1/2" />
-                )}
-              </div>
-              <span className="text-sm text-white font-text">
-                Se souvenir de moi
-              </span>
-            </label>
           </div>
 
           {/* Submit Error */}

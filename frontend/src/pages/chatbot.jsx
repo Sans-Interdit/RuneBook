@@ -47,7 +47,6 @@ export default function Chatbot() {
       "shen" : "ionia",
       "azir" : "shurima"
     }
-    console.log(zoneMap[charac])
     return zoneMap[charac]
   }
 
@@ -71,24 +70,26 @@ export default function Chatbot() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleSendMessage = async () => {
-    if (!inputMessage.trim()) return;
+  const handleSendMessage = async (insertedPrompt = "") => {
+    const prompt = insertedPrompt.trim() ? insertedPrompt : inputMessage
 
-    const userMessage = { role: "user", content: inputMessage };
-    
+    if (!prompt.trim()) return;
+
+    const userMessage = { role: "user", content: prompt };
+
     // Add user message
     setConversations(prev => prev.map(conv => 
       conv.id === currentConversationId 
         ? { ...conv, messages: [...conv.messages, userMessage] }
         : conv
     ));
-    addMsg(currentConversationId, inputMessage, "user");
+    addMsg(currentConversationId, prompt, "user");
 
     setInputMessage("");
     setIsTyping(true);
 
     // AI response
-    const res = await chat(inputMessage, character);
+    const res = await chat(prompt, character);
     const aiResponse = {role: "assistant", content: res}
     setConversations(prev => prev.map(conv => 
       conv.id === currentConversationId 
@@ -151,8 +152,13 @@ export default function Chatbot() {
     return `Il y a ${days}j`;
   };
 
+  const autoSend = (prompt) => {
+    setInputMessage(prompt);
+    handleSendMessage(prompt);
+  }
+
   return (
-    <div className="flex flex-1 min-h-0 overflow-hidden bg-primary-50">
+    <div className="flex flex-1 max-h-screen overflow-hidden bg-primary-50">
       {/* Sidebar - Conversations History */}
       <div className="z-10 flex flex-col h-full min-h-0 border-r-2 w-80 border-primary-100/30">
         {/* Sidebar Header */}
@@ -213,62 +219,75 @@ export default function Chatbot() {
       <div className="flex flex-col flex-1">
         {/* Chat Header */}
         <div className="p-6 border-b-2 border-primary-100/30">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-12 h-12 overflow-hidden rounded-full bg-primary-100">
-              <img src={`/assets/${character}.jpg`} className="w-auto h-full rounded-full max-w-none"/>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center justify-center gap-3">
+              <div className="flex items-center justify-center w-12 h-12 overflow-hidden rounded-full bg-primary-100">
+                <img src={`/assets/${character}.jpg`} className="w-auto h-full rounded-full max-w-none"/>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-secondary-50 font-titre">
+                  {currentConversation?.title || "Chatbot RuneBook"}
+                </h1>
+                <p className="text-sm text-primary-100 font-text">
+                  Pose-moi toutes tes questions sur League of Legends
+                </p>
+              </div>            
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-secondary-50 font-titre">
-                {currentConversation?.title || "Chatbot RuneBook"}
-              </h1>
-              <p className="text-sm text-primary-100 font-text">
-                Pose-moi toutes tes questions sur League of Legends
-              </p>
-            </div>
+            <a
+              href="/map"
+              className="flex flex-row items-center gap-2 px-2 py-3 font-semibold transition-all duration-300 rounded-lg bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            >
+              <div className="transform-gpu">
+                <Map className="w-5 h-5" />
+              </div>
+              Changer de personnage
+            </a>
           </div>
         </div>
 
         {/* Messages Area */}
         <div className="relative flex-1 p-6 overflow-y-auto bg-center bg-cover"
           style={{ backgroundImage: `url('/assets/${zoneMapping(character)}.jpg')` }}>
-          <div className="absolute inset-0 z-0 pointer-events-none bg-primary-50/80" />
+          <div className="absolute inset-0 z-0 pointer-events-none" />
           {currentConversation?.messages.length === 0 ? (
             <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
-              <div className="flex items-center justify-center w-20 h-20 mb-6 overflow-hidden rounded-full bg-secondary-50">
-                <img src={`/assets/${character}.jpg`} className="w-auto h-full rounded-full max-w-none"/>
-              </div>
-              <h2 className="mb-2 text-2xl font-bold text-secondary-50 font-titre">
-                Prêt à Apprendre ?
-              </h2>
-              <p className="max-w-md text-white font-text">
-                Je suis là pour t'aider à comprendre League of Legends. 
-                Pose-moi n'importe quelle question, je répondrai de manière simple et claire !
-              </p>
-              <div className="grid grid-cols-2 gap-4 mt-8">
-                <button
-                  onClick={() => setInputMessage("C'est quoi le farming ?")}
-                  className="p-4 transition-all duration-300 border-2 rounded-lg border-primary-100/30 hover:border-secondary-50 hover:scale-105"
-                >
-                  <p className="text-sm font-semibold text-secondary-50">C'est quoi le farming ?</p>
-                </button>
-                <button
-                  onClick={() => setInputMessage("Explique-moi les rôles")}
-                  className="p-4 transition-all duration-300 border-2 rounded-lg border-primary-100/30 hover:border-secondary-50 hover:scale-105"
-                >
-                  <p className="text-sm font-semibold text-secondary-50">Explique-moi les rôles</p>
-                </button>
-                <button
-                  onClick={() => setInputMessage("Comment bien débuter ?")}
-                  className="p-4 transition-all duration-300 border-2 rounded-lg border-primary-100/30 hover:border-secondary-50 hover:scale-105"
-                >
-                  <p className="text-sm font-semibold text-secondary-50">Comment bien débuter ?</p>
-                </button>
-                <button
-                  onClick={() => setInputMessage("C'est quoi la méta ?")}
-                  className="p-4 transition-all duration-300 border-2 rounded-lg border-primary-100/30 hover:border-secondary-50 hover:scale-105"
-                >
-                  <p className="text-sm font-semibold text-secondary-50">C'est quoi la méta ?</p>
-                </button>
+              <div className="flex flex-col items-center p-10 rounded-3xl bg-primary-50/80 backdrop-blur-sm">
+                <div className="flex items-center justify-center w-20 h-20 mb-6 overflow-hidden rounded-full bg-secondary-50">
+                  <img src={`/assets/${character}.jpg`} className="w-auto h-full rounded-full max-w-none"/>
+                </div>
+                <h2 className="mb-2 text-2xl font-bold text-secondary-50 font-titre">
+                  Prêt à Apprendre ?
+                </h2>
+                <p className="max-w-md text-white font-text">
+                  Je suis là pour t'aider à assimiler les concepts de League of Legends. 
+                  Pose-moi n'importe quelle question, je répondrai de manière simple et claire !
+                </p>
+                <div className="grid grid-cols-2 gap-4 mt-8">
+                  <button
+                    onClick={() => autoSend("C'est quoi le farming ?")}
+                    className="p-4 transition-all duration-300 rounded-lg bg-primary-100 hover:scale-105"
+                  >
+                    <p className="text-base font-semibold text-black">C'est quoi le farming ?</p>
+                  </button>
+                  <button
+                    onClick={() => autoSend("Explique-moi les rôles")}
+                    className="p-4 transition-all duration-300 rounded-lg bg-primary-100 hover:scale-105"
+                  >
+                    <p className="text-base font-semibold text-black">Explique-moi les rôles</p>
+                  </button>
+                  <button
+                    onClick={() => autoSend("Comment bien débuter ?")}
+                    className="p-4 transition-all duration-300 rounded-lg bg-primary-100 hover:scale-105"
+                  >
+                    <p className="text-base font-semibold text-black">Comment bien débuter ?</p>
+                  </button>
+                  <button
+                    onClick={() => autoSend("Quel est ton histoire ?")}
+                    className="p-4 transition-all duration-300 rounded-lg bg-primary-100 hover:scale-105"
+                  >
+                    <p className="text-base font-semibold text-black">Quel est ton histoire ?</p>
+                  </button>
+                </div>
               </div>
             </div>
           ) : (
@@ -346,7 +365,7 @@ export default function Chatbot() {
                 onChange={(e) => setInputMessage(e.target.value)}
                 // disabled={!currentConversation}
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                placeholder={currentConversation ? "Pose ta question ici..." : "Créez une conversation"}
+                placeholder={currentConversation ? "Pose ta question ici..." : "Crées une conversation"}
                 className="flex-1 px-6 py-4 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 border-primary-100/30 placeholder-white/50 focus:border-secondary-50 focus:outline-none font-text"
               />
               <button
@@ -363,14 +382,6 @@ export default function Chatbot() {
               L'assistant peut faire des erreurs. Vérifie les informations importantes.
             </p>
           </div>
-          <a
-            href="/map"
-            className="p-6 font-semibold transition-all duration-300 rounded-lg bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-          >
-            <div className="transform-gpu">
-              <Map className="w-10 h-10" />
-            </div>
-          </a>
         </div>
       </div>
     </div>

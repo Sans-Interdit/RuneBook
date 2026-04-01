@@ -4,14 +4,13 @@ from data.models import engine, Account, Guide, Conversation, Message, SessionLo
 import bcrypt
 import datetime
 import os
-from huggingface_hub import InferenceClient
 import jwt
 from qdrant_client import QdrantClient
 import re
 import json
 from qdrant_client.http.models import Filter, FieldCondition, MatchValue, Prefetch
-from sentence_transformers import SentenceTransformer
 from mistralai import Mistral
+import requests
 
 SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
 
@@ -28,10 +27,19 @@ qdrant_client = QdrantClient(
     timeout=5.0
 )
 
-model = SentenceTransformer(
-    "sentence-transformers/all-MiniLM-L6-v2",
-    device="cpu"
-)
+API_URL = "https://router.huggingface.co/hf-inference/models/sentence-transformers/all-MiniLM-L6-v2/pipeline/feature-extraction"
+headers = {
+    "Authorization": f"Bearer {os.getenv('HF_KEY')}"
+}
+
+def embed(text):
+    response = requests.post(API_URL, headers=headers, json={"inputs": text})
+    return response.json()
+
+# model = SentenceTransformer(
+#     "sentence-transformers/all-MiniLM-L6-v2",
+#     device="cpu"
+# )
 # "sentence-transformers/all-mpnet-base-v2",
 
 # FastAPI router
@@ -154,7 +162,6 @@ async def login(response: Response, data: dict, db: Session = Depends(get_db)):
     password = data.get("password")
 
     account = db.query(Account).filter_by(email=email).first()
-    print(account)
     if not account or not bcrypt.checkpw(password.encode("utf-8"), account.password.encode("utf-8")):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
@@ -290,7 +297,7 @@ Règles:
 - Utilise uniquement des guillemets doubles ".
 
 Format de sortie:
-{"champ": "champion_name|null", "info": "lore|spell|null"}
+{"champ": "champion_name|null", "info": "lore|stats|spell|null"}
              
 Exemples:
 Q: "L'histoire de Yasuo"
@@ -341,7 +348,9 @@ Champion: {champ}
 Question: {prompt}
 Context: League of Legends champion {info} explanation
         """
-        embedding = model.encode(query_text)
+        embedding = embed(query_text)
+
+        # embedding = model.encode(query_text)
 
         must_conditions = [
             FieldCondition(
@@ -379,7 +388,9 @@ Context: League of Legends champion {info} explanation
         query_text = f"""Question: {prompt}
 Context: League of Legends explanation"""
         
-        embedding = model.encode(query_text)
+        embedding = embed(query_text)
+
+        # embedding = model.encode(query_text)
 
         result = qdrant_client.query_points(
             collection_name="lol_guides",
