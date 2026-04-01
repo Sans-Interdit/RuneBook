@@ -215,8 +215,23 @@ async def logout(response: Response):
     Returns:
         dict: Success message confirming logout.
     """
-    response.delete_cookie(key="access_token", path="/")
-    return {"message": "Logout successful"}
+    if os.getenv("PRODUCTION") == "true":
+        response.delete_cookie(
+            key="access_token",
+            path="/",
+            secure=True,
+            samesite="None"
+        )
+        return {"message": "Logout successful"}
+
+    else:
+        response.delete_cookie(
+            key="access_token",
+            path="/",
+            secure=False,
+            samesite="Lax"
+        )
+        return {"message": "Logout successful"}
 
 @router.get("/me")
 async def me(user_id: int = Depends(get_current_user)):

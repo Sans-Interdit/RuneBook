@@ -58,7 +58,7 @@ export default function Chatbot() {
         timestamp: new Date(conv.timestamp)
       }));
       setConversations(conversations);
-      setCurrentConversationId(conversations[0].id);
+      setCurrentConversationId(conversations[0].id || 0);
     }
   }
 
