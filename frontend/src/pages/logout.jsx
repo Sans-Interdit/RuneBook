@@ -1,14 +1,17 @@
 import { CheckCircle } from "lucide-react";
 import React, { useEffect } from "react";
 import { useAppContext } from "../context/appContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Logout() {
   const { logoutContext } = useAppContext();
+  const navigate = useNavigate();
+
   useEffect(()=> {
     logoutContext();
 
     // Redirect after success
-    window.location.href = '/';
+    navigate('/');
   }, [])
 
 

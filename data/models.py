@@ -105,7 +105,17 @@ class Guide(Base):
     source = relationship("Source", back_populates="guides")
     tags = relationship("Tag", secondary="possess", back_populates="guides")
 
-    def to_dict(self):
+    def to_dict_preview(self):
+        return {
+            "id_guide": self.id_guide,
+            "title": self.title,
+            "level": self.level,
+            "content": self.content[:200] + "..." if self.content and len(self.content) > 200 else self.content,
+            "source": self.source.name if self.source else None,
+            "tags": [tag.name for tag in self.tags]
+        }
+
+    def to_dict_full(self):
         return {
             "id_guide": self.id_guide,
             "title": self.title,
@@ -114,7 +124,6 @@ class Guide(Base):
             "source": self.source.name if self.source else None,
             "tags": [tag.name for tag in self.tags]
         }
-
 
 # ============================================================
 #                         TAG

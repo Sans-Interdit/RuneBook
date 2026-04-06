@@ -3,31 +3,56 @@ import { BookOpen, Search, Filter, Tag, ExternalLink } from "lucide-react";
 import { useAppContext } from "../context/appContext";
 import search from "/assets/search.png";
 import { useLocation } from "react-router-dom";
+import { getGuides, getGuide } from "../api/guide";
 
 export default function Catalog() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
 
-  const { guides } = useAppContext();
-  
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("all");
   const [selectedTag, setSelectedTag] = useState("all");
   const [selectedGuide, setSelectedGuide] = useState(null);
-
-  const levels = ["new", "average", "confirmed"]
+  const [guidePreviews, setGuidePreviews] = useState([]);
+  const [filteredGuides, setFilteredGuides] = useState(null);
 
   // Extract all unique tags
-  const allTags = Array.isArray(guides) ? [...new Set(guides.flatMap(guide => guide.tags))] : [];
+  const allTags = Array.isArray(guidePreviews)
+    ? [...new Set(guidePreviews.flatMap((guide) => guide.tags))]
+    : [];
 
-  // Filter guides based on search and filters
-  const filteredGuides = Array.isArray(guides) ? guides.filter(guide => {
-    const matchesSearch = guide.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesLevel = selectedLevel === "all" || guide.level === selectedLevel;
-    const matchesTag = selectedTag === "all" || guide.tags.includes(selectedTag);
-    
-    return matchesSearch && matchesLevel && matchesTag;
-  }) : [];
+  useEffect(() => {
+    const fetchGuides = async () => {
+      const guides = await getGuides();
+      console.log(guides)
+      setGuidePreviews(guides.data);
+    };
+    fetchGuides();
+  }, []);
+
+  const openGuide = async (id) => {
+    const res = await getGuide(id);
+    const data = res.data;
+    setSelectedGuide(data);
+  };
+
+  useEffect(() => {
+    if (guidePreviews && guidePreviews.length > 0) {
+      setFilteredGuides(
+        guidePreviews.filter((guide) => {
+          const matchesSearch = guide.title
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase());
+          const matchesLevel =
+            selectedLevel === "all" || guide.level === selectedLevel;
+          const matchesTag =
+            selectedTag === "all" || guide.tags.includes(selectedTag);
+
+          return matchesSearch && matchesLevel && matchesTag;
+        }),
+      );
+    }
+  }, [guidePreviews, selectedTag, selectedLevel, searchTerm]);
 
   const getLevelColor = (level) => {
     if (level === "New Player") return "bg-green-400";
@@ -39,24 +64,24 @@ export default function Catalog() {
     if (level === "New Player") return "Nouveau Joueur";
     if (level === "Average Player") return "Joueur Medium";
     if (level === "Confirmed Player") return "Joueur Confirmé";
-  }
+  };
 
   useEffect(() => {
     // console.log(searchParams.get("tag"));
     // console.log(searchParams.get("level"));
 
     if (searchParams.get("level") == "new") {
-      setSelectedLevel("New Player")
+      setSelectedLevel("New Player");
     }
 
     if (searchParams.get("level") == "average") {
-      setSelectedLevel("Average Player")
+      setSelectedLevel("Average Player");
     }
 
     if (searchParams.get("level") == "confirmed") {
-      setSelectedLevel("Confirmed Player")
+      setSelectedLevel("Confirmed Player");
     }
-  }, [])
+  }, []);
 
   return (
     <div className="overflow-auto bg-primary-50">
@@ -66,15 +91,16 @@ export default function Catalog() {
           Catalogue de Guides
         </h1>
         <p className="max-w-2xl mx-auto text-xl text-white font-text">
-          Explore notre collection de guides pour interpréter League of Legends à ton rythme
+          Explore notre collection de guides pour interpréter League of Legends
+          à ton rythme
         </p>
       </div>
       <div className="flex items-center justify-center w-full">
-        <img 
-          src={search} 
-          alt="heatmap" 
-          className="object-contain mb-12 rounded-full max-h-[450px]">
-        </img>
+        <img
+          src={search}
+          alt="heatmap"
+          className="object-contain mb-12 rounded-full max-h-[450px]"
+        />
       </div>
       <div className="px-6 pb-16 mx-auto max-w-7xl">
         {/* Search and Filters */}
@@ -117,8 +143,10 @@ export default function Catalog() {
                 className="px-4 py-2 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 border-primary-100/30 focus:border-secondary-50 focus:outline-none font-text"
               >
                 <option value="all">Tous les tags</option>
-                {allTags.map(tag => (
-                  <option key={tag} value={tag}>#{tag}</option>
+                {allTags.map((tag) => (
+                  <option key={tag} value={tag}>
+                    #{tag}
+                  </option>
                 ))}
               </select>
             </div>
@@ -126,66 +154,85 @@ export default function Catalog() {
             {/* Results Count */}
             <div className="flex items-center px-4 py-2 ml-auto border-2 rounded-lg bg-primary-50 border-secondary-50/30">
               <span className="text-sm font-semibold text-secondary-50 font-text">
-                {filteredGuides.length} guide{filteredGuides.length > 1 ? 's' : ''} trouvé{filteredGuides.length > 1 ? 's' : ''}
+                {filteredGuides != null ? (
+                  <>
+                    {filteredGuides.length} guide
+                    {filteredGuides.length > 1 ? "s" : ""} trouvé
+                    {filteredGuides.length > 1 ? "s" : ""}
+                  </>
+                ) : (
+                  "Chargement"
+                )}
               </span>
             </div>
           </div>
         </div>
 
         {/* Guides Grid */}
-        {filteredGuides.length === 0 ? (
-          <div className="py-20 text-center">
-            <BookOpen className="w-16 h-16 mx-auto mb-4 text-primary-100/30" />
-            <p className="text-xl text-white font-text">
-              Aucun guide ne correspond à ta recherche
-            </p>
-          </div>
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filteredGuides.map((guide) => (
-              <div
-                key={guide.id_guide}
-                onClick={() => setSelectedGuide(guide)}
-                className="p-6 transition-all duration-300 border-2 cursor-pointer rounded-2xl bg-background-50 border-primary-100/30 hover:border-secondary-50 hover:shadow-xl hover:shadow-secondary-50/20 hover:scale-105"
-              >
-                {/* Header */}
-                <div className="flex items-start justify-between mb-4">
-                  <h3 className="flex-1 text-xl font-bold text-secondary-50 font-titre line-clamp-2">
-                    {guide.title}
-                  </h3>
-                  <span className={`ml-2 px-3 py-1 text-xs font-semibold rounded-full text-primary-50 whitespace-nowrap ${getLevelColor(guide.level)}`}>
-                    {map_fr(guide.level)}
-                  </span>
-                </div>
-
-                {/* Content Preview */}
-                <p className="mb-4 text-sm text-white line-clamp-4 font-text">
-                  {guide.content.substring(0, 150)}...
+        {filteredGuides != null ? (
+          <>
+            {filteredGuides.length === 0 ? (
+              <div className="py-20 text-center">
+                <BookOpen className="w-16 h-16 mx-auto mb-4 text-primary-100/30" />
+                <p className="text-xl text-white font-text">
+                  Aucun guide ne correspond à ta recherche
                 </p>
-
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {guide.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="px-2 py-1 text-xs border rounded-full text-primary-100 border-primary-100/50"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Footer */}
-                <div className="flex items-center justify-between pt-4 border-t-2 border-primary-100/20">
-                  <span className="text-xs text-secondary-50 font-text">
-                    {guide.source}
-                  </span>
-                  <button className="flex items-center gap-1 text-xs font-semibold transition-all duration-300 text-primary-100 hover:text-secondary-50">
-                    Lire <ExternalLink className="w-3 h-3" />
-                  </button>
-                </div>
               </div>
-            ))}
+            ) : (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {filteredGuides.map((guide) => (
+                  <div
+                    key={guide.id_guide}
+                    onClick={() => openGuide(guide.id_guide)}
+                    className="p-6 transition-all duration-300 border-2 cursor-pointer rounded-2xl bg-background-50 border-primary-100/30 hover:border-secondary-50 hover:shadow-xl hover:shadow-secondary-50/20 hover:scale-105"
+                  >
+                    {/* Header */}
+                    <div className="flex items-start justify-between mb-4">
+                      <h3 className="flex-1 text-xl font-bold text-secondary-50 font-titre line-clamp-2">
+                        {guide.title}
+                      </h3>
+                      <span
+                        className={`ml-2 px-3 py-1 text-xs font-semibold rounded-full text-primary-50 whitespace-nowrap ${getLevelColor(guide.level)}`}
+                      >
+                        {map_fr(guide.level)}
+                      </span>
+                    </div>
+
+                    {/* Content Preview */}
+                    <p className="mb-4 text-sm text-white line-clamp-4 font-text">
+                      {guide.content}
+                    </p>
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {guide.tags.map((tag, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 text-xs border rounded-full text-primary-100 border-primary-100/50"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Footer */}
+                    <div className="flex items-center justify-between pt-4 border-t-2 border-primary-100/20">
+                      <span className="text-xs text-secondary-50 font-text">
+                        {guide.source}
+                      </span>
+                      <button className="flex items-center gap-1 text-xs font-semibold transition-all duration-300 text-primary-100 hover:text-secondary-50">
+                        Lire <ExternalLink className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        ) : (
+          // 🔄 Loader
+          <div className="flex items-center justify-center py-10">
+            <div className="w-10 h-10 border-4 border-secondary-50 border-t-transparent rounded-full animate-spin"></div>
           </div>
         )}
       </div>
@@ -228,7 +275,9 @@ export default function Catalog() {
                     </span>
                   ))}
                 </div>
-                <span className={`px-4 py-2 text-sm font-semibold rounded-full text-primary-50 whitespace-nowrap ${getLevelColor(selectedGuide.level)}`}>
+                <span
+                  className={`px-4 py-2 text-sm font-semibold rounded-full text-primary-50 whitespace-nowrap ${getLevelColor(selectedGuide.level)}`}
+                >
                   {map_fr(selectedGuide.level)}
                 </span>
               </div>

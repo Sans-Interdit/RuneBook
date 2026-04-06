@@ -1,42 +1,35 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { login, register, logout, getId } from "../api/user";
-import { getGuides } from "../api/guide"
 
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  const [guides, setGuides] = useState([]);
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const getIdContext = () => {
-    return getId()
-    .then(res => {
-      // console.log(res.data);
-      return res.data;
-    })
-    .catch(err => {
-      if (err?.response?.status === 401) {
-        // on ignore complètement l'erreur 401
-        return null; 
-      }
-
-      // on log uniquement les erreurs qui ne sont pas des 401
-      console.error(err);
-      return null;
-    });
-  }
-  // Exemple d'appel API
   useEffect(() => {
-    getGuides()
-    .then((data) => setGuides(data.data))
-    .catch((err) => {
-      setGuides([])
-      console.error(err);
-    });
+    console.log(user)
+    const fetchUser = async () => {
+      try {
+        const res = await getId();
+        setUser(res.data.id_user);
+      } catch (err) {
+        if (err?.response?.status === 401) {
+          setUser(null); // pas connecté
+        } else {
+          console.error(err);
+        }
+      }
+      setIsLoading(false);
+    };
+
+    fetchUser();
   }, []);
 
   const registerContext = async (email, password) => {
     try {
-      await register(email, password);
+      const response = await register(email, password);
+      setUser(response.data.id_account);
     } catch (error) {
       if (error.response?.status === 409) {
         throw new Error("EMAIL_USED");
@@ -47,7 +40,8 @@ export const AppProvider = ({ children }) => {
 
   const loginContext = async (email, password) => {
     try {
-      await login(email, password);
+      const response = await login(email, password);
+      setUser(response.data.id_account);
     } catch (error) {
       if (error.response?.status === 401) {
         throw new Error("INVALID_CREDENTIALS");
@@ -59,10 +53,11 @@ export const AppProvider = ({ children }) => {
 
   const logoutContext = async () => {
     await logout();
+    setUser(null);
   };
 
   return (
-    <AppContext.Provider value={{ guides, getIdContext, loginContext, logoutContext, registerContext }}>
+    <AppContext.Provider value={{ user, isLoading, loginContext, logoutContext, registerContext }}>
       {children}
     </AppContext.Provider>
   );

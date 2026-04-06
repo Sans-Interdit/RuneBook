@@ -105,8 +105,6 @@ def create_token(response: Response, account_id: int):
             max_age=3600 * 24,
         )
 
-
-
     return token
 
 def get_current_user(request: Request):
@@ -167,7 +165,7 @@ async def login(response: Response, data: dict, db: Session = Depends(get_db)):
 
     create_token(response, account.id_account)
 
-    return {"message": "Login successful"}
+    return {"message": "Login successful", "id_account": account.id_account}
 
 @router.post("/register")
 async def register(response: Response, data: dict, db: Session = Depends(get_db)):
@@ -202,7 +200,7 @@ async def register(response: Response, data: dict, db: Session = Depends(get_db)
 
     create_token(response, new_account.id_account)
 
-    return {"message": "Registration successful"}
+    return {"message": "Registration successful", "id_account": new_account.id_account}
 
 @router.get("/logout")
 async def logout(response: Response):
@@ -250,8 +248,21 @@ async def me(user_id: int = Depends(get_current_user)):
 # -------------------------
 # Guides Endpoints
 # -------------------------
-@router.get("/get-guides")
+@router.get("/guides")
 async def get_guides():
+    """
+    Retrieve all guides previews from the database.
+
+    Returns:
+        list: A list of dictionaries representing all guides previews.
+    """
+    with Session(engine) as local_session:
+        guides = local_session.query(Guide).order_by(Guide.id_guide).all()
+        return [g.to_dict_preview() for g in guides]
+
+
+@router.get("/guides/{id}")
+async def get_guides(id: int):
     """
     Retrieve all guides from the database.
 
@@ -259,10 +270,13 @@ async def get_guides():
         list: A list of dictionaries representing all guides.
     """
     with Session(engine) as local_session:
-        guides = local_session.query(Guide).order_by(Guide.id_guide).all()
-        return [g.to_dict() for g in guides]
-
-
+        guide = local_session.query(Guide).where(Guide.id_guide == id).first()
+        
+        if not guide:
+            raise HTTPException(status_code=404, detail="Guide not found")
+        
+        return guide.to_dict_full()
+    
 # -------------------------
 # Chat Endpoints
 # -------------------------
@@ -539,7 +553,9 @@ async def add_message(data: dict = Body(...), user_id: int = Depends(get_current
     id_conv = data.get("id_conv")
     message = data.get("message")
     role = data.get("role")
-    print(id_conv, message, role)
+    print("id_conv ",id_conv)
+    print("message " ,message)
+    print("role ",role)
     if not id_conv or not message or not role:
         raise HTTPException(status_code=400, detail="Missing required fields")
 

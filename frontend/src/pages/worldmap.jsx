@@ -1,5 +1,6 @@
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function WorldMap() {
   const [loaded, setLoaded] = useState(false);
@@ -58,12 +59,12 @@ export default function WorldMap() {
 
   return (
     <div className="relative h-screen overflow-hidden bg-primary-50">
-      <a
-        href="/chatbot"
+      <Link
+        to="/chatbot"
         className="absolute z-50 p-4 m-6 font-semibold transition-all duration-300 rounded-lg bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
       >
         <ArrowLeft className="w-8 h-8" />
-      </a>
+      </Link>
       {!loaded && (
         <div className="absolute inset-0 z-40 flex items-center justify-center bg-primary-50">
           <Loader2 className="w-10 h-10 animate-spin text-primary-100" />
@@ -87,8 +88,8 @@ export default function WorldMap() {
         
         {/* Points dynamiques */}
         {mapPoints.map((point) => (
-          <a
-            href={`/chatbot?character=${point.id}`}
+          <Link
+            to={`/chatbot?character=${point.id}`}
             key={point.id}
             className="absolute"
             style={{
@@ -115,7 +116,7 @@ export default function WorldMap() {
                 </p>
               </div>
             )}
-          </a>
+          </Link>
         ))}
       </div>
 

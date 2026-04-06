@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Mail, Lock, CheckCircle, AlertCircle, Eye, EyeOff, UserPlus } from "lucide-react";
 import { useAppContext } from "../context/appContext";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Inscription() {
   const { registerContext } = useAppContext();
@@ -16,6 +17,7 @@ export default function Inscription() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -79,7 +81,7 @@ export default function Inscription() {
 
     //   await registerContext(formData.email, formData.password)
       
-    //   window.location.href = '/chatbot';
+    //   navigate('/chatbot');
       
     // } catch (error) {
     //   setErrors({ submit: "Une erreur est survenue. Veuillez réessayer." });
@@ -90,7 +92,7 @@ export default function Inscription() {
     try {
       await registerContext(formData.email, formData.password);
 
-      window.location.href = '/chatbot';
+      navigate('/chatbot');
     }
     catch (error) {
       if (error.message === "EMAIL_USED") {
@@ -124,7 +126,7 @@ export default function Inscription() {
 
   if (submitSuccess) {
     return (
-      <div className="flex items-center justify-center flex-1 bg-primary-50">
+      <div className="flex items-center justify-center flex-1 bg-primary-100">
         <div className="max-w-md p-8 text-center border-2 rounded-2xl bg-primary-50 border-secondary-50/30">
           <div className="flex items-center justify-center w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-400 to-secondary-50">
             <CheckCircle className="w-10 h-10 text-primary-50" />
@@ -144,7 +146,7 @@ export default function Inscription() {
   }
 
   return (
-    <div className="flex items-center justify-center flex-1 px-6 bg-primary-50">
+    <div className="flex flex-col items-center justify-center flex-1 px-6 overflow-auto bg-primary-50">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="mb-8 text-center">
@@ -295,13 +297,13 @@ export default function Inscription() {
               </div>
               <span className="text-sm text-white font-text">
                 J'accepte les{" "}
-                <a href="/terms" className="font-semibold underline text-secondary-50 hover:text-primary-100">
+                <Link to="/terms" className="font-semibold underline text-secondary-50 hover:text-primary-100">
                   conditions d'utilisation
-                </a>{" "}
+                </Link>{" "}
                 et la{" "}
-                <a href="/privacy" className="font-semibold underline text-secondary-50 hover:text-primary-100">
+                <Link to="/privacy" className="font-semibold underline text-secondary-50 hover:text-primary-100">
                   politique de confidentialité
-                </a>{" "}
+                </Link>{" "}
                 de RuneBook. Je consens au traitement de mes données personnelles conformément à ces politiques.
               </span>
             </label>
@@ -344,9 +346,9 @@ export default function Inscription() {
           <div className="mt-6 text-center">
             <p className="text-sm text-white font-text">
               Tu as déjà un compte ?{" "}
-              <a href="/login" className="font-semibold transition-colors text-secondary-50 hover:text-primary-100">
+              <Link to="/login" className="font-semibold transition-colors text-secondary-50 hover:text-primary-100">
                 Connecte-toi
-              </a>
+              </Link>
             </p>
           </div>
         </div>

@@ -1,7 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Send, MessageSquare, Plus, Trash2, Clock, Sparkles, User, Bot, Map } from "lucide-react";
+import {
+  Send,
+  MessageSquare,
+  Plus,
+  Trash2,
+  Clock,
+  Sparkles,
+  User,
+  Bot,
+  Map,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { addConv, delConv, getConv } from "../api/conversation";
-import { addMsg } from "../api/message"
+import { addMsg } from "../api/message";
 import { chat } from "../api/chat";
 import { useAppContext } from "../context/appContext";
 import ReactMarkdown from "react-markdown";
@@ -10,7 +21,8 @@ import { useLocation } from "react-router-dom";
 
 export default function Chatbot() {
   const [conversations, setConversations] = useState([]);
-  const { getIdContext } = useAppContext();
+  const { user, isLoading } = useAppContext();
+  const navigate = useNavigate();
 
   const [currentConversationId, setCurrentConversationId] = useState(0);
   const [inputMessage, setInputMessage] = useState("");
@@ -21,46 +33,46 @@ export default function Chatbot() {
   const queryParams = new URLSearchParams(search);
   const character = queryParams.get("character") || "heimerdinger";
 
-  const currentConversation = conversations.find(conv => conv.id === currentConversationId);
+  const currentConversation = conversations.find(
+    (conv) => conv.id === currentConversationId,
+  );
 
   useEffect(() => {
-    getIdContext()
-    .then((token) => {
-      const isTokenValid = token && typeof token === "object" && !("document" in token);
-      
-      if (isTokenValid) {
-        getConversations();
-      }
-      else {
-        window.location.href = '/login';
-      }
-    })
-  }, [])
+    console.log(user);
+    
+    if (isLoading) return;
+
+    if (user) {
+      getConversations();
+    } else {
+      navigate("/login");
+    }
+  }, [user, isLoading]);
 
   const zoneMapping = (charac) => {
     const zoneMap = {
-      "heimerdinger" : "piltover",
-      "pantheon" : "targon",
-      "ornn" : "freljord",
-      "leblanc" : "noxus",
-      "morgana" : "demacia",
-      "shen" : "ionia",
-      "azir" : "shurima"
-    }
-    return zoneMap[charac]
-  }
+      heimerdinger: "piltover",
+      pantheon: "targon",
+      ornn: "freljord",
+      leblanc: "noxus",
+      morgana: "demacia",
+      shen: "ionia",
+      azir: "shurima",
+    };
+    return zoneMap[charac];
+  };
 
   const getConversations = async () => {
     const res = await getConv(character);
     if (res.status == 200) {
-      const conversations = res.data.map(conv => ({
+      const conversations = res.data.map((conv) => ({
         ...conv,
-        timestamp: new Date(conv.timestamp)
+        timestamp: new Date(conv.timestamp),
       }));
       setConversations(conversations);
       setCurrentConversationId(conversations[0].id || 0);
     }
-  }
+  };
 
   useEffect(() => {
     scrollToBottom();
@@ -71,32 +83,43 @@ export default function Chatbot() {
   };
 
   const handleSendMessage = async (insertedPrompt = "") => {
-    const prompt = insertedPrompt.trim() ? insertedPrompt : inputMessage
+    let conversationId = currentConversationId;
+
+    if (conversationId === 0) {
+      conversationId = await handleNewConversation();
+    }
+
+    const prompt = insertedPrompt.trim() ? insertedPrompt : inputMessage;
 
     if (!prompt.trim()) return;
 
     const userMessage = { role: "user", content: prompt };
 
     // Add user message
-    setConversations(prev => prev.map(conv => 
-      conv.id === currentConversationId 
-        ? { ...conv, messages: [...conv.messages, userMessage] }
-        : conv
-    ));
-    addMsg(currentConversationId, prompt, "user");
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv.id === conversationId
+          ? { ...conv, messages: [...conv.messages, userMessage] }
+          : conv,
+      ),
+    );
+
+    addMsg(conversationId, prompt, "user");
 
     setInputMessage("");
     setIsTyping(true);
 
     // AI response
     const res = await chat(prompt, character);
-    const aiResponse = {role: "assistant", content: res}
-    setConversations(prev => prev.map(conv => 
-      conv.id === currentConversationId 
-        ? { ...conv, messages: [...conv.messages, aiResponse] }
-        : conv
-    ));
-    addMsg(currentConversationId, res, "assistant");
+    const aiResponse = { role: "assistant", content: res };
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv.id === conversationId
+          ? { ...conv, messages: [...conv.messages, aiResponse] }
+          : conv,
+      ),
+    );
+    addMsg(conversationId, res, "assistant");
 
     setIsTyping(false);
 
@@ -104,9 +127,10 @@ export default function Chatbot() {
   };
 
   const handleNewConversation = async () => {
-    const title = "Conversation " + (conversations.length + 1) + " - " + character;
+    const title =
+      "Conversation " + (conversations.length + 1) + " - " + character;
     const res = await addConv(title, character);
-    const id_conv = res?.data?.id
+    const id_conv = res?.data?.id;
 
     if (id_conv) {
       const newConv = {
@@ -114,12 +138,15 @@ export default function Chatbot() {
         title: title,
         character: character,
         timestamp: new Date(),
-        messages: []
+        messages: [],
       };
 
-      setConversations(prev => [newConv, ...prev]);
+      setConversations((prev) => [newConv, ...prev]);
       setCurrentConversationId(newConv.id);
+
+      return newConv.id;
     }
+
   };
 
   const handleDeleteConversation = async (id) => {
@@ -127,8 +154,8 @@ export default function Chatbot() {
 
     const res = await delConv(id);
     if (res.status === 200) {
-      setConversations(prev => {
-        const newConversations = prev.filter(conv => conv.id !== id);
+      setConversations((prev) => {
+        const newConversations = prev.filter((conv) => conv.id !== id);
 
         if (currentConversationId === id) {
           setCurrentConversationId(newConversations[0]?.id || 0);
@@ -155,7 +182,7 @@ export default function Chatbot() {
   const autoSend = (prompt) => {
     setInputMessage(prompt);
     handleSendMessage(prompt);
-  }
+  };
 
   return (
     <div className="flex flex-1 max-h-screen overflow-hidden bg-primary-50">
@@ -182,7 +209,9 @@ export default function Chatbot() {
               key={conv.id}
               onClick={() => setCurrentConversationId(conv.id)}
               className={`p-4 border-b border-primary-100/20 cursor-pointer transition-all duration-300 group hover:bg-primary-100/10 ${
-                currentConversationId === conv.id ? 'bg-primary-100/20 border-l-4 border-l-secondary-50' : ''
+                currentConversationId === conv.id
+                  ? "bg-primary-100/20 border-l-4 border-l-secondary-50"
+                  : ""
               }`}
             >
               <div className="flex items-start justify-between">
@@ -222,7 +251,10 @@ export default function Chatbot() {
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-center gap-3">
               <div className="flex items-center justify-center w-12 h-12 overflow-hidden rounded-full bg-primary-100">
-                <img src={`/assets/${character}.jpg`} className="w-auto h-full rounded-full max-w-none"/>
+                <img
+                  src={`/assets/${character}.jpg`}
+                  className="w-auto h-full rounded-full max-w-none"
+                />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-secondary-50 font-titre">
@@ -231,61 +263,77 @@ export default function Chatbot() {
                 <p className="text-sm text-primary-100 font-text">
                   Pose-moi toutes tes questions sur League of Legends
                 </p>
-              </div>            
+              </div>
             </div>
-            <a
-              href="/map"
+            <Link
+              to="/map"
               className="flex flex-row items-center gap-2 px-2 py-3 font-semibold transition-all duration-300 rounded-lg bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               <div className="transform-gpu">
                 <Map className="w-5 h-5" />
               </div>
               Changer de personnage
-            </a>
+            </Link>
           </div>
         </div>
 
         {/* Messages Area */}
-        <div className="relative flex-1 p-6 overflow-y-auto bg-center bg-cover"
-          style={{ backgroundImage: `url('/assets/${zoneMapping(character)}.jpg')` }}>
+        <div
+          className="relative flex-1 p-6 overflow-y-auto bg-center bg-cover"
+          style={{
+            backgroundImage: `url('/assets/${zoneMapping(character)}.jpg')`,
+          }}
+        >
           <div className="absolute inset-0 z-0 pointer-events-none" />
           {currentConversation?.messages.length === 0 ? (
             <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
               <div className="flex flex-col items-center p-10 rounded-3xl bg-primary-50/80 backdrop-blur-sm">
                 <div className="flex items-center justify-center w-20 h-20 mb-6 overflow-hidden rounded-full bg-secondary-50">
-                  <img src={`/assets/${character}.jpg`} className="w-auto h-full rounded-full max-w-none"/>
+                  <img
+                    src={`/assets/${character}.jpg`}
+                    className="w-auto h-full rounded-full max-w-none"
+                  />
                 </div>
                 <h2 className="mb-2 text-2xl font-bold text-secondary-50 font-titre">
                   Prêt à Apprendre ?
                 </h2>
                 <p className="max-w-md text-white font-text">
-                  Je suis là pour t'aider à assimiler les concepts de League of Legends. 
-                  Pose-moi n'importe quelle question, je répondrai de manière simple et claire !
+                  Je suis là pour t'aider à assimiler les concepts de League of
+                  Legends. Pose-moi n'importe quelle question, je répondrai de
+                  manière simple et claire !
                 </p>
                 <div className="grid grid-cols-2 gap-4 mt-8">
                   <button
                     onClick={() => autoSend("C'est quoi le farming ?")}
                     className="p-4 transition-all duration-300 rounded-lg bg-primary-100 hover:scale-105"
                   >
-                    <p className="text-base font-semibold text-black">C'est quoi le farming ?</p>
+                    <p className="text-base font-semibold text-black">
+                      C'est quoi le farming ?
+                    </p>
                   </button>
                   <button
                     onClick={() => autoSend("Explique-moi les rôles")}
                     className="p-4 transition-all duration-300 rounded-lg bg-primary-100 hover:scale-105"
                   >
-                    <p className="text-base font-semibold text-black">Explique-moi les rôles</p>
+                    <p className="text-base font-semibold text-black">
+                      Explique-moi les rôles
+                    </p>
                   </button>
                   <button
                     onClick={() => autoSend("Comment bien débuter ?")}
                     className="p-4 transition-all duration-300 rounded-lg bg-primary-100 hover:scale-105"
                   >
-                    <p className="text-base font-semibold text-black">Comment bien débuter ?</p>
+                    <p className="text-base font-semibold text-black">
+                      Comment bien débuter ?
+                    </p>
                   </button>
                   <button
                     onClick={() => autoSend("Quel est ton histoire ?")}
                     className="p-4 transition-all duration-300 rounded-lg bg-primary-100 hover:scale-105"
                   >
-                    <p className="text-base font-semibold text-black">Quel est ton histoire ?</p>
+                    <p className="text-base font-semibold text-black">
+                      Quel est ton histoire ?
+                    </p>
                   </button>
                 </div>
               </div>
@@ -295,34 +343,46 @@ export default function Chatbot() {
               {currentConversation?.messages.map((message, index) => (
                 <div
                   key={index}
-                  className={`flex gap-4 ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
+                  className={`flex gap-4 ${message.role === "user" ? "flex-row-reverse" : "flex-row"}`}
                 >
                   {/* Avatar */}
-                  <div className={`flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center overflow-hidden ${
-                    message.role === 'user' 
-                      ? 'bg-primary-100' 
-                      : 'bg-secondary-50'
-                  }`}>
-                    {message.role === 'user' ? (
-                      <img src={`/assets/summoner.png`} className="w-auto h-full rounded-full max-w-none"/>
+                  <div
+                    className={`flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center overflow-hidden ${
+                      message.role === "user"
+                        ? "bg-primary-100"
+                        : "bg-secondary-50"
+                    }`}
+                  >
+                    {message.role === "user" ? (
+                      <img
+                        src={`/assets/summoner.png`}
+                        className="w-auto h-full rounded-full max-w-none"
+                      />
                     ) : (
-                      <img src={`/assets/${character}.jpg`} className="w-auto h-full rounded-full max-w-none"/>
+                      <img
+                        src={`/assets/${character}.jpg`}
+                        className="w-auto h-full rounded-full max-w-none"
+                      />
                       // <Bot className="w-5 h-5 text-primary-50" />
                     )}
                   </div>
 
                   {/* Message Bubble */}
-                  <div className={`flex-1 max-w-2xl ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
-                    <div className={`inline-block p-4 rounded-2xl ${
-                      message.role === 'user'
-                        ? 'bg-primary-100 text-primary-50 rounded-tr-none'
-                        : 'bg-background-50 border-2 border-primary-100/30 text-white rounded-tl-none'
-                    }`}>
+                  <div
+                    className={`flex-1 max-w-2xl ${message.role === "user" ? "text-right" : "text-left"}`}
+                  >
+                    <div
+                      className={`inline-block p-4 rounded-2xl ${
+                        message.role === "user"
+                          ? "bg-primary-100 text-primary-50 rounded-tr-none"
+                          : "bg-background-50 border-2 border-primary-100/30 text-white rounded-tl-none"
+                      }`}
+                    >
                       <div
                         className={`text-sm prose max-w-none font-text ${
-                          message.role === 'user'
-                            ? 'prose-invert prose-p:text-primary-50 prose-strong:text-primary-50 prose-a:text-primary-50'
-                            : 'prose-invert prose-p:text-white prose-strong:text-white prose-a:text-white'
+                          message.role === "user"
+                            ? "prose-invert prose-p:text-primary-50 prose-strong:text-primary-50 prose-a:text-primary-50"
+                            : "prose-invert prose-p:text-white prose-strong:text-white prose-a:text-white"
                         }`}
                       >
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -338,13 +398,25 @@ export default function Chatbot() {
               {isTyping && (
                 <div className="flex gap-4">
                   <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 overflow-hidden rounded-full bg-gradient-to-br from-primary-100 to-secondary-50">
-                    <img src={`/assets/${character}.jpg`} className="w-auto h-full rounded-full max-w-none"/>
+                    <img
+                      src={`/assets/${character}.jpg`}
+                      className="w-auto h-full rounded-full max-w-none"
+                    />
                   </div>
                   <div className="inline-block p-4 border-2 rounded-tl-none rounded-2xl bg-primary-50 border-primary-100/30">
                     <div className="flex gap-1">
-                      <div className="w-2 h-2 rounded-full bg-secondary-50 animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                      <div className="w-2 h-2 rounded-full bg-secondary-50 animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                      <div className="w-2 h-2 rounded-full bg-secondary-50 animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                      <div
+                        className="w-2 h-2 rounded-full bg-secondary-50 animate-bounce"
+                        style={{ animationDelay: "0ms" }}
+                      ></div>
+                      <div
+                        className="w-2 h-2 rounded-full bg-secondary-50 animate-bounce"
+                        style={{ animationDelay: "150ms" }}
+                      ></div>
+                      <div
+                        className="w-2 h-2 rounded-full bg-secondary-50 animate-bounce"
+                        style={{ animationDelay: "300ms" }}
+                      ></div>
                     </div>
                   </div>
                 </div>
@@ -364,13 +436,15 @@ export default function Chatbot() {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 // disabled={!currentConversation}
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                placeholder={currentConversation ? "Pose ta question ici..." : "Crées une conversation"}
+                onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                placeholder={"Pose ta question ici..."}
                 className="flex-1 px-6 py-4 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 border-primary-100/30 placeholder-white/50 focus:border-secondary-50 focus:outline-none font-text"
               />
               <button
                 onClick={handleSendMessage}
-                disabled={!inputMessage.trim() || isTyping || currentConversationId == 0}
+                disabled={
+                  !inputMessage.trim() || isTyping
+                }
                 className="px-6 py-4 font-semibold transition-all duration-300 rounded-lg bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 <div className="transform-gpu">
@@ -379,7 +453,8 @@ export default function Chatbot() {
               </button>
             </div>
             <p className="mt-3 text-xs text-center text-primary-100">
-              L'assistant peut faire des erreurs. Vérifie les informations importantes.
+              L'assistant peut faire des erreurs. Vérifie les informations
+              importantes.
             </p>
           </div>
         </div>

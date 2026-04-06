@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Mail, Lock, CheckCircle, AlertCircle, Eye, EyeOff, LogIn } from "lucide-react";
 import { useAppContext } from "../context/appContext";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
   const { loginContext } = useAppContext();
@@ -9,7 +10,7 @@ export default function Login() {
     password: "",
     rememberMe: false
   });
-
+  const navigate = useNavigate();
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,7 +60,7 @@ export default function Login() {
     try {
       await loginContext(formData.email, formData.password);
 
-      window.location.href = '/chatbot';
+      navigate('/chatbot');
     }
     catch (error) {
       if (error.message === "INVALID_CREDENTIALS") {
@@ -96,7 +97,7 @@ export default function Login() {
   }
 
   return (
-    <div className="flex items-center justify-center flex-1 px-6 bg-primary-50">
+    <div className="flex flex-col items-center justify-center flex-1 px-6 overflow-auto bg-primary-50">
       <div className="w-full max-w-md mb-20">
         {/* Header */}
         <div className="mb-8 text-center">
@@ -124,6 +125,7 @@ export default function Login() {
                 type="email"
                 id="email"
                 name="email"
+                autoComplete="email"
                 value={formData.email}
                 onChange={handleInputChange}
                 placeholder="ton.email@example.com"
@@ -148,12 +150,12 @@ export default function Login() {
               <label htmlFor="password" className="text-sm font-semibold text-secondary-50 font-text">
                 Mot de Passe
               </label>
-              <a 
-                href="/forgot-password" 
+              <Link
+                to="/forgot-password" 
                 className="text-xs font-semibold transition-colors text-secondary-50 hover:text-primary-100"
               >
                 Mot de passe oublié ?
-              </a>
+              </Link>
             </div>
             <div className="relative">
               <Lock className="absolute w-5 h-5 text-white transform -translate-y-1/2 left-4 top-1/2" />
@@ -161,6 +163,7 @@ export default function Login() {
                 type={showPassword ? "text" : "password"}
                 id="password"
                 name="password"
+                autoComplete="current-password"
                 value={formData.password}
                 onChange={handleInputChange}
                 placeholder="Entre ton mot de passe"
@@ -217,9 +220,9 @@ export default function Login() {
           <div className="mt-6 text-center">
             <p className="text-sm text-white font-text">
               Pas encore de compte ?{" "}
-              <a href="/inscription" className="font-semibold transition-colors text-secondary-50 hover:text-primary-100">
+              <Link to="/inscription" className="font-semibold transition-colors text-secondary-50 hover:text-primary-100">
                 Inscris-toi gratuitement
-              </a>
+              </Link>
             </p>
           </div>
         </div>
