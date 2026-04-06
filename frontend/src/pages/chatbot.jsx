@@ -123,7 +123,7 @@ export default function Chatbot() {
 
     setIsTyping(false);
 
-    getConversations();
+    // getConversations();
   };
 
   const handleNewConversation = async () => {
