@@ -146,7 +146,7 @@ export default function Inscription() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center flex-1 px-6 overflow-auto bg-primary-50">
+    <div className="flex items-start justify-center flex-1 px-6 py-10 overflow-auto bg-primary-50">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="mb-8 text-center">

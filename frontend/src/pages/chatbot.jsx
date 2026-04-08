@@ -26,6 +26,7 @@ export default function Chatbot() {
 
   const [currentConversationId, setCurrentConversationId] = useState(0);
   const [inputMessage, setInputMessage] = useState("");
+  const [isTypingUser, setIsTypingUser] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
 
@@ -93,6 +94,8 @@ export default function Chatbot() {
 
     if (!prompt.trim()) return;
 
+    setIsTypingUser(true);
+
     const userMessage = { role: "user", content: prompt };
 
     // Add user message
@@ -103,6 +106,8 @@ export default function Chatbot() {
           : conv,
       ),
     );
+    
+    setIsTypingUser(false);
 
     addMsg(conversationId, prompt, "user");
 
@@ -400,6 +405,33 @@ export default function Chatbot() {
                   <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 overflow-hidden rounded-full bg-gradient-to-br from-primary-100 to-secondary-50">
                     <img
                       src={`/assets/${character}.jpg`}
+                      className="w-auto h-full rounded-full max-w-none"
+                    />
+                  </div>
+                  <div className="inline-block p-4 border-2 rounded-tl-none rounded-2xl bg-primary-50 border-primary-100/30">
+                    <div className="flex gap-1">
+                      <div
+                        className="w-2 h-2 rounded-full bg-secondary-50 animate-bounce"
+                        style={{ animationDelay: "0ms" }}
+                      ></div>
+                      <div
+                        className="w-2 h-2 rounded-full bg-secondary-50 animate-bounce"
+                        style={{ animationDelay: "150ms" }}
+                      ></div>
+                      <div
+                        className="w-2 h-2 rounded-full bg-secondary-50 animate-bounce"
+                        style={{ animationDelay: "300ms" }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {isTypingUser && (
+                <div className="flex gap-4">
+                  <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 overflow-hidden rounded-full bg-gradient-to-br from-primary-100 to-secondary-50">
+                    <img
+                      src={`/assets/summoner.png`}
                       className="w-auto h-full rounded-full max-w-none"
                     />
                   </div>

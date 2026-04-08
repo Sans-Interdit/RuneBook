@@ -77,7 +77,7 @@ export default function Login() {
 
   if (submitSuccess) {
     return (
-      <div className="flex items-center justify-center flex-1 bg-primary-50">
+      <div className="flex flex-col items-center justify-center overflow-auto bg-primary-50">
         <div className="max-w-md p-8 text-center border-2 rounded-2xl bg-primary-50 border-secondary-50/30">
           <div className="flex items-center justify-center w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-400 to-secondary-50">
             <CheckCircle className="w-10 h-10 text-primary-50" />
@@ -97,8 +97,8 @@ export default function Login() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center flex-1 px-6 overflow-auto bg-primary-50">
-      <div className="w-full max-w-md mb-20">
+    <div className="flex items-start justify-center flex-1 px-6 py-20 overflow-auto bg-primary-50">
+      <div className="w-full max-w-md">
         {/* Header */}
         <div className="mb-8 text-center">
           <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-primary-100">

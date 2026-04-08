@@ -92,8 +92,8 @@ export const Navbar = () => {
   }, [user]);
 
   return (
-    <nav className="z-50 h-24 shadow-lg nav-background shadow-primary-100/20">
-      <div className="flex items-center justify-between h-24 px-6 mx-auto max-w-7xl">
+    <nav className="z-50 h-20 shadow-lg nav-background shadow-primary-100/20">
+      <div className="flex items-center justify-between h-20 px-6 mx-auto max-w-7xl">
         {/* Logo */}
         <Link to="/" className="relative z-10">
           <div className="flex items-center space-x-3">
@@ -113,7 +113,7 @@ export const Navbar = () => {
               key={link.to}
               to={link.to}
               className={`
-                relative px-6 py-3 text-lg font-semibold rounded-xl transition-all duration-300 font-text
+                relative px-4 py-2 text-lg font-semibold rounded-xl transition-all duration-300 font-text
                 flex items-center space-x-2 group
                 ${
                   location.pathname === link.to
@@ -137,12 +137,12 @@ export const Navbar = () => {
               key={link.to}
               to={link.to}
               className={`
-                px-6 py-3 text-lg font-semibold rounded-xl transition-all duration-300 font-text
+                px-4 py-2 text-lg font-semibold rounded-xl transition-all duration-300 font-text
                 flex items-center space-x-2 group
                 ${
                   index === 0
-                    ? "border-2 border-primary-100 text-primary-100 hover:bg-primary-100 hover:text-primary-50 hover:scale-105"
-                    : "border-2 rounded-lg border-secondary-50 text-secondary-50 hover:bg-secondary-50 hover:text-primary-50 hover:scale-105"
+                    ? "border-2 border-primary-100 hover:text-primary-100 bg-primary-100 hover:bg-transparent text-primary-50 hover:scale-105"
+                    : "border-2 rounded-lg border-secondary-50  bg-secondary-50 hover:bg-transparent hover:text-secondary-50 text-primary-50 hover:scale-105"
                 }
               `}
             >

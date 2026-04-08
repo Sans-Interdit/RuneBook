@@ -12,6 +12,9 @@ import { Link } from "react-router-dom";
 import { useAppContext } from "../context/appContext";
 import paysage from "/assets/paysage.png";
 import search from "/assets/search.png";
+import banner_easy from "/assets/article_banner_easy.jpg";
+import banner_medium from "/assets/article_banner_medium.jpg";
+import banner_hard from "/assets/article_banner_hard.jpg";
 import living_library from "/assets/living_library.png";
 import gif4 from "/assets/ezgif-349f579d4f79ced3.gif";
 import img4 from "/assets/faker.png";
@@ -19,6 +22,7 @@ import gif5 from "/assets/ezgif-4be597bc5e6fa90a.gif";
 import img5 from "/assets/baron.png";
 import gif7 from "/assets/ezgif-5c6a9a0b15a5c4d2.gif";
 import img7 from "/assets/ezreal.png";
+import { Footer } from "../component/footer";
 
 export default function Home() {
   const [currentGuideIndex, setCurrentGuideIndex] = useState(0);
@@ -28,7 +32,6 @@ export default function Home() {
   useEffect(() => {
     const fetchGuides = async () => {
       const guides = await getGuides();
-      console.log(guides.data)
       setGuidePreviews(guides.data);
     };
     fetchGuides();
@@ -58,6 +61,12 @@ export default function Home() {
     if (level === "Confirmed Player") return "Joueur Confirmé";
   };
 
+  const map_banner = (level) => {
+    if (level === "New Player") return banner_easy;
+    if (level === "Average Player") return banner_medium;
+    if (level === "Confirmed Player") return banner_hard;
+  };
+
   const openGuide = async (id) => {
     const res = await getGuide(id);
     const data = res.data;
@@ -76,7 +85,7 @@ export default function Home() {
         </p>
         <p className="max-w-3xl text-xl leading-relaxed text-white font-text">
           Ton guide pour comprendre League of Legends et pas seulement devenir
-          plus fort. Apprends la logique derrière chaque élément du jeu!
+          plus fort. Apprends la logique derrière chaque élément du jeu !
         </p>
         <img
           src={paysage}
@@ -239,14 +248,14 @@ export default function Home() {
         <h2 className="mb-4 text-4xl font-semibold text-center text-secondary-50 font-titre">
           Notre Chatbot
         </h2>
-        <p className="mb-12 text-xl text-center text-white font-text">
+        <p className="text-xl text-center text-white font-text">
           Un assistant IA qui comprend tes besoins et ton niveau
         </p>
         <div className="flex items-center justify-center w-full">
           <img
             src={living_library}
             alt="living_library"
-            className="object-contain mb-12 rounded-full md:w-1/2 sm:w-full"
+            className="object-contain my-8 rounded-full h-auto w-[600px]"
           ></img>
         </div>
         <div className="grid gap-8 md:grid-cols-2">
@@ -351,103 +360,105 @@ export default function Home() {
       </div>
 
       {/* Guides Carousel */}
-      <div className="px-6 py-16 mx-auto max-w-7xl">
+      <div className="flex flex-col px-6 py-16">
         <h2 className="mb-4 text-4xl font-semibold text-center text-secondary-50 font-titre">
           Nos Guides
         </h2>
-        <p className="mb-12 text-xl text-center text-white font-text">
+        <p className="text-xl text-center text-white font-text">
           Découvre nos guides adaptés à tous les niveaux
         </p>
         <div className="flex items-center justify-center w-full">
           <img
             src={search}
             alt="heatmap"
-            className="object-contain mb-12 rounded-full md:w-1/2 sm:w-full"
+            className="object-contain my-8 rounded-full w-[600px] h-auto"
           ></img>
         </div>
-        <div className="relative">
-          <div className="w-5/6 mx-auto overflow-hidden">
-            <div
-              className="flex transition-transform duration-500 ease-in-out"
-              style={{ transform: `translateX(-${currentGuideIndex * 100}%)` }}
+        <div className="flex flex-col">
+          <div className="flex flex-row items-center justify-center gap-10">
+            <button
+              onClick={() =>
+                setCurrentGuideIndex(
+                  currentGuideIndex === 0
+                    ? guidePreviews.slice(0, 6).length - 1
+                    : currentGuideIndex - 1,
+                )
+              }
+              className="w-12 h-12 p-3 transition-all duration-300 transform rounded-full bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {guidePreviews && guidePreviews.length === 0 ? (
-                // 🔄 Loader
-                <div className="flex items-center justify-center py-10">
-                  <div className="w-10 h-10 border-4 border-secondary-50 border-t-transparent rounded-full animate-spin"></div>
-                </div>
-              ) : (
-                guidePreviews?.slice(0, 6).map((guide, index) => (
-                  <div
-                    key={guide.id_guide}
-                    onClick={() => openGuide(guide.id_guide)}
-                    className="flex-shrink-0 w-full px-4 cursor-pointer"
-                  >
-                    <div className="p-8 transition-all duration-300 border-2 rounded-2xl bg-background-50 border-primary-100/30 hover:border-secondary-50 hover:shadow-xl hover:shadow-secondary-50/20">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-2xl font-semibold text-secondary-50 font-titre">
-                          {guide.title}
-                        </h3>
-                        <span
-                          className={`px-4 py-2 text-sm font-semibold rounded-full text-primary-50 ${guide.level == "New Player" ? "bg-green-400" : guide.level == "Average Player" ? "bg-secondary-50" : "bg-red-400"}`}
-                        >
-                          {guide.level}
-                        </span>
-                      </div>
+              <ChevronLeft className="w-6 h-6" />
+            </button>
 
-                      <p className="mb-6 text-white line-clamp-4 font-text">
-                        {guide.content}
-                      </p>
-
-                      <div className="flex flex-wrap gap-2 mb-6">
-                        {guide.tags.map((tag, tagIndex) => (
+            <div className="w-4/6 overflow-hidden">
+              <div
+                className="flex transition-transform duration-500 ease-in-out"
+                style={{
+                  transform: `translateX(-${currentGuideIndex * 100}%)`,
+                }}
+              >
+                {guidePreviews && guidePreviews.length === 0 ? (
+                  // 🔄 Loader
+                  <div className="flex items-center justify-center py-10">
+                    <div className="w-10 h-10 border-4 rounded-full border-secondary-50 border-t-transparent animate-spin"></div>
+                  </div>
+                ) : (
+                  guidePreviews?.slice(0, 6).map((guide, index) => (
+                    <div
+                      key={guide.id_guide}
+                      onClick={() => openGuide(guide.id_guide)}
+                      className="flex-shrink-0 w-full px-4 cursor-pointer"
+                    >
+                      <div className="p-8 transition-all duration-300 border-2 rounded-2xl bg-background-50 border-primary-100/30 hover:border-secondary-50 hover:shadow-xl hover:shadow-secondary-50/20">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-2xl font-semibold text-secondary-50 font-titre">
+                            {guide.title}
+                          </h3>
                           <span
-                            key={tagIndex}
-                            className="px-3 py-1 text-sm border rounded-full text-primary-100 border-primary-100/50"
+                            className={`px-4 py-2 text-sm font-semibold rounded-full text-primary-50 ${guide.level == "New Player" ? "bg-green-400" : guide.level == "Average Player" ? "bg-secondary-50" : "bg-red-400"}`}
                           >
-                            #{tag}
+                            {guide.level}
                           </span>
-                        ))}
-                      </div>
+                        </div>
 
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-secondary-50">
-                          Source: {guide.source}
-                        </span>
+                        <p className="mb-6 text-white line-clamp-4 font-text">
+                          {guide.content}
+                        </p>
+
+                        <div className="flex flex-wrap gap-2 mb-6">
+                          {guide.tags.map((tag, tagIndex) => (
+                            <span
+                              key={tagIndex}
+                              className="px-3 py-1 text-sm border rounded-full text-primary-100 border-primary-100/50"
+                            >
+                              #{tag}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-secondary-50">
+                            Source: {guide.source}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
-              )}
+                  ))
+                )}
+              </div>
             </div>
+            <button
+              onClick={() =>
+                setCurrentGuideIndex(
+                  currentGuideIndex === guidePreviews.slice(0, 6).length - 1
+                    ? 0
+                    : currentGuideIndex + 1,
+                )
+              }
+              className="w-12 h-12 p-3 transition-all duration-300 transform rounded-full bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
           </div>
-
-          {/* Navigation Buttons */}
-          <button
-            onClick={() =>
-              setCurrentGuideIndex(
-                currentGuideIndex === 0
-                  ? guidePreviews.slice(0, 6).length - 1
-                  : currentGuideIndex - 1,
-              )
-            }
-            className="absolute left-0 p-3 transition-all duration-300 transform -translate-y-1/2 rounded-full top-1/2 bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-
-          <button
-            onClick={() =>
-              setCurrentGuideIndex(
-                currentGuideIndex === guidePreviews.slice(0, 6).length - 1
-                  ? 0
-                  : currentGuideIndex + 1,
-              )
-            }
-            className="absolute right-0 p-3 transition-all duration-300 transform -translate-y-1/2 rounded-full top-1/2 bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
 
           {/* Indicators */}
           <div className="flex justify-center gap-2 mt-8">
@@ -496,18 +507,21 @@ export default function Home() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative overflow-y-scroll w-full max-w-4xl max-h-[90vh] p-8 border-2 rounded-2xl bg-primary-50 border-secondary-50/50"
+            className="relative overflow-y-scroll w-full max-w-4xl max-h-[90vh] border-2 rounded-2xl bg-primary-50 border-secondary-50/50"
           >
             {/* Close Button */}
             <button
               onClick={() => setSelectedGuide(null)}
-              className="absolute text-3xl text-white transition-all duration-300 top-4 right-6 hover:text-secondary-50"
+              className="absolute w-10 h-10 text-3xl text-white transition-all duration-300 bg-black rounded-full top-4 right-6 hover:text-secondary-50"
             >
-              ×
+              ✕
             </button>
 
             {/* Guide Header */}
-            <div className="mb-6">
+            <div className="flex items-center justify-center">
+              <img src={map_banner(selectedGuide.level)} alt="heatmap" className="w-full h-52" />
+            </div>
+            <div className="px-8 pt-8 mb-6 ">
               <div className="flex items-start justify-start mb-4">
                 <h2 className="flex-1 pr-8 text-3xl font-bold text-secondary-50 font-titre">
                   {selectedGuide.title}
@@ -540,7 +554,7 @@ export default function Home() {
             </div>
 
             {/* Guide Content */}
-            <div className="prose prose-lg max-w-none">
+            <div className="px-8 pb-8 prose prose-lg max-w-none">
               <p className="text-base leading-relaxed text-white whitespace-pre-line font-text">
                 {selectedGuide.content}
               </p>
@@ -548,6 +562,7 @@ export default function Home() {
           </div>
         </div>
       )}
+      <Footer/>
     </div>
   );
 }
