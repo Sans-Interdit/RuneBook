@@ -1,35 +1,38 @@
 # RuneBook
 
-## Backend
-
-### Outils et technologies
-
-* **Poetry** pour gérer les environnements et les dépendances
-
-  * `poetry lock`
-  * `poetry install`
-  * `poetry run uvicorn backend.app:app --reload --host 127.0.0.1 --port 5000`
-* **FastAPI** pour créer l’API
-* **SQLAlchemy** comme ORM
-* **PostgreSQL** pour la base de données
+RuneBook est une application web composée d’un backend API et d’un frontend React, avec une architecture moderne full-stack. Un site web pour comprendre les bases, les tactiques et l’esport sur League of legend avec l’aide de l’IA.
 
 ---
 
-## Frontend
+# 🧠 Architecture générale
 
-### Outils et structure
+L’application repose sur une architecture séparée :
 
-* **React** comme framework frontend
+- **Frontend** : React (Vercel)
+- **Backend** : FastAPI (Render)
+- **Base de données** : PostgreSQL (Supabase)
+- **Base vectorielle** : Qdrant (Docker en local ou cloud Qdrant en ligne)
+- **API communication** : REST
 
-  * **AppContext** pour stocker les variables globales
-  * **/pages** pour l'ensemble des pages principales
-  * **/components** pour les composants d’interface réutilisables
-  * **/api** pour toutes les requêtes vers le backend
+![Architecture Frontend](docs/images/architecture.png)
 
-![Architecture Backend](docs/images/architecture.png)
+---
 
+# ⚙️ Backend
 
-* **TailwindCSS** pour le style et la mise en page
-* **Vite** pour lancer et builder l’application
+## 🚀 Technologies utilisées
 
-![Aperçu Frontend](docs/images/vite.png)
+- **FastAPI** : création de l’API REST
+- **SQLAlchemy** : ORM pour la gestion de la base de données PostgreSQL
+- **Mistral** : API externe de LLM utilisé
+- **HuggingFace** : API externe de génération d’embeddings à partir de texte
+
+---
+
+## 📦 Lancement en local (Windows)
+
+```bash
+python -m venv ./venv
+.\venv\Scripts\activate
+pip install -r .\requirements.txt
+uvicorn backend.app:app --reload --host 127.0.0.1 --port 5000
