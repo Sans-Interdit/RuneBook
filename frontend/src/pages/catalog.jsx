@@ -5,6 +5,9 @@ import search from "/assets/search.png";
 import { useLocation } from "react-router-dom";
 import { getGuides, getGuide } from "../api/guide";
 import { Footer } from "../component/footer";
+import banner_easy from "/assets/article_banner_easy.jpg";
+import banner_medium from "/assets/article_banner_medium.jpg";
+import banner_hard from "/assets/article_banner_hard.jpg";
 
 export default function Catalog() {
   const location = useLocation();
@@ -59,6 +62,12 @@ export default function Catalog() {
     if (level === "New Player") return "bg-green-400";
     if (level === "Average Player") return "bg-secondary-50";
     return "bg-red-400";
+  };
+
+  const map_banner = (level) => {
+    if (level === "New Player") return banner_easy;
+    if (level === "Average Player") return banner_medium;
+    if (level === "Confirmed Player") return banner_hard;
   };
 
   const map_fr = (level) => {
@@ -247,18 +256,25 @@ export default function Catalog() {
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="relative overflow-y-scroll w-full max-w-4xl max-h-[90vh] p-8 border-2 rounded-2xl bg-primary-50 border-secondary-50/50"
+              className="relative overflow-y-scroll w-full max-w-4xl max-h-[90vh] border-2 rounded-2xl bg-primary-50 border-secondary-50/50"
             >
               {/* Close Button */}
               <button
                 onClick={() => setSelectedGuide(null)}
-                className="absolute text-3xl text-white transition-all duration-300 top-4 right-6 hover:text-secondary-50"
+                className="absolute w-10 h-10 text-3xl text-white transition-all duration-300 bg-black rounded-full top-4 right-6 hover:text-secondary-50"
               >
-                ×
+                ✕
               </button>
 
               {/* Guide Header */}
-              <div className="mb-6">
+              <div className="flex items-center justify-center">
+                <img
+                  src={map_banner(selectedGuide.level)}
+                  alt="heatmap"
+                  className="w-full h-52"
+                />
+              </div>
+              <div className="px-8 pt-8 mb-6 ">
                 <div className="flex items-start justify-start mb-4">
                   <h2 className="flex-1 pr-8 text-3xl font-bold text-secondary-50 font-titre">
                     {selectedGuide.title}
@@ -291,7 +307,7 @@ export default function Catalog() {
               </div>
 
               {/* Guide Content */}
-              <div className="prose prose-lg max-w-none">
+              <div className="px-8 pb-8 prose prose-lg max-w-none">
                 <p className="text-base leading-relaxed text-white whitespace-pre-line font-text">
                   {selectedGuide.content}
                 </p>
