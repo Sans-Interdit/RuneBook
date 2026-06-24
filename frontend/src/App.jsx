@@ -1,19 +1,23 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 
-import Home from './pages/home';
-import Catalog from './pages/catalog'
-import Chatbot from './pages/chatbot'
-import WorldMap from './pages/worldmap'
-import Connexion from './pages/login'
-import Inscription from './pages/inscription'
-import Privacy from './pages/privacy';
-import Logout from './pages/logout';
+import Home from "./pages/home";
+import Catalog from "./pages/catalog";
+import Chatbot from "./pages/chatbot";
+import WorldMap from "./pages/worldmap";
+import Connexion from "./pages/login";
+import Inscription from "./pages/inscription";
+import Privacy from "./pages/privacy";
+import Logout from "./pages/logout";
 
 import { AppProvider } from "./context/appContext";
 
 import { Navbar } from "./component/navbar";
-import Terms from './pages/terms';
-
+import Terms from "./pages/terms";
 
 function AppContent() {
   const location = useLocation();

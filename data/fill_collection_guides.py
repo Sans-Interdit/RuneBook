@@ -3,6 +3,7 @@ from qdrant_client import QdrantClient
 import uuid
 from qdrant_client.http.models import Filter, FieldCondition, MatchValue
 from data.models import Tag, Guide, session as db_session
+
 # from openai import OpenAI
 import os
 from dotenv import load_dotenv
@@ -19,14 +20,11 @@ mistral = Mistral(api_key=os.getenv("LLM_KEY"))
 
 
 client = QdrantClient(
-    url=os.getenv("QDRANT_URL"),
-    api_key=os.getenv("QDRANT_KEY"),
-    timeout=5.0
+    url=os.getenv("QDRANT_URL"), api_key=os.getenv("QDRANT_KEY"), timeout=5.0
 )
 
 model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 # "sentence-transformers/all-mpnet-base-v2"
-
 
 
 # def toText(payload : dict) -> str:
@@ -42,11 +40,12 @@ model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 #         for key, value in data.items():
 #             out.append(f"- {key} : {value}")
 
-#     return "\n".join(out)  
+#     return "\n".join(out)
+
 
 def insert_chunk(payload: dict):
     response = mistral.chat.complete(
-        model="ministral-8b-latest", 
+        model="ministral-8b-latest",
         messages=[
             {
                 "role": "system",
@@ -75,7 +74,7 @@ Les tags sont : {payload['tags']}
 Le guide est pour les : {payload['level']}
 
 Texte source :
-{payload['content']}"""
+{payload['content']}""",
             }
         ],
         temperature=0,
@@ -87,18 +86,10 @@ Texte source :
 
     client.upsert(
         collection_name="lol_guides",
-        points=[
-            {
-                "id": payload["id_guide"],
-                "vector": vector,
-                "payload": payload
-            }
-        ]
+        points=[{"id": payload["id_guide"], "vector": vector, "payload": payload}],
     )
 
     print(f"{payload['title']} inserted into Qdrant.")
-
-
 
 
 if __name__ == "__main__":
@@ -107,12 +98,8 @@ if __name__ == "__main__":
     all_ids = [guide.id_guide for guide in all_guides]
 
     existing_result = client.retrieve(
-        collection_name="lol_guides",
-        ids=all_ids,
-        with_payload=True,
-        with_vectors=False
+        collection_name="lol_guides", ids=all_ids, with_payload=True, with_vectors=False
     )
-
 
     existing_ids = {point.id for point in existing_result}
 

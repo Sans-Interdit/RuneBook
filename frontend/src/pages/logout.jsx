@@ -7,13 +7,12 @@ export default function Logout() {
   const { logoutContext } = useAppContext();
   const navigate = useNavigate();
 
-  useEffect(()=> {
+  useEffect(() => {
     logoutContext();
 
     // Redirect after success
-    navigate('/');
-  }, [])
-
+    navigate("/");
+  }, []);
 
   return (
     <div className="flex items-center justify-center flex-1 bg-primary-50">

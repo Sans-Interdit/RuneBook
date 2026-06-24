@@ -109,7 +109,7 @@ export default function Catalog() {
         <div className="flex items-center justify-center w-[40%] min-w-[600px] my-8">
           <img
             src={search}
-            alt="heatmap"
+            alt="Catalog Image"
             className="object-contain w-full h-auto rounded-full"
           />
         </div>

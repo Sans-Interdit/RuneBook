@@ -1,5 +1,6 @@
 from data.models import Tag, Guide, session as db_session
 
+
 def addGuide(title, content, tags, difficulty):
     # Check if guide already exists
     existing_guide = db_session.query(Guide).filter_by(title=title).first()
@@ -32,9 +33,6 @@ def addGuide(title, content, tags, difficulty):
     print(f"Guide added: {new_guide.title} with difficulty {new_guide.level}")
 
 
-
-
-
 title = "Rôles des joueurs - Répartition et responsabilités"
 
 content = """Dans une partie classique de League of Legends, chaque équipe est composée de cinq joueurs, chacun occupant un rôle précis, associé à une position de départ sur la carte. Cette répartition permet une distribution équilibrée de l'or et de l'expérience au sein de l'équipe.
@@ -46,14 +44,12 @@ Le cinquième joueur est le jungler. Il commence la partie dans la jungle, où i
 Au fil de la partie, les rôles deviennent plus flexibles. Les joueurs quittent progressivement leurs voies initiales pour se regrouper, combattre en équipe et prendre des objectifs majeurs. Bien que chaque rôle ait des responsabilités spécifiques, la coopération et l’adaptation sont essentielles pour mener l’équipe à la victoire.
 
 Grâce à l'expérience accumulée, les champions montent de niveau, améliorant leurs statistiques et leurs compétences. L'or gagné permet quant à lui d'acheter des objets, renforçant encore davantage leur puissance. Une bonne compréhension de son rôle et de ses priorités est fondamentale pour progresser et contribuer efficacement au succès de l'équipe."""
- 
+
 tags = ["Rôles", "Lanes", "Gameplay", "Fondamentaux"]
 
 difficulty = "New Player"
 
 addGuide(title, content, tags, difficulty)
-
-
 
 
 title = "Farming - Vue d'ensemble"
@@ -70,8 +66,6 @@ difficulty = "New Player"
 
 
 addGuide(title, content, tags, difficulty)
-
-
 
 
 title = "Farming - Fondamentaux"
@@ -91,9 +85,7 @@ tags = ["Gameplay", "Farming", "Bases"]
 difficulty = "New Player"
 
 
-
 addGuide(title, content, tags, difficulty)
-
 
 
 title = "Farming - Laning"
@@ -109,7 +101,6 @@ tags = ["Gameplay", "Farming"]
 difficulty = "Average Player"
 
 addGuide(title, content, tags, difficulty)
-
 
 
 title = "Boucle de Farming"
@@ -133,7 +124,6 @@ tags = ["Gameplay", "Farming"]
 difficulty = "Confirmed Player"
 
 addGuide(title, content, tags, difficulty)
-
 
 
 title = "Sbires"
@@ -167,7 +157,6 @@ Les sbires progressent au fil de la partie, tandis que les dégâts des champion
 tags = ["Présentation", "Farming"]
 
 difficulty = "Average Player"
-
 
 
 addGuide(title, content, tags, difficulty)
@@ -242,7 +231,6 @@ difficulty = "Confirmed Player"
 addGuide(title, content, tags, difficulty)
 
 
-
 title = "Vue d'ensemble des Canalisations"
 
 content = """Une canalisation est un trait de certaines capacités qui oblige le lanceur à rester occupé pendant un certain temps et à suspendre certaines de ses autres actions. Il existe deux types de canaux : normaux et chargés. Dans les deux cas, les canaux doivent être maintenus pour que l'utilisateur atteigne la puissance maximale possible sur leur(s) effet(s). Les canaux normaux ont une puissance constante, par exemple en provoquant un effet périodique ou en devant simplement être maintenus jusqu'à leur fin pour qu'une action se produise. Les canaux chargés sont activés pour augmenter la puissance du sort, puis réactivés pour les lancer à leur puissance résultante. Généralement, les canaux peuvent être interrompus par le lanceur ou par l'ennemi. Une icône représentant le mot-clé Contrôle des foules inhibant le contrôle des foules inhibant le casting.
@@ -254,7 +242,6 @@ Pendant qu'un champion canalise, sa barre de santé affiche un contexte « Canal
 tags = ["Gameplay", "Mécaniques"]
 
 difficulty = "Average Player"
-
 
 
 addGuide(title, content, tags, difficulty)
@@ -279,7 +266,6 @@ tags = ["Gameplay", "Mécaniques"]
 difficulty = "Average Player"
 
 
-
 addGuide(title, content, tags, difficulty)
 
 
@@ -299,7 +285,6 @@ difficulty = "New Player"
 
 
 addGuide(title, content, tags, difficulty)
-
 
 
 title = "Bases de la Jungle"
@@ -428,8 +413,6 @@ tags = ["Gameplay", "Macro"]
 difficulty = "Average Player"
 
 
-
-
 addGuide(title, content, tags, difficulty)
 
 
@@ -462,7 +445,6 @@ tags = ["Gameplay", "Macro"]
 difficulty = "Average Player"
 
 
-
 addGuide(title, content, tags, difficulty)
 
 
@@ -479,10 +461,7 @@ tags = ["Gameplay", "Macro"]
 difficulty = "Average Player"
 
 
-
 addGuide(title, content, tags, difficulty)
-
-
 
 
 title = "Toplaners"
@@ -494,10 +473,7 @@ tags = ["bases", "presentation"]
 difficulty = "New Player"
 
 
-
 addGuide(title, content, tags, difficulty)
-
-
 
 
 title = "Junglers"
@@ -509,10 +485,7 @@ tags = ["bases", "presentation"]
 difficulty = "New Player"
 
 
-
 addGuide(title, content, tags, difficulty)
-
-
 
 
 title = "Midlaners"
@@ -524,10 +497,7 @@ tags = ["bases", "presentation"]
 difficulty = "New Player"
 
 
-
 addGuide(title, content, tags, difficulty)
-
-
 
 
 title = "AD Carries"
@@ -539,10 +509,7 @@ tags = ["bases", "presentation"]
 difficulty = "New Player"
 
 
-
 addGuide(title, content, tags, difficulty)
-
-
 
 
 title = "Supports"
@@ -554,12 +521,7 @@ tags = ["bases", "presentation"]
 difficulty = "New Player"
 
 
-
 addGuide(title, content, tags, difficulty)
-
-
-
-
 
 
 title = "Commandes et contrôles - Bases"
@@ -571,17 +533,12 @@ Les compétences du champion sont assignées par défaut aux touches Q, W, E et 
 Les sorts d'invocateur sont assignés aux touches D et F. Les objets peuvent être activés à l’aide des touches numériques (1 à 7). La touche B permet de retourner à la base, tandis que la touche P ouvre la boutique.
 
 La caméra peut être déplacée avec la souris sur les bords de l’écran ou à l’aide des touches directionnelles. La barre espace recentre la caméra sur le champion, ce qui est fortement recommandé pour les débutants."""
- 
+
 tags = ["Commandes", "Contrôles", "Interface", "Bases"]
 
 difficulty = "New Player"
 
 addGuide(title, content, tags, difficulty)
-
-
-
-
-
 
 
 title = "Objectif du jeu - Conditions de victoire"
@@ -591,16 +548,12 @@ content = """L'objectif principal d'une partie de League of Legends est de détr
 La carte principale, la Faille de l'invocateur, est divisée en trois lanes : la toplane, la midlane et la botlane, ainsi qu'une jungle. Chaque lane est protégée par des tourelles qu'il faut détruire dans un ordre précis.
 
 Les équipes gagnent un avantage en accumulant de l'or, de l'expérience et des objectifs neutres (dragons, Héraut de la Faille, Baron Nashor). Une bonne coordination et une prise de décision collective sont essentielles pour transformer ces avantages en victoire."""
- 
+
 tags = ["Objectifs", "Victoire", "Carte", "Bases"]
 
 difficulty = "New Player"
 
 addGuide(title, content, tags, difficulty)
-
-
-
-
 
 
 title = "Rôles et positions - Introduction"
@@ -610,15 +563,12 @@ content = """Chaque équipe est composée de cinq joueurs, chacun occupant un r�
 La botlane est composée de deux joueurs : le carry AD (ADC), chargé d'infliger des dégâts soutenus, et le support, dont le rôle est de protéger, soigner ou contrôler les ennemis. Le jungler évolue quant à lui dans la jungle, éliminant des camps de monstres et intervenant sur les lanes pour créer des opportunités.
 
 Comprendre son rôle et ses responsabilités est fondamental pour progresser et jouer efficacement en équipe."""
- 
+
 tags = ["Rôles", "Lanes", "Gameplay", "Bases"]
 
 difficulty = "New Player"
 
 addGuide(title, content, tags, difficulty)
-
-
-
 
 
 title = "Or et expérience - Progression"
@@ -628,15 +578,12 @@ content = """L'or et l'expérience sont les deux ressources principales permetta
 Monter de niveau permet d'améliorer ses compétences et d'augmenter ses statistiques de base. L'or, quant à lui, sert à acheter des objets dans la boutique afin d'améliorer les performances du champion.
 
 Un bon équilibre entre farming, participation aux combats et prise d'objectifs est essentiel pour maintenir une progression constante tout au long de la partie."""
- 
+
 tags = ["Économie", "Expérience", "Objets", "Bases"]
 
 difficulty = "New Player"
 
 addGuide(title, content, tags, difficulty)
-
-
-
 
 
 title = "Vision et balises - Fondamentaux"
@@ -646,7 +593,7 @@ content = """La vision est un élément clé de League of Legends. Elle permet d
 Les balises de vision (wards) peuvent être placées sur la carte pour révéler une zone pendant une durée limitée. Chaque joueur peut poser des balises grâce à la balise de vision incluse dans son inventaire.
 
 Contrôler la vision autour des objectifs comme les dragons ou le Baron Nashor donne un avantage stratégique majeur. Même les joueurs débutants doivent prendre l'habitude de poser régulièrement des wards."""
- 
+
 tags = ["Vision", "Wards", "Stratégie", "Bases"]
 
 difficulty = "New Player"

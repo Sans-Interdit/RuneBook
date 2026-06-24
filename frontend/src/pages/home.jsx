@@ -519,7 +519,11 @@ export default function Home() {
 
             {/* Guide Header */}
             <div className="flex items-center justify-center">
-              <img src={map_banner(selectedGuide.level)} alt="heatmap" className="w-full h-52" />
+              <img
+                src={map_banner(selectedGuide.level)}
+                alt="heatmap"
+                className="w-full h-52"
+              />
             </div>
             <div className="px-8 pt-8 mb-6 ">
               <div className="flex items-start justify-start mb-4">
@@ -562,7 +566,7 @@ export default function Home() {
           </div>
         </div>
       )}
-      <Footer/>
+      <Footer />
     </div>
   );
 }

@@ -1,6 +1,13 @@
 from fastapi import APIRouter, HTTPException, Depends, Request, Response, Body
 from sqlalchemy.orm import Session
-from data.models import engine, Account, Guide, Conversation, Message, SessionLocal#, session as db_session
+from data.models import (
+    engine,
+    Account,
+    Guide,
+    Conversation,
+    Message,
+    SessionLocal,
+)  # , session as db_session
 import bcrypt
 import datetime
 import os
@@ -22,19 +29,17 @@ SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
 mistral = Mistral(api_key=os.getenv("LLM_KEY"))
 
 qdrant_client = QdrantClient(
-    url=os.getenv("QDRANT_URL"),
-    api_key=os.getenv("QDRANT_KEY"),
-    timeout=5.0
+    url=os.getenv("QDRANT_URL"), api_key=os.getenv("QDRANT_KEY"), timeout=5.0
 )
 
 API_URL = "https://router.huggingface.co/hf-inference/models/sentence-transformers/all-MiniLM-L6-v2/pipeline/feature-extraction"
-headers = {
-    "Authorization": f"Bearer {os.getenv('HF_KEY')}"
-}
+headers = {"Authorization": f"Bearer {os.getenv('HF_KEY')}"}
+
 
 def embed(text):
     response = requests.post(API_URL, headers=headers, json={"inputs": text})
     return response.json()
+
 
 # model = SentenceTransformer(
 #     "sentence-transformers/all-MiniLM-L6-v2",
@@ -55,6 +60,7 @@ characters = {
     "pantheon": "Pantheon est un guerrier Rakkor au courage indomptable, forgé par la douleur, la perte et une volonté inébranlable de protéger les mortels. Stoïque et résilient, il incarne la lutte contre des forces supérieures, refusant de renier sa propre humanité ou son engagement envers ceux qui comptent sur lui, combattant avec une détermination obstinée même face à des ennemis divins.",
 }
 
+
 def get_db():
     db = SessionLocal()
     try:
@@ -62,9 +68,11 @@ def get_db():
     finally:
         db.close()
 
+
 # -------------------------
 # JWT Management
 # -------------------------
+
 
 def create_token(response: Response, account_id: int):
     """
@@ -79,7 +87,7 @@ def create_token(response: Response, account_id: int):
     """
     payload = {
         "id": account_id,
-        "exp": datetime.datetime.now() + datetime.timedelta(hours=24)
+        "exp": datetime.datetime.now() + datetime.timedelta(hours=24),
     }
     token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
@@ -107,6 +115,7 @@ def create_token(response: Response, account_id: int):
 
     return token
 
+
 def get_current_user(request: Request):
     """
     Retrieve the current logged-in user ID from the JWT token in cookies.
@@ -126,12 +135,10 @@ def get_current_user(request: Request):
 
     try:
         payload = jwt.decode(
-            token.replace("Bearer ", ""),
-            SECRET_KEY,
-            algorithms=["HS256"]
+            token.replace("Bearer ", ""), SECRET_KEY, algorithms=["HS256"]
         )
         return payload["id"]
-    
+
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token expired")
     except Exception as e:
@@ -160,12 +167,15 @@ async def login(response: Response, data: dict, db: Session = Depends(get_db)):
     password = data.get("password")
 
     account = db.query(Account).filter_by(email=email).first()
-    if not account or not bcrypt.checkpw(password.encode("utf-8"), account.password.encode("utf-8")):
+    if not account or not bcrypt.checkpw(
+        password.encode("utf-8"), account.password.encode("utf-8")
+    ):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     create_token(response, account.id_account)
 
     return {"message": "Login successful", "id_account": account.id_account}
+
 
 @router.post("/register")
 async def register(response: Response, data: dict, db: Session = Depends(get_db)):
@@ -193,7 +203,9 @@ async def register(response: Response, data: dict, db: Session = Depends(get_db)
     if existing_user:
         raise HTTPException(status_code=409, detail="Email already in use")
 
-    hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode(
+        "utf-8"
+    )
     new_account = Account(email=email, password=hashed_password, created_at=date_now)
     db.add(new_account)
     db.commit()
@@ -201,6 +213,7 @@ async def register(response: Response, data: dict, db: Session = Depends(get_db)
     create_token(response, new_account.id_account)
 
     return {"message": "Registration successful", "id_account": new_account.id_account}
+
 
 @router.get("/logout")
 async def logout(response: Response):
@@ -215,21 +228,16 @@ async def logout(response: Response):
     """
     if os.getenv("PRODUCTION") == "true":
         response.delete_cookie(
-            key="access_token",
-            path="/",
-            secure=True,
-            samesite="None"
+            key="access_token", path="/", secure=True, samesite="None"
         )
         return {"message": "Logout successful"}
 
     else:
         response.delete_cookie(
-            key="access_token",
-            path="/",
-            secure=False,
-            samesite="Lax"
+            key="access_token", path="/", secure=False, samesite="Lax"
         )
         return {"message": "Logout successful"}
+
 
 @router.get("/me")
 async def me(user_id: int = Depends(get_current_user)):
@@ -271,15 +279,17 @@ async def get_guides(id: int):
     """
     with Session(engine) as local_session:
         guide = local_session.query(Guide).where(Guide.id_guide == id).first()
-        
+
         if not guide:
             raise HTTPException(status_code=404, detail="Guide not found")
-        
+
         return guide.to_dict_full()
-    
+
+
 # -------------------------
 # Chat Endpoints
 # -------------------------
+
 
 def extract_json(text: str):
     match = re.search(r"\{.*\}", text, re.S)
@@ -312,8 +322,12 @@ async def chat(data: dict):
     # mots = ["Résumé" , ]
     # if any(mot in texte for mot in mots):
 
-    classification = mistral.chat.complete(model="ministral-8b-latest", messages=[
-            {"role": "system", "content": """
+    classification = mistral.chat.complete(
+        model="ministral-8b-latest",
+        messages=[
+            {
+                "role": "system",
+                "content": """
 Tu es un classificateur de requêtes League of Legends.
 
 Réponds UNIQUEMENT en JSON valide (pas de markdown, pas d'explication).
@@ -349,7 +363,8 @@ Règles:
   * "stats" = données techniques du champion
   * null = autre requête
 - Guillemets doubles obligatoires
-"""},
+""",
+            },
             {"role": "user", "content": prompt},
         ],
     )
@@ -368,7 +383,7 @@ Réponds UNIQUEMENT en français de manière claire avec un maximum de 1000 cara
     print(formatted_json, type(formatted_json.get("champ")))
 
     points = []
-    
+
     if formatted_json.get("champ"):
         champ = formatted_json.get("champ")
         info = formatted_json.get("info")
@@ -382,33 +397,19 @@ Context: League of Legends champion {info} explanation
         # embedding = model.encode(query_text)
 
         must_conditions = [
-            FieldCondition(
-                key="champion",
-                match=MatchValue(value=champ)
-            )
+            FieldCondition(key="champion", match=MatchValue(value=champ))
         ]
 
         if info:
             must_conditions.append(
-                FieldCondition(
-                    key="chunk_type",
-                    match=MatchValue(value=info)
-                )
+                FieldCondition(key="chunk_type", match=MatchValue(value=info))
             )
-
 
         result = qdrant_client.query_points(
             collection_name="lol_champions",
-            prefetch=[
-                Prefetch(
-                    filter=Filter(
-                        must=must_conditions
-                    ),
-                    limit=5
-                )
-            ],
+            prefetch=[Prefetch(filter=Filter(must=must_conditions), limit=5)],
             query=embedding,
-            limit=3
+            limit=3,
         )
 
         points = result.points
@@ -416,15 +417,13 @@ Context: League of Legends champion {info} explanation
     else:
         query_text = f"""Question: {prompt}
 Context: League of Legends explanation"""
-        
+
         embedding = embed(query_text)
 
         # embedding = model.encode(query_text)
 
         result = qdrant_client.query_points(
-            collection_name="lol_guides",
-            query=embedding,
-            limit=2
+            collection_name="lol_guides", query=embedding, limit=2
         )
 
         points = result.points
@@ -450,22 +449,17 @@ Si le contexte ne contient pas d’éléments permettant de répondre à la ques
 
     print("systemPrompt : " + systemPrompt)
 
-    response = mistral.chat.complete(model="ministral-8b-latest", messages=[
-            {
-                "role": "system",
-                "content": systemPrompt
-            },
-            {
-                "role": "user",
-                "content": prompt
-            }
+    response = mistral.chat.complete(
+        model="ministral-8b-latest",
+        messages=[
+            {"role": "system", "content": systemPrompt},
+            {"role": "user", "content": prompt},
         ],
         temperature=0.8,
         top_p=0.9,
         # max_tokens=200,
         # stop=["</s>", "<|endoftext|>", "<|im_end|>"]
     )
-
 
     return {"response": response.choices[0].message.content}
 
@@ -474,7 +468,9 @@ Si le contexte ne contient pas d’éléments permettant de répondre à la ques
 # Conversation Endpoints
 # -------------------------
 @router.delete("/del-conv")
-async def delete_conv(id: int, user_id: int = Depends(get_current_user), db: Session = Depends(get_db)):
+async def delete_conv(
+    id: int, user_id: int = Depends(get_current_user), db: Session = Depends(get_db)
+):
     """
     Delete a conversation by its ID.
 
@@ -495,8 +491,11 @@ async def delete_conv(id: int, user_id: int = Depends(get_current_user), db: Ses
     db.commit()
     return {"message": "Conversation deleted"}
 
+
 @router.post("/add-conv")
-async def add_conv(data: dict, user_id: int = Depends(get_current_user), db: Session = Depends(get_db)):
+async def add_conv(
+    data: dict, user_id: int = Depends(get_current_user), db: Session = Depends(get_db)
+):
     """
     Add a new conversation for the current user.
 
@@ -510,13 +509,20 @@ async def add_conv(data: dict, user_id: int = Depends(get_current_user), db: Ses
     title = data.get("title")
     character = data.get("character")
     date_now = datetime.datetime.now()
-    new_conv = Conversation(name=title, character=character, updated_at=date_now, id_account=user_id)
+    new_conv = Conversation(
+        name=title, character=character, updated_at=date_now, id_account=user_id
+    )
     db.add(new_conv)
     db.commit()
     return {"message": "Conversation added", "id": new_conv.id_conversation}
 
+
 @router.get("/get-conv")
-async def get_conv(character: str, user_id: int = Depends(get_current_user), db: Session = Depends(get_db)):
+async def get_conv(
+    character: str,
+    user_id: int = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
     """
     Retrieve all conversations for the current user, ordered by last updated.
 
@@ -526,7 +532,13 @@ async def get_conv(character: str, user_id: int = Depends(get_current_user), db:
     Returns:
         list: List of dictionaries representing each conversation.
     """
-    convs = db.query(Conversation).filter_by(id_account=user_id).filter_by(character=character).order_by(Conversation.updated_at.desc()).all()
+    convs = (
+        db.query(Conversation)
+        .filter_by(id_account=user_id)
+        .filter_by(character=character)
+        .order_by(Conversation.updated_at.desc())
+        .all()
+    )
     return [c.to_dict() for c in convs]
 
 
@@ -534,7 +546,11 @@ async def get_conv(character: str, user_id: int = Depends(get_current_user), db:
 # Messages Endpoints
 # -------------------------
 @router.post("/add-msg")
-async def add_message(data: dict = Body(...), user_id: int = Depends(get_current_user), db: Session = Depends(get_db)):
+async def add_message(
+    data: dict = Body(...),
+    user_id: int = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
     """
     Add a new message to a conversation.
 
@@ -553,9 +569,9 @@ async def add_message(data: dict = Body(...), user_id: int = Depends(get_current
     id_conv = data.get("id_conv")
     message = data.get("message")
     role = data.get("role")
-    print("id_conv ",id_conv)
-    print("message " ,message)
-    print("role ",role)
+    print("id_conv ", id_conv)
+    print("message ", message)
+    print("role ", role)
     if not id_conv or not message or not role:
         raise HTTPException(status_code=400, detail="Missing required fields")
 

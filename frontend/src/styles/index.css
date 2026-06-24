@@ -1,4 +1,4 @@
-@import url('https://unpkg.com/leaflet/dist/leaflet.css');
+@import url("https://unpkg.com/leaflet/dist/leaflet.css");
 
 @tailwind base;
 @tailwind components;
@@ -6,7 +6,7 @@
 
 .nav-background {
   position: relative;
-  background-color: #21005B;
+  background-color: #21005b;
   width: 100%;
   overflow: hidden;
 }
@@ -18,7 +18,7 @@
   left: 0;
   height: 100%;
   width: 100%;
-  background-image: url('/assets/background.gif');
+  background-image: url("/assets/background.gif");
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
@@ -39,7 +39,6 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-
   -webkit-box-shadow: 0 0 0 1000px #0f172a inset !important;
 
   -webkit-text-fill-color: white !important;
@@ -47,5 +46,4 @@ input:-webkit-autofill:active {
   font-size: inherit !important;
 
   transform: none !important;
-
 }

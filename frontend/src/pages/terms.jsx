@@ -59,7 +59,7 @@ export default function Terms() {
           <p>yanis@somemark.com</p>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

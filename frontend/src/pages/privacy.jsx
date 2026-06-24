@@ -40,7 +40,7 @@ export default function Privacy() {
           <h2 className="text-lg font-semibold">6. Vos droits</h2>
           <p>
             Vous pouvez demander l&apos;accès, la rectification ou la
-            suppression de vos données via : [insérer e-mail].
+            suppression de vos données via : bouchilloux.yanis@gmail.com
           </p>
 
           <h2 className="text-lg font-semibold">7. Modification</h2>

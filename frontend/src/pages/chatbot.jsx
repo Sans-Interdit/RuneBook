@@ -40,7 +40,7 @@ export default function Chatbot() {
 
   useEffect(() => {
     console.log(user);
-    
+
     if (isLoading) return;
 
     if (user) {
@@ -106,7 +106,7 @@ export default function Chatbot() {
           : conv,
       ),
     );
-    
+
     setIsTypingUser(false);
 
     addMsg(conversationId, prompt, "user");
@@ -151,7 +151,6 @@ export default function Chatbot() {
 
       return newConv.id;
     }
-
   };
 
   const handleDeleteConversation = async (id) => {
@@ -474,9 +473,7 @@ export default function Chatbot() {
               />
               <button
                 onClick={handleSendMessage}
-                disabled={
-                  !inputMessage.trim() || isTyping
-                }
+                disabled={!inputMessage.trim() || isTyping}
                 className="px-6 py-4 font-semibold transition-all duration-300 rounded-lg bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 <div className="transform-gpu">

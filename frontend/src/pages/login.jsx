@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Mail, Lock, CheckCircle, AlertCircle, Eye, EyeOff, LogIn } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  CheckCircle,
+  AlertCircle,
+  Eye,
+  EyeOff,
+  LogIn,
+} from "lucide-react";
 import { useAppContext } from "../context/appContext";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -8,7 +16,7 @@ export default function Login() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    rememberMe: false
+    rememberMe: false,
   });
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
@@ -23,54 +31,51 @@ export default function Login() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    
+
     // Clear error for this field when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validation
     const newErrors = {};
-    
+
     if (!formData.email) {
       newErrors.email = "L'email est requis";
     } else if (!validateEmail(formData.email)) {
       newErrors.email = "Format d'email invalide";
     }
-    
+
     if (!formData.password) {
       newErrors.password = "Le mot de passe est requis";
     }
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       await loginContext(formData.email, formData.password);
 
-      navigate('/chatbot');
-    }
-    catch (error) {
+      navigate("/chatbot");
+    } catch (error) {
       if (error.message === "INVALID_CREDENTIALS") {
-        setErrors({submit: "Email ou mot de passe incorrect"});
+        setErrors({ submit: "Email ou mot de passe incorrect" });
+      } else {
+        setErrors({ submit: "Erreur serveur\nVeuillez réessayer plus tard" });
       }
-      else {
-        setErrors({submit: "Erreur serveur\nVeuillez réessayer plus tard"});
-      }
-    }
-    finally {
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -116,7 +121,10 @@ export default function Login() {
         <div className="p-8 border-2 rounded-2xl bg-primary-50 border-primary-100/30">
           {/* Email Field */}
           <div className="mb-6">
-            <label htmlFor="email" className="block mb-2 text-sm font-semibold text-secondary-50 font-text">
+            <label
+              htmlFor="email"
+              className="block mb-2 text-sm font-semibold text-secondary-50 font-text"
+            >
               Adresse Email
             </label>
             <div className="relative">
@@ -130,9 +138,9 @@ export default function Login() {
                 onChange={handleInputChange}
                 placeholder="ton.email@example.com"
                 className={`w-full py-3 pl-12 pr-4 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 placeholder-white/50 focus:outline-none font-text ${
-                  errors.email 
-                    ? 'border-red-400 focus:border-red-400' 
-                    : 'border-primary-100/30 focus:border-secondary-50'
+                  errors.email
+                    ? "border-red-400 focus:border-red-400"
+                    : "border-primary-100/30 focus:border-secondary-50"
                 }`}
               />
             </div>
@@ -147,15 +155,18 @@ export default function Login() {
           {/* Password Field */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-2">
-              <label htmlFor="password" className="text-sm font-semibold text-secondary-50 font-text">
+              <label
+                htmlFor="password"
+                className="text-sm font-semibold text-secondary-50 font-text"
+              >
                 Mot de Passe
               </label>
-              <Link
+              {/* <Link
                 to="/forgot-password" 
                 className="text-xs font-semibold transition-colors text-secondary-50 hover:text-primary-100"
               >
                 Mot de passe oublié ?
-              </Link>
+              </Link> */}
             </div>
             <div className="relative">
               <Lock className="absolute w-5 h-5 text-white transform -translate-y-1/2 left-4 top-1/2" />
@@ -168,9 +179,9 @@ export default function Login() {
                 onChange={handleInputChange}
                 placeholder="Entre ton mot de passe"
                 className={`w-full py-3 pl-12 pr-12 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 placeholder-white/50 focus:outline-none font-text ${
-                  errors.password 
-                    ? 'border-red-400 focus:border-red-400' 
-                    : 'border-primary-100/30 focus:border-secondary-50'
+                  errors.password
+                    ? "border-red-400 focus:border-red-400"
+                    : "border-primary-100/30 focus:border-secondary-50"
                 }`}
               />
               <button
@@ -178,7 +189,11 @@ export default function Login() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute text-white transform -translate-y-1/2 right-4 top-1/2 hover:text-secondary-50"
               >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
               </button>
             </div>
             {errors.password && (
@@ -220,7 +235,10 @@ export default function Login() {
           <div className="mt-6 text-center">
             <p className="text-sm text-white font-text">
               Pas encore de compte ?{" "}
-              <Link to="/inscription" className="font-semibold transition-colors text-secondary-50 hover:text-primary-100">
+              <Link
+                to="/inscription"
+                className="font-semibold transition-colors text-secondary-50 hover:text-primary-100"
+              >
                 Inscris-toi gratuitement
               </Link>
             </p>

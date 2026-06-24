@@ -14,12 +14,13 @@ Base = declarative_base()
 #                      ACCOUNT
 # ============================================================
 
+
 class Account(Base):
     __tablename__ = "account"
 
     id_account = Column(Integer, primary_key=True)
     email = Column(String(255), unique=True, nullable=False)
-    password = Column(String(128), nullable=False)    
+    password = Column(String(128), nullable=False)
     created_at = Column(DateTime, nullable=False)
 
     # Relations
@@ -29,6 +30,7 @@ class Account(Base):
 # ============================================================
 #                    CONVERSATION
 # ============================================================
+
 
 class Conversation(Base):
     __tablename__ = "conversation"
@@ -41,14 +43,16 @@ class Conversation(Base):
 
     # Relations
     account = relationship("Account", back_populates="conversations")
-    messages = relationship("Message", back_populates="conversation", cascade="all, delete-orphan")
+    messages = relationship(
+        "Message", back_populates="conversation", cascade="all, delete-orphan"
+    )
 
     def to_dict(self):
         return {
             "id": self.id_conversation,
             "title": self.name,
             "timestamp": self.updated_at.isoformat(),
-            "messages": [message.to_dict() for message in self.messages]
+            "messages": [message.to_dict() for message in self.messages],
         }
 
 
@@ -56,13 +60,18 @@ class Conversation(Base):
 #                        MESSAGE
 # ============================================================
 
+
 class Message(Base):
     __tablename__ = "message"
 
     id_message = Column(Integer, primary_key=True)
     content = Column(String(5000), nullable=False)
     role = Column(String(10), nullable=False)  # e.g., "user" or "assistant"
-    id_conversation = Column(Integer, ForeignKey("conversation.id_conversation", ondelete="CASCADE"), nullable=False)
+    id_conversation = Column(
+        Integer,
+        ForeignKey("conversation.id_conversation", ondelete="CASCADE"),
+        nullable=False,
+    )
 
     # Relations
     conversation = relationship("Conversation", back_populates="messages")
@@ -78,6 +87,7 @@ class Message(Base):
 #                        SOURCE
 # ============================================================
 
+
 class Source(Base):
     __tablename__ = "source"
 
@@ -91,6 +101,7 @@ class Source(Base):
 # ============================================================
 #                        GUIDE
 # ============================================================
+
 
 class Guide(Base):
     __tablename__ = "guide"
@@ -110,9 +121,13 @@ class Guide(Base):
             "id_guide": self.id_guide,
             "title": self.title,
             "level": self.level,
-            "content": self.content[:200] + "..." if self.content and len(self.content) > 200 else self.content,
+            "content": (
+                self.content[:200] + "..."
+                if self.content and len(self.content) > 200
+                else self.content
+            ),
             "source": self.source.name if self.source else None,
-            "tags": [tag.name for tag in self.tags]
+            "tags": [tag.name for tag in self.tags],
         }
 
     def to_dict_full(self):
@@ -122,12 +137,14 @@ class Guide(Base):
             "content": self.content,
             "level": self.level,
             "source": self.source.name if self.source else None,
-            "tags": [tag.name for tag in self.tags]
+            "tags": [tag.name for tag in self.tags],
         }
+
 
 # ============================================================
 #                         TAG
 # ============================================================
+
 
 class Tag(Base):
     __tablename__ = "tag"
@@ -142,6 +159,7 @@ class Tag(Base):
 # ============================================================
 #                   POSSESS (association table)
 # ============================================================
+
 
 class Possess(Base):
     __tablename__ = "possess"
@@ -158,11 +176,7 @@ engine = create_engine(DATABASE_URL)
 
 Base.metadata.create_all(engine)
 
-SessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine
-)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Session = sessionmaker(bind=engine)
 # session = Session()

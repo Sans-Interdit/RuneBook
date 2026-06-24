@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Mail, Lock, CheckCircle, AlertCircle, Eye, EyeOff, UserPlus } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  CheckCircle,
+  AlertCircle,
+  Eye,
+  EyeOff,
+  UserPlus,
+} from "lucide-react";
 import { useAppContext } from "../context/appContext";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -9,7 +17,7 @@ export default function Inscription() {
     email: "",
     password: "",
     confirmPassword: "",
-    consent: false
+    consent: false,
   });
 
   const [errors, setErrors] = useState({});
@@ -30,59 +38,60 @@ export default function Inscription() {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
-    
+
     // Clear error for this field when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validation
     const newErrors = {};
-    
+
     if (!formData.email) {
       newErrors.email = "L'email est requis";
     } else if (!validateEmail(formData.email)) {
       newErrors.email = "Format d'email invalide";
     }
-    
+
     if (!formData.password) {
       newErrors.password = "Le mot de passe est requis";
     } else if (!validatePassword(formData.password)) {
-      newErrors.password = "Le mot de passe doit contenir au moins 8 caractères";
+      newErrors.password =
+        "Le mot de passe doit contenir au moins 8 caractères";
     }
-    
+
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = "Veuillez confirmer votre mot de passe";
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Les mots de passe ne correspondent pas";
     }
-    
+
     if (!formData.consent) {
       newErrors.consent = "Vous devez accepter les conditions pour continuer";
     }
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     // try {
     //   setSubmitSuccess(true);
 
     //   await registerContext(formData.email, formData.password)
-      
+
     //   navigate('/chatbot');
-      
+
     // } catch (error) {
     //   setErrors({ submit: "Une erreur est survenue. Veuillez réessayer." });
     // } finally {
@@ -92,33 +101,32 @@ export default function Inscription() {
     try {
       await registerContext(formData.email, formData.password);
 
-      navigate('/chatbot');
-    }
-    catch (error) {
+      navigate("/chatbot");
+    } catch (error) {
       if (error.message === "EMAIL_USED") {
-        setErrors({submit: "Email déjà utilisé"});
+        setErrors({ submit: "Email déjà utilisé" });
+      } else {
+        setErrors({ submit: "Erreur serveur. Veuillez réessayer plus tard" });
       }
-      else {
-        setErrors({submit: "Erreur serveur. Veuillez réessayer plus tard"});
-      }
-    }
-    finally {
+    } finally {
       setIsSubmitting(false);
     }
   };
 
   const getPasswordStrength = (password) => {
     if (!password) return { strength: 0, label: "", color: "" };
-    
+
     let strength = 0;
     if (password.length >= 8) strength++;
     if (password.length >= 12) strength++;
     if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
     if (/[0-9]/.test(password)) strength++;
     if (/[^a-zA-Z0-9]/.test(password)) strength++;
-    
-    if (strength <= 2) return { strength, label: "Faible", color: "bg-red-400" };
-    if (strength <= 3) return { strength, label: "Moyen", color: "bg-secondary-50" };
+
+    if (strength <= 2)
+      return { strength, label: "Faible", color: "bg-red-400" };
+    if (strength <= 3)
+      return { strength, label: "Moyen", color: "bg-secondary-50" };
     return { strength, label: "Fort", color: "bg-green-400" };
   };
 
@@ -157,7 +165,8 @@ export default function Inscription() {
             Rejoins RuneBook
           </h1>
           <p className="text-white font-text">
-            Commence ton aventure dans la comprehension de l'univers de League of Legends
+            Commence ton aventure dans la comprehension de l'univers de League
+            of Legends
           </p>
         </div>
 
@@ -165,7 +174,10 @@ export default function Inscription() {
         <div className="p-8 border-2 rounded-2xl bg-primary-50 border-primary-100/30">
           {/* Email Field */}
           <div className="mb-6">
-            <label htmlFor="email" className="block mb-2 text-sm font-semibold text-secondary-50 font-text">
+            <label
+              htmlFor="email"
+              className="block mb-2 text-sm font-semibold text-secondary-50 font-text"
+            >
               Adresse Email
             </label>
             <div className="relative">
@@ -178,9 +190,9 @@ export default function Inscription() {
                 onChange={handleInputChange}
                 placeholder="ton.email@example.com"
                 className={`w-full py-3 pl-12 pr-4 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 placeholder-white/50 focus:outline-none font-text ${
-                  errors.email 
-                    ? 'border-red-400 focus:border-red-400' 
-                    : 'border-primary-100/30 focus:border-secondary-50'
+                  errors.email
+                    ? "border-red-400 focus:border-red-400"
+                    : "border-primary-100/30 focus:border-secondary-50"
                 }`}
               />
             </div>
@@ -194,7 +206,10 @@ export default function Inscription() {
 
           {/* Password Field */}
           <div className="mb-6">
-            <label htmlFor="password" className="block mb-2 text-sm font-semibold text-secondary-50 font-text">
+            <label
+              htmlFor="password"
+              className="block mb-2 text-sm font-semibold text-secondary-50 font-text"
+            >
               Mot de Passe
             </label>
             <div className="relative">
@@ -207,9 +222,9 @@ export default function Inscription() {
                 onChange={handleInputChange}
                 placeholder="Minimum 8 caractères"
                 className={`w-full py-3 pl-12 pr-12 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 placeholder-white/50 focus:outline-none font-text ${
-                  errors.password 
-                    ? 'border-red-400 focus:border-red-400' 
-                    : 'border-primary-100/30 focus:border-secondary-50'
+                  errors.password
+                    ? "border-red-400 focus:border-red-400"
+                    : "border-primary-100/30 focus:border-secondary-50"
                 }`}
               />
               <button
@@ -217,21 +232,31 @@ export default function Inscription() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute text-white transform -translate-y-1/2 right-4 top-1/2 hover:text-secondary-50"
               >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
               </button>
             </div>
             {formData.password && (
               <div className="mt-2">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-white">Force du mot de passe</span>
-                  <span className={`text-xs font-semibold ${passwordStrength.color.replace('bg-', 'text-')}`}>
+                  <span className="text-xs text-white">
+                    Force du mot de passe
+                  </span>
+                  <span
+                    className={`text-xs font-semibold ${passwordStrength.color.replace("bg-", "text-")}`}
+                  >
                     {passwordStrength.label}
                   </span>
                 </div>
                 <div className="h-2 overflow-hidden rounded-full bg-primary-100/30">
-                  <div 
+                  <div
                     className={`h-full transition-all duration-300 ${passwordStrength.color}`}
-                    style={{ width: `${(passwordStrength.strength / 5) * 100}%` }}
+                    style={{
+                      width: `${(passwordStrength.strength / 5) * 100}%`,
+                    }}
                   ></div>
                 </div>
               </div>
@@ -246,7 +271,10 @@ export default function Inscription() {
 
           {/* Confirm Password Field */}
           <div className="mb-6">
-            <label htmlFor="confirmPassword" className="block mb-2 text-sm font-semibold text-secondary-50 font-text">
+            <label
+              htmlFor="confirmPassword"
+              className="block mb-2 text-sm font-semibold text-secondary-50 font-text"
+            >
               Confirmer le Mot de Passe
             </label>
             <div className="relative">
@@ -259,9 +287,9 @@ export default function Inscription() {
                 onChange={handleInputChange}
                 placeholder="Retape ton mot de passe"
                 className={`w-full py-3 pl-12 pr-12 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 placeholder-white/50 focus:outline-none font-text ${
-                  errors.confirmPassword 
-                    ? 'border-red-400 focus:border-red-400' 
-                    : 'border-primary-100/30 focus:border-secondary-50'
+                  errors.confirmPassword
+                    ? "border-red-400 focus:border-red-400"
+                    : "border-primary-100/30 focus:border-secondary-50"
                 }`}
               />
               <button
@@ -269,7 +297,11 @@ export default function Inscription() {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute text-white transform -translate-y-1/2 right-4 top-1/2 hover:text-secondary-50"
               >
-                {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showConfirmPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
               </button>
             </div>
             {errors.confirmPassword && (
@@ -297,14 +329,21 @@ export default function Inscription() {
               </div>
               <span className="text-sm text-white font-text">
                 J'accepte les{" "}
-                <Link to="/terms" className="font-semibold underline text-secondary-50 hover:text-primary-100">
+                <Link
+                  to="/terms"
+                  className="font-semibold underline text-secondary-50 hover:text-primary-100"
+                >
                   conditions d'utilisation
                 </Link>{" "}
                 et la{" "}
-                <Link to="/privacy" className="font-semibold underline text-secondary-50 hover:text-primary-100">
+                <Link
+                  to="/privacy"
+                  className="font-semibold underline text-secondary-50 hover:text-primary-100"
+                >
                   politique de confidentialité
                 </Link>{" "}
-                de RuneBook. Je consens au traitement de mes données personnelles conformément à ces politiques.
+                de RuneBook. Je consens au traitement de mes données
+                personnelles conformément à ces politiques.
               </span>
             </label>
             {errors.consent && (
@@ -346,7 +385,10 @@ export default function Inscription() {
           <div className="mt-6 text-center">
             <p className="text-sm text-white font-text">
               Tu as déjà un compte ?{" "}
-              <Link to="/login" className="font-semibold transition-colors text-secondary-50 hover:text-primary-100">
+              <Link
+                to="/login"
+                className="font-semibold transition-colors text-secondary-50 hover:text-primary-100"
+              >
                 Connecte-toi
               </Link>
             </p>

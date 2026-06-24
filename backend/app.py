@@ -15,6 +15,7 @@ else:
 
 print("Production mode:", isProd)
 
+
 # Create app FastAPI
 def create_app() -> FastAPI:
     app = FastAPI()
@@ -26,7 +27,7 @@ def create_app() -> FastAPI:
         origins = [
             "http://127.0.0.1:5001",
         ]
-        
+
     app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,
@@ -40,13 +41,14 @@ def create_app() -> FastAPI:
 
     return app
 
+
 app = create_app()
 
 if __name__ == "__main__":
     import uvicorn
+
     port = int(os.environ.get("PORT", 5000))
     uvicorn.run("backend:app", host="0.0.0.0", port=port, reload=True)
-
 
 
 # client = OpenAI(
