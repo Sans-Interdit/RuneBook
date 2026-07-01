@@ -124,6 +124,7 @@ export default function Catalog() {
                 placeholder="Rechercher un guide..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                maxLength={200}
                 className="w-full py-4 pl-12 pr-4 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 border-primary-100/30 placeholder-white/50 focus:border-secondary-50 focus:outline-none font-text"
               />
             </div>

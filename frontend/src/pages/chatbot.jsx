@@ -472,6 +472,7 @@ export default function Chatbot() {
                 type="text"
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
+                maxLength={500}
                 // disabled={!currentConversation}
                 onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                 placeholder={"Pose ta question ici..."}

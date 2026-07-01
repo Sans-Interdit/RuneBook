@@ -188,6 +188,7 @@ export default function Inscription() {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
+                maxLength={200}
                 placeholder="ton.email@example.com"
                 className={`w-full py-3 pl-12 pr-4 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 placeholder-white/50 focus:outline-none font-text ${
                   errors.email
@@ -220,6 +221,7 @@ export default function Inscription() {
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
+                maxLength={200}
                 placeholder="Minimum 8 caractères"
                 className={`w-full py-3 pl-12 pr-12 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 placeholder-white/50 focus:outline-none font-text ${
                   errors.password
@@ -285,6 +287,7 @@ export default function Inscription() {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
+                maxLength={200}
                 placeholder="Retape ton mot de passe"
                 className={`w-full py-3 pl-12 pr-12 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 placeholder-white/50 focus:outline-none font-text ${
                   errors.confirmPassword
