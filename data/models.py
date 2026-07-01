@@ -24,7 +24,7 @@ class Account(Base):
     created_at = Column(DateTime, nullable=False)
 
     # Relations
-    conversations = relationship("Conversation", back_populates="account")
+    conversations = relationship("Conversation", back_populates="account", cascade="all, delete-orphan")
 
 
 # ============================================================
@@ -39,7 +39,7 @@ class Conversation(Base):
     name = Column(String(40), nullable=False)
     character = Column(String(30), nullable=False)
     updated_at = Column(DateTime, nullable=False)
-    id_account = Column(Integer, ForeignKey("account.id_account"), nullable=False)
+    id_account = Column(Integer, ForeignKey("account.id_account", ondelete="CASCADE"), nullable=False)
 
     # Relations
     account = relationship("Account", back_populates="conversations")

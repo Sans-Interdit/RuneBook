@@ -56,7 +56,7 @@ export default function Terms() {
           <p>Les conditions peuvent être mises à jour sans préavis.</p>
 
           <h2 className="text-lg font-semibold">9. Contact</h2>
-          <p>yanis@somemark.com</p>
+          <p>bouchilloux.yanis@gmail.com</p>
         </div>
       </div>
       <Footer />

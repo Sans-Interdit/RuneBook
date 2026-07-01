@@ -13,9 +13,6 @@ if isProd:
 else:
     load_dotenv(".env.development")
 
-print("Production mode:", isProd)
-
-
 # Create app FastAPI
 def create_app() -> FastAPI:
     app = FastAPI()
@@ -49,24 +46,3 @@ if __name__ == "__main__":
 
     port = int(os.environ.get("PORT", 5000))
     uvicorn.run("backend:app", host="0.0.0.0", port=port, reload=True)
-
-
-# client = OpenAI(
-#   base_url="https://openrouter.ai/api/v1",
-#   api_key=os.getenv("CHATBOT_KEY"),
-# )
-
-#     prompt = data.get("prompt")
-#     print('vjsdfojfgpsdoj')
-#     response = client.chat.completions.create(
-#         model="qwen/qwen2.5-vl-32b-instruct:free",
-#         messages=[
-#             {
-#             "role": "user",
-#             "content": prompt
-#             }
-#         ],
-#         extra_body={}
-#     )
-#     print(response.choices[0].message.content)
-#     return {"response": response.choices[0].message.content}

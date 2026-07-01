@@ -127,7 +127,7 @@ export default function Inscription() {
       return { strength, label: "Faible", color: "bg-red-400" };
     if (strength <= 3)
       return { strength, label: "Moyen", color: "bg-secondary-50" };
-    return { strength, label: "Fort", color: "bg-green-400" };
+    return { strength, label: "Fort", color: "bg-primary-100" };
   };
 
   const passwordStrength = getPasswordStrength(formData.password);

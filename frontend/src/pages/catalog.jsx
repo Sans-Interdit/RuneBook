@@ -1,43 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { BookOpen, Search, Filter, Tag, ExternalLink } from "lucide-react";
 import { useAppContext } from "../context/appContext";
-import search from "/assets/search.png";
+import search from "/assets/search.webp";
 import { useLocation } from "react-router-dom";
-import { getGuides, getGuide } from "../api/guide";
+import { getGuide } from "../api/guide";
 import { Footer } from "../component/footer";
-import banner_easy from "/assets/article_banner_easy.jpg";
-import banner_medium from "/assets/article_banner_medium.jpg";
-import banner_hard from "/assets/article_banner_hard.jpg";
+import banner_easy from "/assets/article_banner_easy.webp";
+import banner_medium from "/assets/article_banner_medium.webp";
+import banner_hard from "/assets/article_banner_hard.webp";
 
 export default function Catalog() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+  const { guides } = useAppContext();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("all");
   const [selectedTag, setSelectedTag] = useState("all");
   const [selectedGuide, setSelectedGuide] = useState(null);
+  const [guideLoading, setGuideLoading] = useState(false);
   const [guidePreviews, setGuidePreviews] = useState([]);
   const [filteredGuides, setFilteredGuides] = useState(null);
+
+  useEffect(() => {
+    setGuidePreviews(guides);
+  }, [guides]);
 
   // Extract all unique tags
   const allTags = Array.isArray(guidePreviews)
     ? [...new Set(guidePreviews.flatMap((guide) => guide.tags))]
     : [];
 
-  useEffect(() => {
-    const fetchGuides = async () => {
-      const guides = await getGuides();
-      console.log(guides);
-      setGuidePreviews(guides.data);
-    };
-    fetchGuides();
-  }, []);
 
   const openGuide = async (id) => {
+    setGuideLoading(true);
     const res = await getGuide(id);
     const data = res.data;
     setSelectedGuide(data);
+    setGuideLoading(false);
   };
 
   useEffect(() => {
@@ -249,69 +249,103 @@ export default function Catalog() {
         </div>
 
         {/* Modal for Guide Details */}
-        {selectedGuide && (
+        {(selectedGuide || guideLoading) && (
           <div
             onClick={() => setSelectedGuide(null)}
             className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/70"
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="relative overflow-y-scroll w-full max-w-4xl max-h-[90vh] border-2 rounded-2xl bg-primary-50 border-secondary-50/50"
+              className="relative overflow-y-scroll w-full max-w-4xl max-h-[90vh] border-2 rounded-2xl bg-primary-50 border-secondary-50/50 min-h-[400px]"
             >
-              {/* Close Button */}
-              <button
-                onClick={() => setSelectedGuide(null)}
-                className="absolute w-10 h-10 text-3xl text-white transition-all duration-300 bg-black rounded-full top-4 right-6 hover:text-secondary-50"
-              >
-                ✕
-              </button>
-
-              {/* Guide Header */}
-              <div className="flex items-center justify-center">
-                <img
-                  src={map_banner(selectedGuide.level)}
-                  alt="heatmap"
-                  className="w-full h-52"
-                />
-              </div>
-              <div className="px-8 pt-8 mb-6 ">
-                <div className="flex items-start justify-start mb-4">
-                  <h2 className="flex-1 pr-8 text-3xl font-bold text-secondary-50 font-titre">
-                    {selectedGuide.title}
-                  </h2>
-                </div>
-
-                <div className="flex flex-row items-center justify-between w-full mb-4">
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-2">
-                    {selectedGuide.tags.map((tag, index) => (
-                      <span
-                        key={index}
-                        className="px-3 py-1 text-sm border rounded-full text-primary-100 border-primary-100/50"
-                      >
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                  <span
-                    className={`px-4 py-2 text-sm font-semibold rounded-full text-primary-50 whitespace-nowrap ${getLevelColor(selectedGuide.level)}`}
+              {guideLoading && (
+                <div className="flex items-center justify-center h-[400px]">
+                  <svg
+                    className="animate-spin"
+                    width="40"
+                    height="40"
+                    viewBox="0 0 50 50"
                   >
-                    {map_fr(selectedGuide.level)}
-                  </span>
+                    <circle
+                      cx="25"
+                      cy="25"
+                      r="20"
+                      fill="none"
+                      stroke="#e5e7eb"
+                      strokeWidth="5"
+                    />
+                    <circle
+                      cx="25"
+                      cy="25"
+                      r="20"
+                      fill="none"
+                      stroke="#3b82f6"
+                      strokeWidth="5"
+                      strokeLinecap="round"
+                      strokeDasharray="90"
+                      strokeDashoffset="60"
+                    />
+                  </svg>
                 </div>
+              )}
+              {selectedGuide && (
+                <>
+                  {/* Close Button */}
+                  <button
+                    onClick={() => setSelectedGuide(null)}
+                    className="absolute w-10 h-10 text-3xl text-white transition-all duration-300 bg-black rounded-full top-4 right-6 hover:text-secondary-50"
+                  >
+                    ✕
+                  </button>
+                  {/* Guide Header */}
+                  <div className="flex items-center justify-center">
+                    <img
+                      src={map_banner(selectedGuide.level)}
+                      alt="heatmap"
+                      className="w-full h-full"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="px-8 pt-8 mb-6 ">
+                    <div className="flex items-start justify-start mb-4">
+                      <h2 className="flex-1 pr-8 text-3xl font-bold text-secondary-50 font-titre">
+                        {selectedGuide.title}
+                      </h2>
+                    </div>
 
-                {/* Source */}
-                <p className="text-sm text-secondary-50 font-text">
-                  Source: {selectedGuide.source}
-                </p>
-              </div>
+                    <div className="flex flex-row items-center justify-between w-full mb-4">
+                      {/* Tags */}
+                      <div className="flex flex-wrap gap-2">
+                        {selectedGuide.tags.map((tag, index) => (
+                          <span
+                            key={index}
+                            className="px-3 py-1 text-sm border rounded-full text-primary-100 border-primary-100/50"
+                          >
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+                      <span
+                        className={`px-4 py-2 text-sm font-semibold rounded-full text-primary-50 whitespace-nowrap ${getLevelColor(selectedGuide.level)}`}
+                      >
+                        {map_fr(selectedGuide.level)}
+                      </span>
+                    </div>
 
-              {/* Guide Content */}
-              <div className="px-8 pb-8 prose prose-lg max-w-none">
-                <p className="text-base leading-relaxed text-white whitespace-pre-line font-text">
-                  {selectedGuide.content}
-                </p>
-              </div>
+                    {/* Source */}
+                    <p className="text-sm text-secondary-50 font-text">
+                      Source: {selectedGuide.source}
+                    </p>
+                  </div>
+
+                  {/* Guide Content */}
+                  <div className="px-8 pb-8 prose prose-lg max-w-none">
+                    <p className="text-base leading-relaxed text-white whitespace-pre-line font-text">
+                      {selectedGuide.content}
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}

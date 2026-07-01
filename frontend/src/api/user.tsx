@@ -21,6 +21,11 @@ export async function logout() {
   return res;
 }
 
+export async function suppressAcc() {
+  const res = await api.delete("/suppr-acc");
+  return res;
+}
+
 export async function getId() {
   const res = await api.get("/me");
   return res;

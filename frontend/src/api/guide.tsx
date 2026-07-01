@@ -6,6 +6,7 @@ export async function getGuide(id : number) {
 }
 
 export async function getGuides() {
+  console.log("fjshfsduoihsfdhoidfdo")
   const res = await api.get("/guides");
   return res;
 }

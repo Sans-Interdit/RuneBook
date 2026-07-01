@@ -239,6 +239,28 @@ async def logout(response: Response):
         return {"message": "Logout successful"}
 
 
+@router.delete("/suppr-acc")
+async def supprAcc(
+    user_id: int = Depends(get_current_user), db: Session = Depends(get_db)
+):
+    """
+    Suppress the current user account.
+
+    Args:
+        user_id (int): Injected by the `get_current_user` dependency.
+
+    Returns:
+        dict: Success message confirming suppression.
+    """
+
+    account = db.query(Account).filter_by(id_account=user_id).first()
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found")
+    db.delete(account)
+    db.commit()
+    return {"message": "Account deleted"}
+
+
 @router.get("/me")
 async def me(user_id: int = Depends(get_current_user)):
     """
@@ -369,7 +391,7 @@ Règles:
         ],
     )
 
-    print("class", classification.choices[0].message.content)
+    # print("class", classification.choices[0].message.content)
 
     formatted_json = extract_json(classification.choices[0].message.content)
 
@@ -380,7 +402,7 @@ Tu aides les utilisateurs à comprendre le jeu vidéo League of Legends.
 Réponds UNIQUEMENT en français de manière claire avec un maximum de 1000 caractères.
 """
 
-    print(formatted_json, type(formatted_json.get("champ")))
+    # print(formatted_json, type(formatted_json.get("champ")))
 
     points = []
 
@@ -447,7 +469,7 @@ Si le contexte ne contient pas d’éléments permettant de répondre à la ques
         # print(context)
         systemPrompt += f"\n\nContexte : {context}"
 
-    print("systemPrompt : " + systemPrompt)
+    # print("systemPrompt : " + systemPrompt)
 
     response = mistral.chat.complete(
         model="ministral-8b-latest",
@@ -569,9 +591,9 @@ async def add_message(
     id_conv = data.get("id_conv")
     message = data.get("message")
     role = data.get("role")
-    print("id_conv ", id_conv)
-    print("message ", message)
-    print("role ", role)
+    # print("id_conv ", id_conv)
+    # print("message ", message)
+    # print("role ", role)
     if not id_conv or not message or not role:
         raise HTTPException(status_code=400, detail="Missing required fields")
 

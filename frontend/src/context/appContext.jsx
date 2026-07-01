@@ -1,14 +1,16 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { login, register, logout, getId } from "../api/user";
+import { login, register, logout, getId, suppressAcc } from "../api/user";
+import { getGuides } from "../api/guide";
 
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [guides, setGuides] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log(user)
+    // console.log(user)
     const fetchUser = async () => {
       try {
         const res = await getId();
@@ -23,6 +25,12 @@ export const AppProvider = ({ children }) => {
       setIsLoading(false);
     };
 
+    const fetchGuides = async () => {
+      const g = (await getGuides()).data;
+      setGuides(g);
+    };
+
+    fetchGuides();
     fetchUser();
   }, []);
 
@@ -50,6 +58,9 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const supprAccContext = async () => {
+    await suppressAcc();
+  };
 
   const logoutContext = async () => {
     await logout();
@@ -57,7 +68,17 @@ export const AppProvider = ({ children }) => {
   };
 
   return (
-    <AppContext.Provider value={{ user, isLoading, loginContext, logoutContext, registerContext }}>
+    <AppContext.Provider
+      value={{
+        guides,
+        user,
+        isLoading,
+        supprAccContext,
+        loginContext,
+        logoutContext,
+        registerContext,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );

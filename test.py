@@ -630,7 +630,7 @@ if __name__ == "__main__":
     # print(json.dumps(spells, indent=4, ensure_ascii=False))
 
 
-    print("\n\n\n\n\n")
+    # print("\n\n\n\n\n")
 
     data = {
         "champion": champion,
@@ -640,6 +640,6 @@ if __name__ == "__main__":
         "spells": spells,
     }
 
-    print(json.dumps(data, indent=4, ensure_ascii=False))
-    print(format_champion_for_rag(champion, lore, info, ratings, spells))
+    # print(json.dumps(data, indent=4, ensure_ascii=False))
+    # print(format_champion_for_rag(champion, lore, info, ratings, spells))
 

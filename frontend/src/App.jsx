@@ -18,6 +18,8 @@ import { AppProvider } from "./context/appContext";
 
 import { Navbar } from "./component/navbar";
 import Terms from "./pages/terms";
+import Redirect from "./pages/redirect";
+import SupprAcc from "./pages/supprAcc";
 
 function AppContent() {
   const location = useLocation();
@@ -40,6 +42,8 @@ function AppContent() {
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/suppr-acc" element={<SupprAcc />} />
+          <Route path="*" element={<Redirect />} />
         </Routes>
       </main>
     </div>

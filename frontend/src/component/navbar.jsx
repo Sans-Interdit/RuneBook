@@ -10,7 +10,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import logo from "/assets/logo.png"; // chemin relatif depuis navbar.jsx
+import logo from "/assets/logo.webp"; // chemin relatif depuis navbar.jsx
 import { useLocation } from "react-router-dom";
 import { useAppContext } from "../context/appContext";
 
@@ -20,11 +20,11 @@ export const Navbar = () => {
   const location = useLocation();
 
   const [navLinks, setNavLinks] = useState([
-    { to: "/", label: "Accueil", icon: <Home className="w-5 h-5" /> },
+    { to: "/", label: "Accueil", icon: <Home className="w-6 h-6" /> },
     {
       to: "/catalog",
       label: "Catalogue",
-      icon: <BookOpen className="w-5 h-5" />,
+      icon: <BookOpen className="w-6 h-6" />,
     },
   ]);
 
@@ -32,23 +32,23 @@ export const Navbar = () => {
     {
       to: "/inscription",
       label: "Inscription",
-      icon: <UserPlus className="w-5 h-5" />,
+      icon: <UserPlus className="w-6 h-6" />,
     },
-    { to: "/login", label: "Connexion", icon: <LogIn className="w-5 h-5" /> },
+    { to: "/login", label: "Connexion", icon: <LogIn className="w-6 h-6" /> },
   ]);
 
   useEffect(() => {
     const verifyConnexion = async () => {
-      console.log(user);
+      // console.log(user);
       if (user) {
-        console.log("co");
+        // console.log("co");
         setNavLinks((links) => {
           return [
             ...navLinks,
             {
               to: "/chatbot",
               label: "Chatbot",
-              icon: <MessageSquare className="w-5 h-5" />,
+              icon: <MessageSquare className="w-6 h-6" />,
             },
           ];
         });
@@ -56,19 +56,24 @@ export const Navbar = () => {
           return [
             {
               to: "/logout",
-              label: "Déconnection",
-              icon: <LogOut className="w-5 h-5" />,
+              label: "Déconnexion",
+              icon: <LogOut className="w-6 h-6" />,
             },
+            {
+              to: "/suppr-acc",
+              label: "Supprimer le compte",
+              icon: <LogOut className="w-6 h-6" />,
+            }
           ];
         });
       } else {
         setNavLinks((links) => {
           return [
-            { to: "/", label: "Accueil", icon: <Home className="w-5 h-5" /> },
+            { to: "/", label: "Accueil", icon: <Home className="w-6 h-6" /> },
             {
               to: "/catalog",
               label: "Catalogue",
-              icon: <BookOpen className="w-5 h-5" />,
+              icon: <BookOpen className="w-6 h-6" />,
             },
           ];
         });
@@ -77,12 +82,12 @@ export const Navbar = () => {
             {
               to: "/inscription",
               label: "Inscription",
-              icon: <UserPlus className="w-5 h-5" />,
+              icon: <UserPlus className="w-6 h-6" />,
             },
             {
               to: "/login",
               label: "Connexion",
-              icon: <LogIn className="w-5 h-5" />,
+              icon: <LogIn className="w-6 h-6" />,
             },
           ];
         });
@@ -93,14 +98,14 @@ export const Navbar = () => {
 
   return (
     <nav className="z-50 h-20 shadow-lg nav-background shadow-primary-100/20">
-      <div className="flex items-center justify-between h-20 px-6 mx-auto max-w-7xl">
+      <div className="flex items-center justify-between h-20 px-6 mx-auto">
         {/* Logo */}
         <Link to="/" className="relative z-10">
           <div className="flex items-center space-x-3">
             <div className="flex items-center justify-center h-16 w-26">
               <img className="h-16" src={logo} alt="logo"></img>
             </div>
-            <span className="hidden text-2xl font-bold text-transparent md:block bg-clip-text bg-primary-100 font-titre">
+            <span className="hidden text-3xl font-bold text-transparent md:block bg-clip-text bg-primary-100 font-titre">
               RuneBook
             </span>
           </div>
@@ -113,7 +118,7 @@ export const Navbar = () => {
               key={link.to}
               to={link.to}
               className={`
-                relative px-4 py-2 text-lg font-semibold rounded-xl transition-all duration-300 font-text
+                relative px-4 py-2 text-xl font-bold rounded-xl transition-all duration-300
                 flex items-center space-x-2 group
                 ${
                   location.pathname === link.to
@@ -137,7 +142,7 @@ export const Navbar = () => {
               key={link.to}
               to={link.to}
               className={`
-                px-4 py-2 text-lg font-semibold rounded-xl transition-all duration-300 font-text
+                px-4 py-2 text-xl font-bold rounded-xl transition-all duration-300
                 flex items-center space-x-2 group
                 ${
                   index === 0

@@ -39,7 +39,7 @@ export default function Chatbot() {
   );
 
   useEffect(() => {
-    console.log(user);
+    // console.log(user);
 
     if (isLoading) return;
 
@@ -256,8 +256,9 @@ export default function Chatbot() {
             <div className="flex items-center justify-center gap-3">
               <div className="flex items-center justify-center w-12 h-12 overflow-hidden rounded-full bg-primary-100">
                 <img
-                  src={`/assets/${character}.jpg`}
+                  src={`/assets/${character}.webp`}
                   className="w-auto h-full rounded-full max-w-none"
+                  loading="lazy"
                 />
               </div>
               <div>
@@ -285,7 +286,7 @@ export default function Chatbot() {
         <div
           className="relative flex-1 p-6 overflow-y-auto bg-center bg-cover"
           style={{
-            backgroundImage: `url('/assets/${zoneMapping(character)}.jpg')`,
+            backgroundImage: `url('/assets/${zoneMapping(character)}.webp')`,
           }}
         >
           <div className="absolute inset-0 z-0 pointer-events-none" />
@@ -294,8 +295,9 @@ export default function Chatbot() {
               <div className="flex flex-col items-center p-10 rounded-3xl bg-primary-50/80 backdrop-blur-sm">
                 <div className="flex items-center justify-center w-20 h-20 mb-6 overflow-hidden rounded-full bg-secondary-50">
                   <img
-                    src={`/assets/${character}.jpg`}
+                    src={`/assets/${character}.webp`}
                     className="w-auto h-full rounded-full max-w-none"
+                    loading="lazy"
                   />
                 </div>
                 <h2 className="mb-2 text-2xl font-bold text-secondary-50 font-titre">
@@ -359,13 +361,15 @@ export default function Chatbot() {
                   >
                     {message.role === "user" ? (
                       <img
-                        src={`/assets/summoner.png`}
+                        src={`/assets/summoner.webp`}
                         className="w-auto h-full rounded-full max-w-none"
+                        loading="lazy"
                       />
                     ) : (
                       <img
-                        src={`/assets/${character}.jpg`}
+                        src={`/assets/${character}.webp`}
                         className="w-auto h-full rounded-full max-w-none"
+                        loading="lazy"
                       />
                       // <Bot className="w-5 h-5 text-primary-50" />
                     )}
@@ -403,8 +407,9 @@ export default function Chatbot() {
                 <div className="flex gap-4">
                   <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 overflow-hidden rounded-full bg-gradient-to-br from-primary-100 to-secondary-50">
                     <img
-                      src={`/assets/${character}.jpg`}
+                      src={`/assets/${character}.webp`}
                       className="w-auto h-full rounded-full max-w-none"
+                      loading="lazy"
                     />
                   </div>
                   <div className="inline-block p-4 border-2 rounded-tl-none rounded-2xl bg-primary-50 border-primary-100/30">
@@ -430,8 +435,9 @@ export default function Chatbot() {
                 <div className="flex gap-4">
                   <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 overflow-hidden rounded-full bg-gradient-to-br from-primary-100 to-secondary-50">
                     <img
-                      src={`/assets/summoner.png`}
+                      src={`/assets/summoner.webp`}
                       className="w-auto h-full rounded-full max-w-none"
+                      loading="lazy"
                     />
                   </div>
                   <div className="inline-block p-4 border-2 rounded-tl-none rounded-2xl bg-primary-50 border-primary-100/30">

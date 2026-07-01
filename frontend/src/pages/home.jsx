@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getGuides, getGuide } from "../api/guide";
+import { getGuide } from "../api/guide";
 import {
   BookCheck,
   ChevronLeft,
@@ -10,32 +10,29 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAppContext } from "../context/appContext";
-import paysage from "/assets/paysage.png";
-import search from "/assets/search.png";
-import banner_easy from "/assets/article_banner_easy.jpg";
-import banner_medium from "/assets/article_banner_medium.jpg";
-import banner_hard from "/assets/article_banner_hard.jpg";
-import living_library from "/assets/living_library.png";
+import paysage from "/assets/paysage.webp";
+import search from "/assets/search.webp";
+import banner_easy from "/assets/article_banner_easy.webp";
+import banner_medium from "/assets/article_banner_medium.webp";
+import banner_hard from "/assets/article_banner_hard.webp";
+import living_library from "/assets/living_library.webp";
 import gif4 from "/assets/ezgif-349f579d4f79ced3.gif";
-import img4 from "/assets/faker.png";
+import img4 from "/assets/faker.webp";
 import gif5 from "/assets/ezgif-4be597bc5e6fa90a.gif";
-import img5 from "/assets/baron.png";
+import img5 from "/assets/baron.webp";
 import gif7 from "/assets/ezgif-5c6a9a0b15a5c4d2.gif";
-import img7 from "/assets/ezreal.png";
+import img7 from "/assets/ezreal.webp";
 import { Footer } from "../component/footer";
 
 export default function Home() {
+  const { guides } = useAppContext();
   const [currentGuideIndex, setCurrentGuideIndex] = useState(0);
   const [selectedGuide, setSelectedGuide] = useState(null);
-  const [guidePreviews, setGuidePreviews] = useState([]);
+  const [guidePreviews, setGuidePreviews] = useState(guides);
 
   useEffect(() => {
-    const fetchGuides = async () => {
-      const guides = await getGuides();
-      setGuidePreviews(guides.data);
-    };
-    fetchGuides();
-  }, []);
+    setGuidePreviews(guides);
+  }, [guides]);
 
   useEffect(() => {
     if (selectedGuide) {
@@ -128,13 +125,14 @@ export default function Home() {
                   src={img7}
                   alt="image fondamentaux"
                   className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300 opacity-100 group-hover:opacity-0"
+                  loading="lazy"
                 />
 
                 <img
                   src={gif5}
-                  loading="lazy"
                   alt="animation fondamentaux"
                   className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+                  loading="lazy"
                 />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
@@ -165,13 +163,14 @@ export default function Home() {
                   src={img5}
                   alt="image maîtrise"
                   className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300 opacity-100 group-hover:opacity-0"
+                  loading="lazy"
                 />
 
                 <img
                   src={gif7}
-                  loading="lazy"
                   alt="animation maîtrise"
                   className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+                  loading="lazy"
                 />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
@@ -201,13 +200,14 @@ export default function Home() {
                   src={img4}
                   alt="image compétitif"
                   className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300 opacity-100 group-hover:opacity-0"
+                  loading="lazy"
                 />
 
                 <img
                   src={gif4}
-                  loading="lazy"
                   alt="animation compétitif"
                   className="absolute inset-0 object-cover w-full h-full transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+                  loading="lazy"
                 />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
@@ -256,6 +256,7 @@ export default function Home() {
             src={living_library}
             alt="living_library"
             className="object-contain my-8 rounded-full h-auto w-[600px]"
+            loading="lazy"
           ></img>
         </div>
         <div className="grid gap-8 md:grid-cols-2">
@@ -372,6 +373,7 @@ export default function Home() {
             src={search}
             alt="heatmap"
             className="object-contain my-8 rounded-full w-[600px] h-auto"
+            loading="lazy"
           ></img>
         </div>
         <div className="flex flex-col">
@@ -522,7 +524,8 @@ export default function Home() {
               <img
                 src={map_banner(selectedGuide.level)}
                 alt="heatmap"
-                className="w-full h-52"
+                className="w-full h-full"
+                loading="lazy"
               />
             </div>
             <div className="px-8 pt-8 mb-6 ">
