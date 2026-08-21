@@ -177,6 +177,3 @@ engine = create_engine(DATABASE_URL)
 Base.metadata.create_all(engine)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Session = sessionmaker(bind=engine)
-# session = Session()

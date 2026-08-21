@@ -8,6 +8,7 @@ import {
   Menu,
   X,
   LogOut,
+  User,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "/assets/logo.webp"; // chemin relatif depuis navbar.jsx
@@ -54,15 +55,15 @@ export const Navbar = () => {
         });
         setAuthLinks((links) => {
           return [
+            // {
+            //   to: "/logout",
+            //   label: "Déconnexion",
+            //   icon: <LogOut className="w-6 h-6" />,
+            // },
             {
-              to: "/logout",
-              label: "Déconnexion",
-              icon: <LogOut className="w-6 h-6" />,
-            },
-            {
-              to: "/suppr-acc",
-              label: "Supprimer le compte",
-              icon: <LogOut className="w-6 h-6" />,
+              to: "/profile",
+              label: "Mon compte",
+              icon: <User/> ,
             }
           ];
         });

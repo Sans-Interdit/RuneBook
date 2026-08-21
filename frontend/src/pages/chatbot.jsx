@@ -473,10 +473,10 @@ export default function Chatbot() {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 maxLength={500}
-                // disabled={!currentConversation}
+                disabled={!currentConversation}
                 onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-                placeholder={"Pose ta question ici..."}
-                className="flex-1 px-6 py-4 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 border-primary-100/30 placeholder-white/50 focus:border-secondary-50 focus:outline-none font-text"
+                placeholder={!currentConversation ? "Crée une nouvelle conversation" : "Pose ta question ici..."}
+                className="flex-1 px-6 py-4 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 border-primary-100/30 placeholder-white/50 focus:border-secondary-50 focus:outline-none font-text disabled:bg-gray-600 disabled:border-gray-600 disabled:text-gray-400 disabled:placeholder-gray-300 disabled:cursor-not-allowed disabled:opacity-60"
               />
               <button
                 onClick={handleSendMessage}

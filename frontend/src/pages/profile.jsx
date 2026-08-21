@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Mail,
   Lock,
@@ -6,112 +6,28 @@ import {
   AlertCircle,
   Eye,
   EyeOff,
-  UserPlus,
+  User,
 } from "lucide-react";
 import { useAppContext } from "../context/appContext";
+import { getEmail, changeEmail, changePassword } from "../api/user";
 import { useNavigate, Link } from "react-router-dom";
 
-export default function Inscription() {
-  const { registerContext } = useAppContext();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    consent: false,
-  });
-
-  const [errors, setErrors] = useState({});
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
+export default function Profile() {
+  const { user } = useAppContext();
   const navigate = useNavigate();
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const validatePassword = (password) => {
-    return password.length >= 8;
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-
-    // Clear error for this field when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Validation
-    const newErrors = {};
-
-    if (!formData.email) {
-      newErrors.email = "L'email est requis";
-    } else if (!validateEmail(formData.email)) {
-      newErrors.email = "Format d'email invalide";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Le mot de passe est requis";
-    } else if (passwordStrength <= 3) {
-      newErrors.password =
-        "Le mot de passe doit être au moins fort";
-    }
-
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Veuillez confirmer votre mot de passe";
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Les mots de passe ne correspondent pas";
-    }
-
-    if (!formData.consent) {
-      newErrors.consent = "Vous devez accepter les conditions pour continuer";
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    // try {
-    //   setSubmitSuccess(true);
-
-    //   await registerContext(formData.email, formData.password)
-
-    //   navigate('/chatbot');
-
-    // } catch (error) {
-    //   setErrors({ submit: "Une erreur est survenue. Veuillez réessayer." });
-    // } finally {
-    //   setIsSubmitting(false);
-    // }
-
-    try {
-      await registerContext(formData.email, formData.password);
-
-      navigate("/chatbot");
-    } catch (error) {
-      if (error.message === "EMAIL_USED") {
-        setErrors({ submit: "Email déjà utilisé" });
-      } else {
-        setErrors({ submit: "Erreur serveur. Veuillez réessayer plus tard" });
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const [formData, setFormData] = useState({
+    email: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
+  const [isSubmittingPassword, setIsSubmittingPassword] = useState(false);
+  const [submitSuccessEmail, setSubmitSuccessEmail] = useState(false);
+  const [submitSuccessPassword, setSubmitSuccessPassword] = useState(false);
 
   const getPasswordStrength = (password) => {
     if (!password) return { strength: 0, label: "", color: "" };
@@ -132,43 +48,128 @@ export default function Inscription() {
     return { strength, label: "Très Fort", color: "bg-primary-100" };
   };
 
-  const passwordStrength = getPasswordStrength(formData.password);
+  const passwordStrength = getPasswordStrength(formData.newPassword);
 
-  if (submitSuccess) {
-    return (
-      <div className="flex items-center justify-center flex-1 bg-primary-100">
-        <div className="max-w-md p-8 text-center border-2 rounded-2xl bg-primary-50 border-secondary-50/30">
-          <div className="flex items-center justify-center w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-400 to-secondary-50">
-            <CheckCircle className="w-10 h-10 text-primary-50" />
-          </div>
-          <h2 className="mb-4 text-3xl font-bold text-secondary-50 font-titre">
-            Inscription Réussie !
-          </h2>
-          <p className="mb-6 text-white font-text">
-            Bienvenue sur RuneBook ! Tu vas être redirigé vers le chatbot...
-          </p>
-          <div className="flex justify-center">
-            <div className="w-12 h-12 border-4 rounded-full border-secondary-50 border-t-transparent animate-spin"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    async function fetchEmail() {
+      if (user) {
+        const userEmail = await getEmail();
+        setFormData((prev) => ({
+          ...prev,
+          email: userEmail,
+        }));
+      } else {
+        navigate("/login");
+      }
+    }
+    fetchEmail();
+  }, [user]);
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    
+    if (name == "email") {
+      setSubmitSuccessEmail(false);
+    }
+    if (name == "newPassword" || name == "confirmPassword") {
+      setSubmitSuccessPassword(false);
+    }
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  const handleSubmitEmail = async (e) => {
+    setSubmitSuccessEmail(false);
+    e.preventDefault();
+
+    const newErrors = {};
+
+    if (!validateEmail(formData.email)) {
+      newErrors.email = "Format d'email invalide";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setIsSubmittingEmail(true);
+
+    try {
+      await changeEmail(formData.email);
+
+      setSubmitSuccessEmail(true);
+    } catch (error) {
+      if (error.response.data.detail === "Cet email est déjà utilisé.") {
+        setErrors({ email: error.response.data.detail });
+      } else {
+        setErrors({ email: "Erreur serveur\nVeuillez réessayer plus tard" });
+      }
+    } finally {
+      setIsSubmittingEmail(false);
+    }
+  };
+
+  const handleSubmitPassword = async (e) => {
+    setSubmitSuccessPassword(false);
+    e.preventDefault();
+
+    const newErrors = {};
+
+    if (passwordStrength.strength <= 3) {
+      newErrors.newPassword = "Le mot de passe doit être au moins fort";
+    }
+
+    if (formData.newPassword !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Les mots de passe ne correspondent pas";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setIsSubmittingPassword(true);
+
+    try {
+      changePassword(formData.newPassword);
+
+      setSubmitSuccessPassword(true);
+      setFormData((prev) => ({
+        ...prev,
+        newPassword: "",
+        confirmPassword: "",
+      }));
+    } catch (error) {
+      setErrors({ password: "Erreur serveur\nVeuillez réessayer plus tard" });
+    } finally {
+      setIsSubmittingPassword(false);
+    }
+  };
 
   return (
-    <div className="flex items-start justify-center flex-1 px-6 py-10 overflow-auto bg-primary-50">
+    <div className="flex items-start justify-center flex-1 px-6 py-20 overflow-auto bg-primary-50">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="mb-8 text-center">
           <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-primary-100">
-            <UserPlus className="w-8 h-8 text-primary-50" />
+            <User className="w-8 h-8 text-primary-50" />
           </div>
-          <h1 className="mb-2 text-4xl font-bold text-secondary-50 font-titre">
-            Rejoins RuneBook
+          <h1 className="mb-2 text-5xl font-bold text-secondary-50 font-titre">
+            Mon Profil
           </h1>
-          <p className="text-white font-text">
-            Commence ton aventure dans la comprehension de l'univers de League
-            of Legends
+          <p className="text-xl text-white font-text">
+            Gère tes informations de compte
           </p>
         </div>
 
@@ -182,12 +183,13 @@ export default function Inscription() {
             >
               Adresse Email
             </label>
-            <div className="relative">
+            <div className="relative mb-4">
               <Mail className="absolute w-5 h-5 text-white transform -translate-y-1/2 left-4 top-1/2" />
               <input
                 type="email"
                 id="email"
                 name="email"
+                autoComplete="email"
                 value={formData.email}
                 onChange={handleInputChange}
                 maxLength={200}
@@ -205,28 +207,53 @@ export default function Inscription() {
                 {errors.email}
               </div>
             )}
+            {/* Success message */}
+            {submitSuccessEmail && (
+              <div className="flex items-center gap-2 p-4 mb-6 text-sm border-2 rounded-lg text-secondary-50 bg-secondary-50/10 border-secondary-50/30">
+                <CheckCircle className="w-5 h-5" />
+                Profil mis à jour avec succès !
+              </div>
+            )}
           </div>
-
-          {/* Password Field */}
+          {/* Save Button */}
+          <button
+            type="button"
+            onClick={handleSubmitEmail}
+            disabled={isSubmittingEmail || !formData.email}
+            className="w-full py-2 text-2xl font-bold text-black transition-all duration-300 rounded-lg bg-secondary-50 hover:scale-105 hover:shadow-xl hover:shadow-secondary-50/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          >
+            {isSubmittingEmail ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-5 h-5 border-2 rounded-full border-primary-50 border-t-transparent animate-spin"></div>
+                Enregistrement...
+              </div>
+            ) : (
+              "Sauvegarder"
+            )}
+          </button>
+        </div>
+        <div className="p-8 mt-6 border-2 rounded-2xl bg-primary-50 border-primary-100/30">
+          {/* New Password Field */}
           <div className="mb-6">
             <label
-              htmlFor="password"
+              htmlFor="newPassword"
               className="block mb-2 text-sm font-semibold text-secondary-50 font-text"
             >
-              Mot de Passe
+              Nouveau Mot de Passe
             </label>
             <div className="relative">
               <Lock className="absolute w-5 h-5 text-white transform -translate-y-1/2 left-4 top-1/2" />
               <input
                 type={showPassword ? "text" : "password"}
-                id="password"
-                name="password"
-                value={formData.password}
+                id="newPassword"
+                name="newPassword"
+                autoComplete="new-password"
+                value={formData.newPassword}
                 onChange={handleInputChange}
                 maxLength={200}
-                placeholder="Minimum 8 caractères"
+                placeholder="Le nouveau mot de passe"
                 className={`w-full py-3 pl-12 pr-12 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 placeholder-white/50 focus:outline-none font-text ${
-                  errors.password
+                  errors.newPassword
                     ? "border-red-400 focus:border-red-400"
                     : "border-primary-100/30 focus:border-secondary-50"
                 }`}
@@ -243,7 +270,7 @@ export default function Inscription() {
                 )}
               </button>
             </div>
-            {formData.password && (
+            {formData.newPassword && (
               <div className="mt-2">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs text-white">
@@ -265,10 +292,10 @@ export default function Inscription() {
                 </div>
               </div>
             )}
-            {errors.password && (
+            {errors.newPassword && (
               <div className="flex items-center gap-1 mt-2 text-sm text-red-400">
                 <AlertCircle className="w-4 h-4" />
-                {errors.password}
+                {errors.newPassword}
               </div>
             )}
           </div>
@@ -279,18 +306,19 @@ export default function Inscription() {
               htmlFor="confirmPassword"
               className="block mb-2 text-sm font-semibold text-secondary-50 font-text"
             >
-              Confirmer le Mot de Passe
+              Confirme le Mot de Passe
             </label>
-            <div className="relative">
+            <div className="relative mb-4">
               <Lock className="absolute w-5 h-5 text-white transform -translate-y-1/2 left-4 top-1/2" />
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 id="confirmPassword"
                 name="confirmPassword"
+                autoComplete="new-password"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
                 maxLength={200}
-                placeholder="Retape ton mot de passe"
+                placeholder="Répète le nouveau mot de passe"
                 className={`w-full py-3 pl-12 pr-12 text-white transition-all duration-300 border-2 rounded-lg bg-primary-50 placeholder-white/50 focus:outline-none font-text ${
                   errors.confirmPassword
                     ? "border-red-400 focus:border-red-400"
@@ -315,46 +343,11 @@ export default function Inscription() {
                 {errors.confirmPassword}
               </div>
             )}
-          </div>
-
-          {/* Consent Checkbox */}
-          <div className="mb-6">
-            <label className="flex items-start gap-3 cursor-pointer group">
-              <div className="relative flex-shrink-0 mt-1">
-                <input
-                  type="checkbox"
-                  name="consent"
-                  checked={formData.consent}
-                  onChange={handleInputChange}
-                  className="w-5 h-5 transition-all duration-300 border-2 rounded appearance-none cursor-pointer bg-primary-50 border-primary-100/30 checked:bg-secondary-50 checked:border-secondary-50 focus:outline-none focus:ring-2 focus:ring-secondary-50/50"
-                />
-                {formData.consent && (
-                  <CheckCircle className="absolute w-5 h-5 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none text-primary-50 top-1/2 left-1/2" />
-                )}
-              </div>
-              <span className="text-sm text-white font-text">
-                J'accepte les{" "}
-                <Link
-                  to="/terms"
-                  className="font-semibold underline text-secondary-50 hover:text-primary-100"
-                >
-                  conditions d'utilisation
-                </Link>{" "}
-                et la{" "}
-                <Link
-                  to="/privacy"
-                  className="font-semibold underline text-secondary-50 hover:text-primary-100"
-                >
-                  politique de confidentialité
-                </Link>{" "}
-                de RuneBook. Je consens au traitement de mes données
-                personnelles conformément à ces politiques.
-              </span>
-            </label>
-            {errors.consent && (
-              <div className="flex items-center gap-1 mt-2 text-sm text-red-400">
-                <AlertCircle className="w-4 h-4" />
-                {errors.consent}
+            {/* Success message */}
+            {submitSuccessPassword && (
+              <div className="flex items-center gap-2 p-4 mb-6 text-sm border-2 rounded-lg text-secondary-50 bg-secondary-50/10 border-secondary-50/30">
+                <CheckCircle className="w-5 h-5" />
+                Profil mis à jour avec succès !
               </div>
             )}
           </div>
@@ -369,35 +362,43 @@ export default function Inscription() {
             </div>
           )}
 
-          {/* Submit Button */}
+          {/* Save Button */}
           <button
             type="button"
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-            className="w-full py-4 text-2xl font-bold text-black transition-all duration-300 rounded-lg bg-secondary-50 hover:scale-105 hover:shadow-xl hover:shadow-secondary-50/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 font-titre"
+            onClick={handleSubmitPassword}
+            disabled={
+              isSubmittingPassword ||
+              !formData.newPassword ||
+              !formData.confirmPassword
+            }
+            className="w-full py-2 text-2xl font-bold text-black transition-all duration-300 rounded-lg bg-secondary-50 hover:scale-105 hover:shadow-xl hover:shadow-secondary-50/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
-            {isSubmitting ? (
+            {isSubmittingPassword ? (
               <div className="flex items-center justify-center gap-2">
                 <div className="w-5 h-5 border-2 rounded-full border-primary-50 border-t-transparent animate-spin"></div>
-                Inscription en cours...
+                Enregistrement...
               </div>
             ) : (
-              "Créer mon Compte"
+              "Sauvegarder"
             )}
           </button>
+        </div>
 
-          {/* Login Link */}
-          <div className="mt-6 text-center">
-            <p className="text-sm text-white font-text">
-              Tu as déjà un compte ?{" "}
-              <Link
-                to="/login"
-                className="font-semibold transition-colors text-secondary-50 hover:text-primary-100"
-              >
-                Connecte-toi
-              </Link>
-            </p>
-          </div>
+        {/* Danger zone */}
+        <div className="p-8 mt-6 border-2 rounded-2xl bg-primary-50 border-red-400/30">
+          <Link
+            to="/logout"
+            className="flex items-center justify-center py-3 mb-6 text-2xl font-bold text-black transition-all duration-300 bg-orange-500 rounded-lg hover:scale-105 hover:shadow-xl hover:shadow-secondary-50/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          >
+            Se Déconnecter
+          </Link>
+
+          <Link
+            to="/suppr-acc"
+            className="flex items-center justify-center py-3 text-2xl font-bold text-black transition-all duration-300 bg-red-500 rounded-lg hover:scale-105 hover:shadow-xl hover:shadow-secondary-50/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          >
+            <span> Supprimer mon Compte</span>
+          </Link>
         </div>
       </div>
     </div>

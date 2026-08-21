@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, Request, Response, Body
+from fastapi import APIRouter, HTTPException, Depends, Request, Response, Body, status
 from sqlalchemy.orm import Session
 from data.models import (
     engine,
@@ -21,11 +21,6 @@ import requests
 
 SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
 
-# client = OpenAI(
-#   base_url="https://openrouter.ai/api/v1",
-#   api_key=os.getenv("LLM_KEY"),
-# )
-
 mistral = Mistral(api_key=os.getenv("LLM_KEY"))
 
 qdrant_client = QdrantClient(
@@ -40,12 +35,6 @@ def embed(text):
     response = requests.post(API_URL, headers=headers, json={"inputs": text})
     return response.json()
 
-
-# model = SentenceTransformer(
-#     "sentence-transformers/all-MiniLM-L6-v2",
-#     device="cpu"
-# )
-# "sentence-transformers/all-mpnet-base-v2",
 
 # FastAPI router
 router = APIRouter()
@@ -273,6 +262,81 @@ async def me(user_id: int = Depends(get_current_user)):
         dict: Dictionary containing the user ID.
     """
     return {"id_user": user_id}
+
+
+@router.get("/get-email")
+async def get_conv(
+    user_id: int = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """
+    Retrieve email of the current user
+
+    Args:
+        user_id (int): Current user ID injected by dependency.
+
+    Returns:
+        str: Email of the user.
+    """
+    acc = db.query(Account).filter_by(id_account=user_id).first()
+    print(acc.email)
+
+    return acc.email
+
+
+@router.put("/change-email")
+async def change_email(
+    data: dict = Body(...),
+    user_id: int = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    newEmail = data.get("email")
+
+    if not newEmail:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Le champ newEmail est requis.",
+        )
+
+    # 1. Vérifier si l'email existe déjà dans la BDD
+    email_exists = db.query(Account).filter(Account.email == newEmail).first()
+    if email_exists:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cet email est déjà utilisé.",
+        )
+
+    # 2. Mettre à jour l'email de l'utilisateur
+    db.query(Account).filter(Account.id_account == user_id).update({"email": newEmail})
+    db.commit()
+
+    return {"message": "Account modified"}
+
+
+@router.put("/change-password")
+async def change_email(
+    data: dict = Body(...),
+    user_id: int = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    newPassword = data.get("password")
+
+    if not newPassword:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Le champ newPassword est requis.",
+        )
+
+    hashed_new_password = bcrypt.hashpw(
+        newPassword.encode("utf-8"), bcrypt.gensalt()
+    ).decode("utf-8")
+
+    db.query(Account).filter(Account.id_account == user_id).update(
+        {"password": hashed_new_password}
+    )
+    db.commit()
+
+    return {"message": "Account modified"}
 
 
 # -------------------------
@@ -591,9 +655,7 @@ async def add_message(
     id_conv = data.get("id_conv")
     message = data.get("message")
     role = data.get("role")
-    # print("id_conv ", id_conv)
-    # print("message ", message)
-    # print("role ", role)
+
     if not id_conv or not message or not role:
         raise HTTPException(status_code=400, detail="Missing required fields")
 

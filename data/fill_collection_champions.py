@@ -9,7 +9,6 @@ from bs4 import BeautifulSoup, Tag
 import re
 from typing import Optional, Dict, List
 import json
-from sentence_transformers import SentenceTransformer
 from qdrant_client import QdrantClient
 import uuid
 from qdrant_client.http.models import Filter, FieldCondition, MatchValue
@@ -23,8 +22,14 @@ client = QdrantClient(
     url=os.getenv("QDRANT_URL"), api_key=os.getenv("QDRANT_KEY"), timeout=5.0
 )
 
-model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-# "sentence-transformers/all-mpnet-base-v2"
+API_URL = "https://router.huggingface.co/hf-inference/models/sentence-transformers/all-MiniLM-L6-v2/pipeline/feature-extraction"
+headers = {"Authorization": f"Bearer {os.getenv('HF_KEY')}"}
+
+
+def embed(text):
+    response = requests.post(API_URL, headers=headers, json={"inputs": text})
+    response.raise_for_status()
+    return response.json()
 
 
 def toText(champ, type_data, data):
@@ -38,14 +43,6 @@ def toText(champ, type_data, data):
     elif isinstance(data, dict):
         for key, value in data.items():
             out.append(f"- {key} : {value}")
-
-    # out.append("Spells :")
-    # for i, spell in enumerate(spells):
-    #     out.append("")
-    #     out.append(f"{spell_names[i] if i < len(spell_names) else f'Ability {i+1}'} :")
-    #     for key, value in spell.items():
-    #         out.append(f"- {key} : {value}")
-    # out.append("")
 
     return "\n".join(out)
 
@@ -219,7 +216,7 @@ def champion_exists(champion_name: str) -> bool:
 
 
 def insert_chunk(payload: dict):
-    vector = model.encode(payload["text"]).tolist()
+    vector = embed(payload["text"])
 
     point_id = str(uuid.uuid4())
 
@@ -436,22 +433,6 @@ if __name__ == "__main__":
 
         spells = extract_abilities_simple(soup)
 
-        # data = {
-        #     "champion": champion,
-        #     "lore": lore,
-        #     "stats": stats,
-        #     "ratings": ratings,
-        #     "spells": spells,
-        # }
-
-        # print(json.dumps(data, indent=4, ensure_ascii=False)) # Dictionnaire
-        # print(toText(champion, lore, info, ratings, spells)) # Texte
-
-        # data["aliases"] = []
-        # data["aliases"]["lane"] = ["position", "voie", "lane"]
-        # if data["slot"] == "R":
-        #     data["spell_aliases"] = ["ultimate", "ultime", "spell R", "sort R"]
-
         # LORE
         payload_lore = {
             "champion": champ,
@@ -494,20 +475,3 @@ if __name__ == "__main__":
             }
 
             insert_chunk(payload_spell)
-
-        # payload = {
-        #     "champion": champ,
-        #     "lore": lore,
-        #     "metadata": info,
-        #     "stats": ratings,
-        #     "spells": spells,
-        #     "text": toText(
-        #         champ,
-        #         lore,
-        #         info,
-        #         ratings,
-        #         spells
-        #     )
-        # }
-
-        # insert_champion(payload)

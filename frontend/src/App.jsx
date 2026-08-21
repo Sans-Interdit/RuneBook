@@ -20,6 +20,7 @@ import { Navbar } from "./component/navbar";
 import Terms from "./pages/terms";
 import Redirect from "./pages/redirect";
 import SupprAcc from "./pages/supprAcc";
+import Profile from "./pages/profile";
 
 function AppContent() {
   const location = useLocation();
@@ -37,6 +38,7 @@ function AppContent() {
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/chatbot" element={<Chatbot />} />
           <Route path="/map" element={<WorldMap />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/login" element={<Connexion />} />
           <Route path="/inscription" element={<Inscription />} />
           <Route path="/privacy" element={<Privacy />} />
