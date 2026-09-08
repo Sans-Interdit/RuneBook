@@ -18,6 +18,8 @@ import json
 from qdrant_client.http.models import Filter, FieldCondition, MatchValue, Prefetch
 from mistralai import Mistral
 import requests
+from pydantic import BaseModel
+from typing import Literal, Optional
 
 SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
 
@@ -34,6 +36,11 @@ headers = {"Authorization": f"Bearer {os.getenv('HF_KEY')}"}
 def embed(text):
     response = requests.post(API_URL, headers=headers, json={"inputs": text})
     return response.json()
+
+
+class LoLQueryClassification(BaseModel):
+    champ: str | None = None
+    info: str | None = None
 
 
 # FastAPI router
@@ -413,51 +420,22 @@ async def chat(data: dict):
         messages=[
             {
                 "role": "system",
-                "content": """
-Tu es un classificateur de requêtes League of Legends.
-
-Réponds UNIQUEMENT en JSON valide (pas de markdown, pas d'explication).
-
-Règles:
-- Ta réponse DOIT être un JSON STRICTEMENT valide.
-- Aucune explication.
-- Aucun texte avant ou après.
-- Aucun caractère échappé inutile.
-- Utilise uniquement des guillemets doubles ".
-
-Format de sortie:
-{"champ": "champion_name|null", "info": "lore|stats|spell|null"}
-             
-Exemples:
-Q: "L'histoire de Yasuo"
-A: {"champ": "Yasuo", "info": "lore"}
-
-Q: "Sorts d'Ahri"
-A: {"champ": "Ahri", "info": "spell"}
-
-Q: "Meilleurs items ADC"
-A: {"champ": null, "info": null}
-
-Q: "Quel rôle joue Graves ?"
-A: {"champ": "Graves", "info": "stats"}
-
-Règles:
-- "champ": nom exact du champion ou null
-- "info": 
-  * "lore" = histoire/background du champion
-  * "spell" = compétences/capacités du champion
-  * "stats" = données techniques du champion
-  * null = autre requête
-- Guillemets doubles obligatoires
-""",
+                "content": """Tu es un classificateur de requêtes League of Legends. 
+Extrais le champion (champ) et le type d'information (info: lore, stats, spell, null).""",
             },
             {"role": "user", "content": prompt},
         ],
+        response_format={"type": "json_object"},
     )
 
     # print("class", classification.choices[0].message.content)
 
-    formatted_json = extract_json(classification.choices[0].message.content)
+    raw_content = classification.choices[0].message.content
+    result = LoLQueryClassification.model_validate_json(raw_content)
+
+    print(result)
+    print(result.champ)
+    print(result.info)
 
     systemPrompt = f"""
 Tu incarnes le personnage {character} de League of Legends : {characters[character]}
@@ -470,9 +448,9 @@ Réponds UNIQUEMENT en français de manière claire avec un maximum de 1000 cara
 
     points = []
 
-    if formatted_json.get("champ"):
-        champ = formatted_json.get("champ")
-        info = formatted_json.get("info")
+    if result.champ and result.info:
+        champ = result.champ
+        info = result.info
         query_text = f"""
 Champion: {champ}
 Question: {prompt}
