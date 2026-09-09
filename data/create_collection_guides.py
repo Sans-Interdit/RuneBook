@@ -13,9 +13,6 @@ def create_collection():
         url=os.getenv("QDRANT_URL"), api_key=os.getenv("QDRANT_KEY"), timeout=5.0
     )
 
-    # Suppression optionnelle (décommentez si nécessaire)
-    # client.delete_collection(COLLECTION_NAME)
-
     collections = [c.name for c in client.get_collections().collections]
     if COLLECTION_NAME in collections:
         print(f"Collection '{COLLECTION_NAME}' already exists.")
@@ -26,7 +23,6 @@ def create_collection():
         vectors_config=VectorParams(size=VECTOR_SIZE, distance=Distance.COSINE),
     )
 
-    # Définition explicite du schéma de payload
     client.create_payload_index(
         collection_name=COLLECTION_NAME,
         field_name="level",

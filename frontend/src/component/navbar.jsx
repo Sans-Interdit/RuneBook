@@ -11,7 +11,7 @@ import {
   User,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import logo from "/assets/logo.webp"; // chemin relatif depuis navbar.jsx
+import logo from "/assets/logo.webp";
 import { useLocation } from "react-router-dom";
 import { useAppContext } from "../context/appContext";
 
@@ -40,9 +40,7 @@ export const Navbar = () => {
 
   useEffect(() => {
     const verifyConnexion = async () => {
-      // console.log(user);
       if (user) {
-        // console.log("co");
         setNavLinks((links) => {
           return [
             ...navLinks,
@@ -55,11 +53,6 @@ export const Navbar = () => {
         });
         setAuthLinks((links) => {
           return [
-            // {
-            //   to: "/logout",
-            //   label: "Déconnexion",
-            //   icon: <LogOut className="w-6 h-6" />,
-            // },
             {
               to: "/profile",
               label: "Mon compte",

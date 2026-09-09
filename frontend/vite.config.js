@@ -5,7 +5,6 @@ import path from 'path';
 import compression from 'vite-plugin-compression';
 
 export default defineConfig(({ mode }) => {
-  // Charger le .env depuis la racine du projet (un niveau au-dessus de frontend)
   const env = loadEnv(mode, path.resolve(__dirname, '..'));
 
   return {
@@ -13,7 +12,7 @@ export default defineConfig(({ mode }) => {
     server: {
       https: false,
       host: '127.0.0.1',
-      port: 5001, // Port pour le dev
+      port: 5001,
     },
     plugins: [
       react(),

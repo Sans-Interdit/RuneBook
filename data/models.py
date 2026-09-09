@@ -66,7 +66,7 @@ class Message(Base):
 
     id_message = Column(Integer, primary_key=True)
     content = Column(String(5000), nullable=False)
-    role = Column(String(10), nullable=False)  # e.g., "user" or "assistant"
+    role = Column(String(10), nullable=False)
     id_conversation = Column(
         Integer,
         ForeignKey("conversation.id_conversation", ondelete="CASCADE"),

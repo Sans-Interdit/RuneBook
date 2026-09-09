@@ -2,7 +2,7 @@ import sharp from "sharp";
 import fs from "fs";
 
 const files = fs.readdirSync("./../public/assets")
-  .filter(file => !file.endsWith(".webp")); // 👈 clé du fix
+  .filter(file => !file.endsWith(".webp"));
 
 for (const file of files) {
   const name = file.split(".")[0];

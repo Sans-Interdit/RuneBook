@@ -7,13 +7,11 @@ client = TestClient(app)
 
 
 def get_rag_responses():
-    # Charger le dataset
     with open('./backend/tests/ai/questions_1.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     new_value = []
 
-    # Pour chaque question
     for idx, q in enumerate(data['questions'], start=1):
         del q["reponse_attendue"]
 
@@ -27,10 +25,8 @@ def get_rag_responses():
             q["response_ai"] = value
             new_value.append(q)
 
-        # Latence pour éviter le rate limiting (429)
         time.sleep(2)
 
-    # Sauvegarder les réponses dans un nouveau fichier
     with open('./backend/tests/ai/responses_4.json', 'w', encoding='utf-8') as f:
         json.dump(new_value, f, ensure_ascii=False, indent=4)
 

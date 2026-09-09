@@ -70,8 +70,6 @@ Texte source :
         points=[{"id": payload["id_guide"], "vector": vector, "payload": payload}],
     )
 
-    print(f"{payload['title']} inserted into Qdrant.")
-
 
 if __name__ == "__main__":
     db_session = SessionLocal()

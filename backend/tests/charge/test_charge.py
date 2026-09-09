@@ -20,7 +20,6 @@ def send_request():
 
 threads = []
 
-# 50 utilisateurs simultanés
 for i in range(50):
     t = threading.Thread(target=send_request)
     threads.append(t)

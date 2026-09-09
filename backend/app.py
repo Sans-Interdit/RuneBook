@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from backend.api import router as api_router  # = blueprint Flask
 
-# environnement
+# Environnement
 isProd = os.environ.get("PRODUCTION", "false").lower() == "true"
 
 if isProd:

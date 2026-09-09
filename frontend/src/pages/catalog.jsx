@@ -77,9 +77,6 @@ export default function Catalog() {
   };
 
   useEffect(() => {
-    // console.log(searchParams.get("tag"));
-    // console.log(searchParams.get("level"));
-
     if (searchParams.get("level") == "new") {
       setSelectedLevel("New Player");
     }

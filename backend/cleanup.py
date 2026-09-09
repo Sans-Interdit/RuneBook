@@ -37,25 +37,22 @@ def get_all_resources():
 
 
 def extract_public_id(url):
-    # Exemple d'URL : .../upload/c_fill,f_auto/.../v1234567890/public_id.png
+    # URL Exemple : .../upload/c_fill,f_auto/.../v1234567890/public_id.png
     match = re.search(r"/v\d+/(.+)\.\w+$", url)
     return match.group(1) if match else None
 
 
 def cleanup_old_images():
-    # Récupérer toutes les URLs stockées dans la BDD
     photos = session.query(Event.photo).all()
     photos = [p[0] for p in photos if p[0] is not None]
 
     db_public_ids = [extract_public_id(url) for url in photos if extract_public_id(url)]
 
-    # Récupération de toutes les ressources
     resources = get_all_resources()
 
     for res in resources:
         public_id = res["public_id"]
 
-        # Si le public_id n'est pas en BDD => supprimer
         if public_id not in db_public_ids:
             print(f"Suppression de {public_id}")
             cloudinary.uploader.destroy(public_id)

@@ -9,17 +9,10 @@ dotenv.load_dotenv(".env.development")
 COLLECTION_NAME = "lol_champions"
 VECTOR_SIZE = 384
 
-print(os.getenv("QDRANT_URL"))
-print(os.getenv("QDRANT_KEY"))
-
-
 def create_collection():
     client = QdrantClient(
         url=os.getenv("QDRANT_URL"), api_key=os.getenv("QDRANT_KEY"), timeout=5.0
     )
-
-    # Suppression optionnelle (décommentez si nécessaire)
-    # client.delete_collection(COLLECTION_NAME)
 
     collections = [c.name for c in client.get_collections().collections]
     if COLLECTION_NAME in collections:
@@ -31,7 +24,6 @@ def create_collection():
         vectors_config=VectorParams(size=VECTOR_SIZE, distance=Distance.COSINE),
     )
 
-    # Définition explicite du schéma de payload
     client.create_payload_index(
         collection_name=COLLECTION_NAME,
         field_name="champion",

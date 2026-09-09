@@ -25,7 +25,6 @@ import Profile from "./pages/profile";
 function AppContent() {
   const location = useLocation();
 
-  // Ne pas afficher le Navbar sur la page /map
   const showNavbar = location.pathname !== "/map";
 
   return (

@@ -85,19 +85,6 @@ export default function Inscription() {
 
     setIsSubmitting(true);
 
-    // try {
-    //   setSubmitSuccess(true);
-
-    //   await registerContext(formData.email, formData.password)
-
-    //   navigate('/chatbot');
-
-    // } catch (error) {
-    //   setErrors({ submit: "Une erreur est survenue. Veuillez réessayer." });
-    // } finally {
-    //   setIsSubmitting(false);
-    // }
-
     try {
       await registerContext(formData.email, formData.password);
 

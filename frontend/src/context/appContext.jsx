@@ -10,14 +10,13 @@ export const AppProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // console.log(user)
     const fetchUser = async () => {
       try {
         const res = await getId();
         setUser(res.data.id_user);
       } catch (err) {
         if (err?.response?.status === 401) {
-          setUser(null); // pas connecté
+          setUser(null);
         } else {
           console.error(err);
         }
@@ -84,5 +83,4 @@ export const AppProvider = ({ children }) => {
   );
 };
 
-// Hook custom pour simplifier l’accès
 export const useAppContext = () => useContext(AppContext);

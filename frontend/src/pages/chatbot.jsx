@@ -39,8 +39,6 @@ export default function Chatbot() {
   );
 
   useEffect(() => {
-    // console.log(user);
-
     if (isLoading) return;
 
     if (user) {
@@ -127,8 +125,6 @@ export default function Chatbot() {
     addMsg(conversationId, res, "assistant");
 
     setIsTyping(false);
-
-    // getConversations();
   };
 
   const handleNewConversation = async () => {
@@ -371,7 +367,6 @@ export default function Chatbot() {
                         className="w-auto h-full rounded-full max-w-none"
                         loading="lazy"
                       />
-                      // <Bot className="w-5 h-5 text-primary-50" />
                     )}
                   </div>
 

@@ -7,7 +7,7 @@ from data.models import (
     Conversation,
     Message,
     SessionLocal,
-)  # , session as db_session
+)
 import bcrypt
 import datetime
 import os
@@ -93,7 +93,7 @@ def create_token(response: Response, account_id: int):
             value=token,
             httponly=True,
             secure=True,
-            samesite="None",  # pour cross-site
+            samesite="None",
             path="/",
             max_age=3600 * 24,
         )
@@ -286,7 +286,6 @@ async def get_conv(
         str: Email of the user.
     """
     acc = db.query(Account).filter_by(id_account=user_id).first()
-    print(acc.email)
 
     return acc.email
 
@@ -305,7 +304,6 @@ async def change_email(
             detail="Le champ newEmail est requis.",
         )
 
-    # 1. Vérifier si l'email existe déjà dans la BDD
     email_exists = db.query(Account).filter(Account.email == newEmail).first()
     if email_exists:
         raise HTTPException(
@@ -313,7 +311,6 @@ async def change_email(
             detail="Cet email est déjà utilisé.",
         )
 
-    # 2. Mettre à jour l'email de l'utilisateur
     db.query(Account).filter(Account.id_account == user_id).update({"email": newEmail})
     db.commit()
 
@@ -391,7 +388,6 @@ def extract_json(text: str):
 
     raw = match.group()
 
-    # Correction des JSON sur-échappés générés par LLM
     if '\\"' in raw:
         raw = raw.replace('\\"', '"')
 
@@ -412,9 +408,6 @@ async def chat(data: dict):
     prompt = data.get("prompt")
     character = data.get("character")
 
-    # mots = ["Résumé" , ]
-    # if any(mot in texte for mot in mots):
-
     classification = mistral.chat.complete(
         model="ministral-8b-latest",
         messages=[
@@ -428,14 +421,8 @@ Extrais le champion (champ) et le type d'information (info: lore, stats, spell, 
         response_format={"type": "json_object"},
     )
 
-    # print("class", classification.choices[0].message.content)
-
     raw_content = classification.choices[0].message.content
     result = LoLQueryClassification.model_validate_json(raw_content)
-
-    print(result)
-    print(result.champ)
-    print(result.info)
 
     systemPrompt = f"""
 Tu incarnes le personnage {character} de League of Legends : {characters[character]}
@@ -443,8 +430,6 @@ Tu dois communiquer avec les utilisateurs en respectant la personnalité, le ton
 Tu aides les utilisateurs à comprendre le jeu vidéo League of Legends.
 Réponds UNIQUEMENT en français de manière claire avec un maximum de 1000 caractères.
 """
-
-    # print(formatted_json, type(formatted_json.get("champ")))
 
     points = []
 
@@ -457,8 +442,6 @@ Question: {prompt}
 Context: League of Legends champion {info} explanation
         """
         embedding = embed(query_text)
-
-        # embedding = model.encode(query_text)
 
         must_conditions = [
             FieldCondition(key="champion", match=MatchValue(value=champ))
@@ -484,8 +467,6 @@ Context: League of Legends explanation"""
 
         embedding = embed(query_text)
 
-        # embedding = model.encode(query_text)
-
         result = qdrant_client.query_points(
             collection_name="lol_guides", query=embedding, limit=2
         )
@@ -493,7 +474,6 @@ Context: League of Legends explanation"""
         points = result.points
 
     if points:
-        # print([point.payload["title"] for point in points])
         systemPrompt += """N'invente aucune information.
 Réponds uniquement en reformulant de façon naturelle le contenu du contexte.
 Chaque phrase de la réponse doit pouvoir être rattachée à une phrase précise du contexte.
@@ -506,12 +486,9 @@ Si le contexte ne contient pas d’éléments permettant de répondre à la ques
             point.payload.get("content") or point.payload.get("text")
             for point in points
         ]
-        # TODO : save personnalités?
         context = "\n".join(context_texts)
-        # print(context)
         systemPrompt += f"\n\nContexte : {context}"
 
-    # print("systemPrompt : " + systemPrompt)
 
     response = mistral.chat.complete(
         model="ministral-8b-latest",
@@ -521,8 +498,6 @@ Si le contexte ne contient pas d’éléments permettant de répondre à la ques
         ],
         temperature=0.8,
         top_p=0.9,
-        # max_tokens=200,
-        # stop=["</s>", "<|endoftext|>", "<|im_end|>"]
     )
 
     return {"response": response.choices[0].message.content}

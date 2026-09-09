@@ -58,7 +58,7 @@ def fetch_page_html(wiki_base: str, page_title: str) -> Optional[str]:
         "action": "parse",
         "page": page_title,
         "format": "json",
-        "prop": "text",  # HTML de la page
+        "prop": "text",
     }
 
     with requests.get(api_url, params=params, headers=HEADERS, timeout=30) as resp:
@@ -72,9 +72,7 @@ def fetch_page_html(wiki_base: str, page_title: str) -> Optional[str]:
 
 
 def clean_text_basic(text: str) -> str:
-    # enlever les références [1], [2], etc.
     text = re.sub(r"\[\d+\]", "", text)
-    # normaliser retours à la ligne
     text = re.sub(r"\n{3,}", "\n\n", text)
     return text.strip()
 
@@ -90,12 +88,10 @@ def get_section_by_headline(
         if span.string and any(
             span.string.strip().lower() == h.strip().lower() for h in headline_texts
         ):
-            # remontons au parent heading (h2/h3) pour capter le niveau
             heading = span.find_parent(re.compile("^h[1-6]$"))
             if not heading:
                 continue
             section_text_parts = []
-            # parcourir frères suivants jusqu'au prochain heading de même niveau ou supérieur
             for sib in heading.next_siblings:
                 if isinstance(sib, Tag) and re.match(r"h[1-6]", sib.name or "", re.I):
                     break
@@ -106,15 +102,12 @@ def get_section_by_headline(
 
 
 def extract_lore(soup: BeautifulSoup) -> Optional[str]:
-    # 1) fallback par classe spécifique Fandom
     lore_block = soup.select_one(".skinviewer-info-lore")
     if lore_block:
         return lore_block.get_text("\n", strip=True)
-    # 2) fallback par section "Lore"
     lore_by_headline = get_section_by_headline(soup, ["Lore", "Lore (background)"])
     if lore_by_headline:
         return lore_by_headline
-    # 3) ultime fallback: chercher "Background" ou "Story"
     return get_section_by_headline(soup, ["Background", "Story"])
 
 
@@ -124,7 +117,6 @@ def extract_infobox(soup: BeautifulSoup) -> Dict[str, str]:
     """
     keywords_to_remove = ["Store price", "Crafting", "Ratings", "Style", "Difficulty"]
     data = {}
-    # 1) type-lol-champion (cas spécifique Fandom LoL)
     box = (
         soup.select_one(".type-lol-champion")
         or soup.select_one(".portable-infobox")
@@ -132,7 +124,6 @@ def extract_infobox(soup: BeautifulSoup) -> Dict[str, str]:
     )
     if not box:
         return data
-    # méthode : chercher les items .pi-item et pi-data-label/pi-data-value (structure Fandom)
     items = box.select(".pi-item")
     if items:
         for item in items:
@@ -148,13 +139,11 @@ def extract_infobox(soup: BeautifulSoup) -> Dict[str, str]:
                     else:
                         data[label_text] = value.get_text(" ", strip=True)
             else:
-                # certains items ont structure différente : attempt split by ":" or br
                 text = item.get_text(" ", strip=True)
                 if ":" in text:
                     label_part, val_part = text.split(":", 1)
                     data[label_part.strip()] = val_part.strip()
     else:
-        # fallback : parcourir tous les li ou div directs
         for child in box.find_all(["div", "li"], recursive=True):
             text = child.get_text(" ", strip=True)
             if ":" in text:
@@ -173,7 +162,7 @@ def extract_abilities_simple(soup: BeautifulSoup) -> list:
 
     for index, node in enumerate(ability_nodes):
         for unwanted in node.find_all("span", class_="ll-item navbox"):
-            unwanted.decompose()  # supprime complètement l'élément du tree
+            unwanted.decompose()
         for br in node.find_all("br"):
             br.replace_with("\n")
 
@@ -203,11 +192,9 @@ def extract_abilities_simple(soup: BeautifulSoup) -> list:
 
 
 def champion_exists(champion_name: str) -> bool:
-    # Filtre sur le champ "name"
     filt = Filter(
         must=[FieldCondition(key="champion", match=MatchValue(value=champion_name))]
     )
-    # Recherche d’un point correspondant
     result = client.query_points(
         collection_name="lol_champions", query_filter=filt, limit=1
     )
@@ -224,8 +211,6 @@ def insert_chunk(payload: dict):
         collection_name="lol_champions",
         points=[{"id": point_id, "vector": vector, "payload": payload}],
     )
-
-    print(f"{payload['champion']} {payload['chunk_type']} inserted into Qdrant.")
 
 
 if __name__ == "__main__":
@@ -398,7 +383,7 @@ if __name__ == "__main__":
         "Zilean",
         "Zoe",
         "Zyra",
-    ]  # , 'Ambessa', 'Mel', 'Yunara', 'Zaahen'
+    ]  # , 'Ambessa', 'Mel', 'Yunara', 'Zaahen', 'Locke'
 
     for champ in champions_list:
         if champion_exists(champ):
@@ -415,7 +400,6 @@ if __name__ == "__main__":
         soup = BeautifulSoup(html, "lxml")
 
         lore = extract_lore(soup)
-        # print(lore)
         if lore:
             lore = clean_text_basic(lore)
 
@@ -423,7 +407,6 @@ if __name__ == "__main__":
 
         champ_info_block = soup.select_one(".stat-wheel")
         text = champ_info_block.get_text(separator=" : ", strip=True)
-        # transformer en dictionnaire
         parts = text.split(" : ")
         ratings = {}
         for i in range(0, len(parts) - 1, 2):
@@ -437,7 +420,6 @@ if __name__ == "__main__":
         payload_lore = {
             "champion": champ,
             "chunk_type": "lore",
-            # "aliases": {"position": ["lane", "voie", ]
             "lore": lore,
             "text": toText(champ, "lore", lore),
         }
