@@ -413,21 +413,49 @@ async def chat(data: dict):
         messages=[
             {
                 "role": "system",
-                "content": """Tu es un classificateur de requêtes League of Legends. 
-Extrais le champion (champ) et le type d'information (info: lore, stats, spell, null).""",
+                "content": """Tu es un classificateur de requêtes League of Legends.
+
+Format de sortie:
+{"champ": "champion_name|null", "info": "lore|stats|spell|null"}
+             
+Exemples:
+Q: "L'histoire de Yasuo"
+A: {"champ": "Yasuo", "info": "lore"}
+
+Q: "Sorts d'Ahri"
+A: {"champ": "Ahri", "info": "spell"}
+
+Q: "Meilleurs items ADC"
+A: {"champ": null, "info": null}
+
+Q: "Quel rôle joue Graves ?"
+A: {"champ": "Graves", "info": "stats"}
+
+Règles:
+- "champ": nom exact du champion ou null
+- "info": 
+  * "lore" = histoire/background du champion
+  * "spell" = compétences/capacités du champion
+  * "stats" = données techniques du champion
+  * null = autre requête
+""",
             },
             {"role": "user", "content": prompt},
         ],
         response_format={"type": "json_object"},
     )
 
+
     raw_content = classification.choices[0].message.content
     result = LoLQueryClassification.model_validate_json(raw_content)
 
-    systemPrompt = f"""
-Tu incarnes le personnage {character} de League of Legends : {characters[character]}
-Tu dois communiquer avec les utilisateurs en respectant la personnalité, le ton et le style de {character}.
+    systemPrompt = f"""Interprète le personnage {character} de League of Legends : {characters[character]}
+Lorsque le contexte s'y prête, tu dois communiquer avec les utilisateurs en respectant la personnalité, le ton et le style de {character}.
 Tu aides les utilisateurs à comprendre le jeu vidéo League of Legends.
+Réponds uniquement en reformulant de façon naturelle le contenu du contexte.
+Chaque phrase de la réponse doit pouvoir être rattachée à une phrase précise du contexte.
+N'invente aucune information.
+Si le contexte ne contient pas d’éléments permettant de répondre à la question, réponds uniquement en s'excusant.
 Réponds UNIQUEMENT en français de manière claire avec un maximum de 1000 caractères.
 """
 
@@ -456,7 +484,7 @@ Context: League of Legends champion {info} explanation
             collection_name="lol_champions",
             prefetch=[Prefetch(filter=Filter(must=must_conditions), limit=5)],
             query=embedding,
-            limit=3,
+            limit=4,
         )
 
         points = result.points
@@ -473,14 +501,10 @@ Context: League of Legends explanation"""
 
         points = result.points
 
+
     if points:
-        systemPrompt += """N'invente aucune information.
-Réponds uniquement en reformulant de façon naturelle le contenu du contexte.
-Chaque phrase de la réponse doit pouvoir être rattachée à une phrase précise du contexte.
-Si ce n’est plus possible, arrête la réponse.
-N'essaie pas d'enrichir les données avec des informations supplémentaire entre parenthèses.
-Ne traduis jamais les termes techniques de League of Legends, si un mot te semble propre à League of Legends, exprime le uniquement en anglais.
-Si le contexte ne contient pas d’éléments permettant de répondre à la question, réponds uniquement par une excuse."""
+        systemPrompt += """N'essaie pas d'enrichir les données avec des informations supplémentaire entre parenthèses.
+Ne traduis jamais les termes techniques de League of Legends, si un mot te semble propre à League of Legends, exprime le uniquement en anglais."""
 
         context_texts = [
             point.payload.get("content") or point.payload.get("text")
@@ -488,7 +512,6 @@ Si le contexte ne contient pas d’éléments permettant de répondre à la ques
         ]
         context = "\n".join(context_texts)
         systemPrompt += f"\n\nContexte : {context}"
-
 
     response = mistral.chat.complete(
         model="ministral-8b-latest",

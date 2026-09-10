@@ -14,10 +14,11 @@ import uuid
 from qdrant_client.http.models import Filter, FieldCondition, MatchValue
 import os
 import dotenv
+import time
 
 dotenv.load_dotenv(".env.development")
-HEADERS = {"User-Agent": "Mozilla/5.0"}
 
+HEADERS = {"User-Agent": "RuneBookBot/1.0 (contact: yanis.bouchilloux@gmail.com)"}
 client = QdrantClient(
     url=os.getenv("QDRANT_URL"), api_key=os.getenv("QDRANT_KEY"), timeout=5.0
 )
@@ -457,3 +458,5 @@ if __name__ == "__main__":
             }
 
             insert_chunk(payload_spell)
+    time.sleep(2)
+
