@@ -65,36 +65,34 @@ export default function WorldMap() {
   ];
 
   return (
-    <div className="relative h-screen overflow-hidden bg-primary-50">
+    <div className="relative flex items-center justify-center w-screen h-screen overflow-hidden bg-primary-50">
       <Link
         to="/chatbot"
         className="absolute z-50 p-4 m-6 font-semibold transition-all duration-300 rounded-lg bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
       >
         <ArrowLeft className="w-8 h-8" />
       </Link>
+
       {!loaded && (
         <div className="absolute inset-0 z-40 flex items-center justify-center bg-primary-50">
           <Loader2 className="w-10 h-10 animate-spin text-primary-100" />
         </div>
       )}
+
       <div
         className={`
-          relative inset-0 object-contain w-full
-          transition-opacity duration-1000 ease-in-out
-          ${loaded ? "opacity-100" : "opacity-0"}
-        `}
+        relative max-w-full max-h-full aspect-[1664/996]
+        transition-opacity duration-1000 ease-in-out
+        ${loaded ? "opacity-100" : "opacity-0"}
+      `}
       >
         <img
           src="/assets/runeterra.webp"
-          className="object-contain w-full h-full"
+          className="block object-contain w-full h-full"
           onLoad={() => setLoaded(true)}
+          alt="Runeterra"
         />
 
-        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-primary-50 to-transparent" />
-
-        <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-primary-50 to-transparent" />
-
-        {/* Points dynamiques */}
         {mapPoints.map((point) => (
           <Link
             to={`/chatbot?character=${point.id}`}
@@ -126,6 +124,10 @@ export default function WorldMap() {
           </Link>
         ))}
       </div>
+      <div className="absolute inset-y-0 left-0 z-30 w-32 pointer-events-none bg-gradient-to-r from-primary-50 to-transparent" />
+      <div className="absolute inset-y-0 right-0 z-30 w-32 pointer-events-none bg-gradient-to-l from-primary-50 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 z-30 h-32 pointer-events-none bg-gradient-to-t from-primary-50 to-transparent" />
+      <div className="absolute inset-x-0 top-0 z-30 h-32 pointer-events-none bg-gradient-to-b from-primary-50 to-transparent" />
     </div>
   );
 }

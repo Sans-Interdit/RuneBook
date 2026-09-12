@@ -106,7 +106,7 @@ export const Navbar = () => {
         </Link>
 
         {/* Desktop Navigation Links */}
-        <div className="items-center hidden space-x-2 lg:flex">
+        <div className="flex items-center space-x-2">
           {navLinks.map((link) => (
             <Link
               key={link.to}
@@ -130,7 +130,7 @@ export const Navbar = () => {
         </div>
 
         {/* Desktop Auth Buttons */}
-        <div className="items-center hidden space-x-4 lg:flex">
+        <div className="flex items-center space-x-4">
           {authLinks.map((link, index) => (
             <Link
               key={link.to}
@@ -151,73 +151,6 @@ export const Navbar = () => {
               <span>{link.label}</span>
             </Link>
           ))}
-        </div>
-
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="z-10 p-2 transition-colors rounded-lg lg:hidden text-primary-100 hover:bg-primary-100/20"
-        >
-          {isMenuOpen ? (
-            <X className="w-8 h-8" />
-          ) : (
-            <Menu className="w-8 h-8" />
-          )}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      <div
-        className={`
-          lg:hidden absolute top-24 left-0 right-0 bg-gradient-to-br from-primary-50 to-background-50
-          border-t-2 border-primary-100/30 shadow-2xl transition-all duration-300 overflow-hidden
-          ${isMenuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"}
-        `}
-      >
-        <div className="px-6 py-6 space-y-3">
-          {navLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              onClick={() => {
-                setIsMenuOpen(false);
-              }}
-              className={`
-                flex items-center space-x-3 px-6 py-4 rounded-xl transition-all duration-300 font-text text-lg font-semibold
-                ${
-                  location.pathname === link.to
-                    ? "bg-gradient-to-r from-primary-100 to-secondary-50 text-primary-50 shadow-lg"
-                    : "text-primary-100 hover:bg-primary-100/20"
-                }
-              `}
-            >
-              {link.icon}
-              <span>{link.label}</span>
-            </Link>
-          ))}
-
-          <div className="pt-4 mt-4 space-y-3 border-t-2 border-primary-100/30">
-            {authLinks.map((link, index) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                onClick={() => {
-                  setIsMenuOpen(false);
-                }}
-                className={`
-                  flex items-center justify-center space-x-3 px-6 py-4 rounded-xl transition-all duration-300 font-text text-lg font-semibold
-                  ${
-                    index === 0
-                      ? "border-2 border-primary-100 text-primary-100 hover:bg-primary-100 hover:text-primary-50"
-                      : "bg-gradient-to-r from-primary-100 to-secondary-50 text-primary-50 hover:shadow-lg"
-                  }
-                `}
-              >
-                {link.icon}
-                <span>{link.label}</span>
-              </Link>
-            ))}
-          </div>
         </div>
       </div>
     </nav>
