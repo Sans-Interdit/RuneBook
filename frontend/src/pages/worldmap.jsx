@@ -68,7 +68,7 @@ export default function WorldMap() {
     <div className="relative flex items-center justify-center w-screen h-screen overflow-hidden bg-primary-50">
       <Link
         to="/chatbot"
-        className="absolute z-50 p-4 m-6 font-semibold transition-all duration-300 rounded-lg bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+        className="absolute top-0 left-0 z-50 p-4 m-6 font-semibold transition-all duration-300 rounded-lg bg-primary-100 text-primary-50 hover:bg-secondary-50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
       >
         <ArrowLeft className="w-8 h-8" />
       </Link>
