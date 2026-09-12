@@ -287,7 +287,7 @@ export default function Chatbot() {
         >
           <div className="absolute inset-0 z-0 pointer-events-none" />
           {currentConversation?.messages.length === 0 ? (
-            <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
+            <div className="relative z-10 flex flex-col items-center justify-center min-h-full text-center">
               <div className="flex flex-col items-center p-10 rounded-3xl bg-primary-50/80 backdrop-blur-sm">
                 <div className="flex items-center justify-center w-20 h-20 mb-6 overflow-hidden rounded-full bg-secondary-50">
                   <img
